@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { ContextLayout } from '../../../utility/context/Layout';
-import { connect } from 'react-redux';
 import SidebarHeader from './SidebarHeader';
 import Hammer from 'react-hammerjs';
 import SideMenuContent from './sidemenu/SideMenuContent';
@@ -224,10 +223,5 @@ class Sidebar extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.auth.login.userRole,
-  };
-};
 
-export default connect(mapStateToProps)(Sidebar);
+export default Sidebar;
