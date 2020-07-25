@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import VerticalLayout from '../../layouts/VerticalLayout';
 import FullLayout from '../../layouts/FullpageLayout';
 import themeConfig from '../../configs/themeConfig';
@@ -10,80 +10,46 @@ const layouts = {
 //@ts-ignore
 export const ContextLayout = createContext();
 
-export class Layout extends React.Component {
-  state = {
-    activeLayout: themeConfig.layout,
-    width: window.innerWidth,
-    lastLayout: null,
-  };
+export function Layout({ children }: any) {
+  const [activeLayout, setActiveLayout] = useState(themeConfig.layout);
+  const [width, setWidth] = useState(window.innerWidth);
+  const [lastLayout, setLastLayout] = useState<null | string>(null);
 
-  updateWidth = () => {
-    this.setState({
-      width: window.innerWidth,
-    });
-  };
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+      if (activeLayout === 'horizontal' && width <= 1199) {
+        setActiveLayout('vertical');
+        setLastLayout('horizontal');
+      }
 
-  handleWindowResize = () => {
-    this.updateWidth();
-    if (this.state.activeLayout === 'horizontal' && this.state.width <= 1199) {
-      this.setState({
-        activeLayout: 'vertical',
-        lastLayout: 'horizontal',
-      });
-    }
+      if (lastLayout === 'horizontal' && width >= 1199) {
+        setActiveLayout('horizontal');
+        setLastLayout('vertical');
+      }
+    };
 
-    if (this.state.lastLayout === 'horizontal' && this.state.width >= 1199) {
-      this.setState({
-        activeLayout: 'horizontal',
-        lastLayout: 'vertical',
-      });
-    }
-  };
-
-  componentDidMount = () => {
     //@ts-ignore
-    if (window !== 'undefined') {
-      window.addEventListener('resize', this.handleWindowResize);
-    }
-    this.handleDirUpdate();
-    if (this.state.activeLayout === 'horizontal' && this.state.width <= 1199) {
-      this.setState({
-        activeLayout: 'vertical',
-      });
-    } else if (
-      themeConfig.layout === 'horizontal' &&
-      this.state.width >= 1200
-    ) {
-      this.setState({
-        activeLayout: 'horizontal',
-      });
-    } else {
-      this.setState({
-        activeLayout: 'vertical',
-      });
-    }
-  };
+    if (window !== 'undefined')
+      window.addEventListener('resize', handleWindowResize);
 
-  componentDidUpdate() {
-    this.handleDirUpdate();
-  }
-
-  handleDirUpdate = () => {
     document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
-  };
+    if (activeLayout === 'horizontal' && width <= 1199)
+      setActiveLayout('vertical');
+    else if (themeConfig.layout === 'horizontal' && width >= 1200)
+      setActiveLayout('horizontal');
+    else setActiveLayout('vertical');
+  }, [width, activeLayout, lastLayout]);
 
-  render() {
-    const { children } = this.props;
-    return (
-      <ContextLayout.Provider
-        value={{
-          state: this.state,
-          fullLayout: layouts['full'],
-          VerticalLayout: layouts['vertical'],
-        }}
-      >
-        {children}
-      </ContextLayout.Provider>
-    );
-  }
+  return (
+    <ContextLayout.Provider
+      value={{
+        state: { activeLayout, width, lastLayout },
+        fullLayout: layouts['full'],
+        VerticalLayout: layouts['vertical'],
+      }}
+    >
+      {children}
+    </ContextLayout.Provider>
+  );
 }

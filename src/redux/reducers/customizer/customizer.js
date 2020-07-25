@@ -10,8 +10,6 @@ const customizerReducer = (state = themeConfig, action) => {
       return { ...state, navbarColor: action.color };
     case 'CHANGE_NAVBAR_TYPE':
       return { ...state, navbarType: action.style };
-    case 'CHANGE_FOOTER_TYPE':
-      return { ...state, footerType: action.style };
     case 'CHANGE_MENU_COLOR':
       return { ...state, menuTheme: action.style };
 

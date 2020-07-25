@@ -1,5 +1,4 @@
 import React from 'react';
-import ExtensionsHeader from '../extensionsHeader';
 import {
   Row,
   Col,
@@ -21,7 +20,7 @@ import '../../assets/scss/plugins/extensions/dropzone.scss';
 
 function Uploader(props: any) {
   const { getRootProps, getInputProps } = useDropzone({
-    accept: '.xlsx, .xls, .csv',
+    accept: '.xlsx, .xls, .csv, .jpeg, .json, .jpg, .png, .svg',
     onDrop: (acceptedFiles) => {
       var reader = new FileReader();
       reader.onload = function () {
@@ -128,54 +127,47 @@ class Import extends React.Component {
       : null;
 
     return (
-      <>
-        <ExtensionsHeader
-          title="XLSX"
-          subTitle="Xlsx is a parser and writer for various spreadsheet formats"
-          link="https://github.com/AdeleD/react-paginate"
-        />
-        <Row className="import-component">
+      <Row className="import-component">
+        <Col sm="12">
+          <Card>
+            <CardBody>
+              <Row>
+                <Col sm="12">
+                  <Uploader getTableData={this.getTableData} />
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+        </Col>
+        {this.state.tableData.length ? (
           <Col sm="12">
             <Card>
+              <CardHeader className="justify-content-between flex-wrap">
+                <CardTitle>{this.state.name}</CardTitle>
+                <div className="filter position-relative has-icon-left">
+                  <Input
+                    type="text"
+                    value={this.state.value}
+                    onChange={(e) => this.handleFilter(e)}
+                  />
+                  <div className="form-control-position">
+                    <Search size={15} />
+                  </div>
+                </div>
+              </CardHeader>
               <CardBody>
-                <Row>
-                  <Col sm="12">
-                    <Uploader getTableData={this.getTableData} />
-                  </Col>
-                </Row>
+                <Table className="table-hover-animation" responsive>
+                  <thead>
+                    <tr>{renderTableHead}</tr>
+                  </thead>
+                  <tbody>{renderTableBody}</tbody>
+                </Table>
               </CardBody>
             </Card>
           </Col>
-          {this.state.tableData.length ? (
-            <Col sm="12">
-              <Card>
-                <CardHeader className="justify-content-between flex-wrap">
-                  <CardTitle>{this.state.name}</CardTitle>
-                  <div className="filter position-relative has-icon-left">
-                    <Input
-                      type="text"
-                      value={this.state.value}
-                      onChange={(e) => this.handleFilter(e)}
-                    />
-                    <div className="form-control-position">
-                      <Search size={15} />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardBody>
-                  <Table className="table-hover-animation" responsive>
-                    <thead>
-                      <tr>{renderTableHead}</tr>
-                    </thead>
-                    <tbody>{renderTableBody}</tbody>
-                  </Table>
-                </CardBody>
-              </Card>
-            </Col>
-          ) : null}
-          <ToastContainer />
-        </Row>
-      </>
+        ) : null}
+        <ToastContainer />
+      </Row>
     );
   }
 }

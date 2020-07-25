@@ -14,10 +14,6 @@ export const changeNavbarType = (style) => {
   return (dispatch) => dispatch({ type: 'CHANGE_NAVBAR_TYPE', style });
 };
 
-export const changeFooterType = (style) => {
-  return (dispatch) => dispatch({ type: 'CHANGE_FOOTER_TYPE', style });
-};
-
 export const changeMenuColor = (style) => {
   return (dispatch) => dispatch({ type: 'CHANGE_MENU_COLOR', style });
 };
