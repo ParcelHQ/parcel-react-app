@@ -6,7 +6,6 @@ import { store } from './redux/storeConfig/store';
 import Spinner from './components/Spinner/Fallback-spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
-import './@fake-db';
 
 const LazyApp = lazy(() => import('./App'));
 
