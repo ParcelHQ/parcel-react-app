@@ -12,6 +12,7 @@ const CompanyDetails = lazy(() => import('./pages/CompanyDetails'));
 const Documents = lazy(() => import('./pages/Documents'));
 const People = lazy(() => import('./pages/People'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Landing = lazy(() => import('./pages/Landing'));
 
 // Set Layout and Component Using App Route
 const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
@@ -49,6 +50,7 @@ export default function AppRouter() {
         <AppRoute path="/people" component={People} />
         <AppRoute path="/payroll" component={Payroll} />
         <AppRoute path="/settings" component={Settings} />
+        <AppRoute path="/landing" component={Landing} fullLayout />
       </Switch>
     </Router>
   );

@@ -1,22 +1,20 @@
 import React from 'react';
 import ReactTables from '../../components/Tables/ReactTables';
 import StatisticsCard from './StatisticsCard';
-import BrowserStats from './BrowserStats';
-import { Row, Col } from 'reactstrap';
-import Tasks from './Tasks';
+import ProductOrders from './ProductOrders';
+import Breadcrumbs from '../../components/BreadCrumbs';
 
 export default function Home() {
   return (
     <>
+      <Breadcrumbs
+        breadCrumbTitle="Statistics Cards"
+        breadCrumbParent="Card"
+        breadCrumbActive="Statistics Cards"
+      />
       <StatisticsCard />
-      <Row>
-        <Col lg="8" md="12">
-          <BrowserStats />
-        </Col>
-        <Col lg="4" md="12">
-          <Tasks />
-        </Col>
-      </Row>
+
+      <ProductOrders />
       <ReactTables />
     </>
   );
