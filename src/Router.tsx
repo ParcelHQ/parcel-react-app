@@ -15,11 +15,9 @@ const People = lazy(() => import('./pages/People'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 // Set Layout and Component Using App Route
-const RouteConfig = ({
+const AppRoute = ({
   component: Component,
   fullLayout,
-  permission,
-  user,
   ...rest
 }: any) => (
   <Route
@@ -31,7 +29,7 @@ const RouteConfig = ({
             let LayoutTag =
               fullLayout === true ? context.fullLayout : context.VerticalLayout;
             return (
-              <LayoutTag {...props} permission={props.user}>
+              <LayoutTag {...props}>
                 <Suspense fallback={<Spinner />}>
                   <Component {...props} />
                 </Suspense>
@@ -43,13 +41,6 @@ const RouteConfig = ({
     }}
   />
 );
-const mapStateToProps = (state: any) => {
-  return {
-    user: state.auth.login.userRole,
-  };
-};
-
-const AppRoute = connect(mapStateToProps)(RouteConfig);
 
 export default function AppRouter() {
   return (
