@@ -1,15 +1,4 @@
-/*=========================================================================================
-    File Name: navigations.scss
-    Description: Common mixin for menus, contain dark and light version scss.
-    ----------------------------------------------------------------------------------------
-    Item Name: Vuexy React  Admin Template
-    Version: 1.0
-    Author: PIXINVENT
-    Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
-
-// Import first main menu mixin
-@import "../mixins/main-menu-mixin";
+@import '../mixins/main-menu-mixin';
 
 // Main menu base
 //==============
@@ -85,20 +74,17 @@
     padding: 0.35rem 1rem 0.3rem 1.64rem;
     transition: 300ms ease all;
     .navbar-brand {
-      // padding: 15px 0px;
       display: flex;
       align-items: center;
-      margin-top: 1.35rem;
+
       .brand-logo {
-        background: url("../../../img/logo/logoPng.png") no-repeat;
-        background-position: -65px -54px;
-        height: 24px;
-        width: 35px;
+        height: 4rem;
+        width: 4rem;
+        margin-left: -0.75rem;
       }
 
       .brand-text {
         color: $primary;
-        padding-left: 1rem;
         font-weight: 600;
         letter-spacing: 0.01rem;
         font-size: 1.57rem;
@@ -283,38 +269,7 @@
       }
     }
   }
-  &.theme-success {
-    .navbar-container,
-    .navbar-header {
-      .brand-logo {
-        background-position: -120px -10px !important;
-      }
-    }
-  }
-  &.theme-danger {
-    .navbar-container,
-    .navbar-header {
-      .brand-logo {
-        background-position: -10px -10px !important;
-      }
-    }
-  }
-  &.theme-info {
-    .navbar-container,
-    .navbar-header {
-      .brand-logo {
-        background-position: -10px -54px !important;
-      }
-    }
-  }
-  &.theme-warning {
-    .navbar-container,
-    .navbar-header {
-      .brand-logo {
-        background-position: -120px -54px !important;
-      }
-    }
-  }
+
   &.theme-dark {
     .navbar-container,
     .navbar-header {

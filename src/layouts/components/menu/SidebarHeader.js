@@ -1,7 +1,8 @@
-import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
-import { Disc, X, Circle } from "react-feather";
-import classnames from "classnames";
+import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Disc, X, Circle } from 'react-feather';
+import classnames from 'classnames';
+import ParcelLogo from '../../../assets/img/logo/logo.svg';
 
 class SidebarHeader extends Component {
   render() {
@@ -18,16 +19,8 @@ class SidebarHeader extends Component {
         <ul className="nav navbar-nav flex-row">
           <li className="nav-item mr-auto">
             <NavLink to="/" className="navbar-brand">
-              {/* background: url("../../../img/logo/logo.svg") no-repeat;
-              background-position: -65px -54px; height: 24px; width: 35px; */}
-              {/* <img
-                style={{ height: "24px", width: "35px" }}
-                objectFit="cover"
-                src="../../../../assets/img/logo.svg"
-                alt="Parcel Logo"
-              /> */}
-              <div className="brand-logo" />
-              <h2 className="brand-text mb-0">Parcel</h2>
+              <img src={ParcelLogo} alt="Parcel Logo" className="brand-logo" />
+              <h1 className="brand-text mb-0">Parcel</h1>
             </NavLink>
           </li>
           <li className="nav-item nav-toggle">
@@ -39,14 +32,10 @@ class SidebarHeader extends Component {
                     toggle();
                   }}
                   className={classnames(
-                    "toggle-icon icon-x d-none d-xl-block font-medium-4",
+                    'toggle-icon icon-x d-none d-xl-block font-medium-4',
                     {
-                      "text-primary": activeTheme === "primary",
-                      "text-success": activeTheme === "success",
-                      "text-danger": activeTheme === "danger",
-                      "text-info": activeTheme === "info",
-                      "text-warning": activeTheme === "warning",
-                      "text-dark": activeTheme === "dark",
+                      'text-primary': activeTheme === 'primary',
+                      'text-dark': activeTheme === 'dark',
                     }
                   )}
                   size={20}
@@ -59,14 +48,10 @@ class SidebarHeader extends Component {
                     toggle();
                   }}
                   className={classnames(
-                    "toggle-icon icon-x d-none d-xl-block font-medium-4",
+                    'toggle-icon icon-x d-none d-xl-block font-medium-4',
                     {
-                      "text-primary": activeTheme === "primary",
-                      "text-success": activeTheme === "success",
-                      "text-danger": activeTheme === "danger",
-                      "text-info": activeTheme === "info",
-                      "text-warning": activeTheme === "warning",
-                      "text-dark": activeTheme === "dark",
+                      'text-primary': activeTheme === 'primary',
+                      'text-dark': activeTheme === 'dark',
                     }
                   )}
                   size={20}
@@ -75,14 +60,10 @@ class SidebarHeader extends Component {
               <X
                 onClick={sidebarVisibility}
                 className={classnames(
-                  "toggle-icon icon-x d-block d-xl-none font-medium-4",
+                  'toggle-icon icon-x d-block d-xl-none font-medium-4',
                   {
-                    "text-primary": activeTheme === "primary",
-                    "text-success": activeTheme === "success",
-                    "text-danger": activeTheme === "danger",
-                    "text-info": activeTheme === "info",
-                    "text-warning": activeTheme === "warning",
-                    "text-dark": activeTheme === "dark",
+                    'text-primary': activeTheme === 'primary',
+                    'text-dark': activeTheme === 'dark',
                   }
                 )}
                 size={20}
@@ -91,8 +72,8 @@ class SidebarHeader extends Component {
           </li>
         </ul>
         <div
-          className={classnames("shadow-bottom", {
-            "d-none": menuShadow === false,
+          className={classnames('shadow-bottom', {
+            'd-none': menuShadow === false,
           })}
         />
       </div>
