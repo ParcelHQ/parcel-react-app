@@ -5,7 +5,6 @@ import SidebarHeader from './SidebarHeader';
 import Hammer from 'react-hammerjs';
 import SideMenuContent from './sidemenu/SideMenuContent';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
 class Sidebar extends Component {
   static getDerivedStateFromProps(props, state) {
     if (props.activePath !== state.activeItem) {
@@ -223,5 +222,6 @@ class Sidebar extends Component {
     );
   }
 }
+
 
 export default Sidebar;

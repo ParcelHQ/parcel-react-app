@@ -18,6 +18,7 @@ class VerticalLayout extends PureComponent {
     layout: this.props.app.customizer.theme,
     collapsedContent: this.props.app.customizer.sidebarCollapsed,
     sidebarHidden: false,
+    currentLang: 'en',
     appOverlay: false,
     customizer: false,
     currRoute: this.props.location.pathname,
@@ -26,7 +27,7 @@ class VerticalLayout extends PureComponent {
   mounted = false;
   updateWidth = () => {
     if (this.mounted) {
-      this.setState(() => ({
+      this.setState((prevState) => ({
         width: window.innerWidth,
       }));
     }
@@ -68,7 +69,7 @@ class VerticalLayout extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     let {
       location: { pathname },
       app: {
@@ -126,7 +127,7 @@ class VerticalLayout extends PureComponent {
     }
   };
 
-  toggleSidebarMenu = () => {
+  toggleSidebarMenu = (val) => {
     this.setState({
       sidebarState: !this.state.sidebarState,
       collapsedContent: !this.state.collapsedContent,
@@ -159,6 +160,12 @@ class VerticalLayout extends PureComponent {
   componentWillUnmount() {
     this.mounted = false;
   }
+
+  handleCurrentLanguage = (lang) => {
+    this.setState({
+      currentLang: lang,
+    });
+  };
 
   handleAppOverlay = (value) => {
     if (value.length > 0) {
@@ -196,6 +203,8 @@ class VerticalLayout extends PureComponent {
       sidebarVisibility: this.handleSidebarVisibility,
       visibilityState: this.state.sidebarHidden,
       activePath: this.props.match.path,
+      collapsedMenuPaths: this.handleCollapsedMenuPaths,
+      currentLang: this.state.currentLang,
       activeTheme: appProps.menuTheme,
       collapsed: this.state.collapsedContent,
       permission: this.props.permission,
@@ -205,6 +214,8 @@ class VerticalLayout extends PureComponent {
       toggleSidebarMenu: this.toggleSidebarMenu,
       sidebarState: this.state.sidebarState,
       sidebarVisibility: this.handleSidebarVisibility,
+      currentLang: this.state.currentLang,
+      changeCurrentLang: this.handleCurrentLanguage,
       handleAppOverlay: this.handleAppOverlay,
       appOverlayState: this.state.appOverlay,
       navbarColor: appProps.navbarColor,

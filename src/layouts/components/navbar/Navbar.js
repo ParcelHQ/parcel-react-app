@@ -5,7 +5,7 @@ import NavbarUser from './NavbarUser';
 import NavbarBookmarks from './NavbarBookmarks';
 import userImg from '../../../assets/img/portrait/small/avatar-s-11.jpg';
 
-const ThemeNavbar = (props: any) => {
+const ThemeNavbar = (props) => {
   const colorsArr = ['primary', 'danger', 'success', 'info', 'warning', 'dark'];
   const navbarTypes = ['floating', 'static', 'sticky', 'hidden'];
   return (
