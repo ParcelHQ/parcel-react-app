@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from 'reactstrap';
 import classnames from 'classnames';
 import NavbarUser from './NavbarUser';
+import NavbarBookmarks from './NavbarBookmarks';
 import userImg from '../../../assets/img/portrait/small/avatar-s-11.jpg';
 
 const ThemeNavbar = (props) => {
@@ -49,7 +50,10 @@ const ThemeNavbar = (props) => {
               id="navbar-mobile"
             >
               <div className="bookmark-wrapper">
-
+                <NavbarBookmarks
+                  sidebarVisibility={props.sidebarVisibility}
+                  handleAppOverlay={props.handleAppOverlay}
+                />
               </div>
 
               <NavbarUser

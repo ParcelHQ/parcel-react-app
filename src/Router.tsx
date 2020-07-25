@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
 import { history } from './history';
-import { connect } from 'react-redux';
 import Spinner from './components/Spinner/Loading-spinner';
 import { ContextLayout } from './utility/context/Layout';
 
@@ -15,11 +14,7 @@ const People = lazy(() => import('./pages/People'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 // Set Layout and Component Using App Route
-const AppRoute = ({
-  component: Component,
-  fullLayout,
-  ...rest
-}: any) => (
+const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
   <Route
     {...rest}
     render={(props: any) => {
