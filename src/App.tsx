@@ -3,9 +3,12 @@ import Router from './Router';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import 'prismjs/themes/prism-tomorrow.css';
+import { LayoutProvider } from './state/layout/Context';
 
-const App = () => {
-  return <Router />;
-};
-
-export default App;
+export default function App() {
+  return (
+    <LayoutProvider>
+      <Router />
+    </LayoutProvider>
+  );
+}

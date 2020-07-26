@@ -18,7 +18,6 @@ export default class SideMenuContent extends React.Component {
     };
   }
   state = {
-    flag: true,
     isHovered: false,
     activeGroups: [],
     currentActiveGroup: [],
@@ -99,7 +98,6 @@ export default class SideMenuContent extends React.Component {
     this.setState({
       activeGroups: parentArr.slice(0),
       currentActiveGroup: parentArr.slice(0),
-      flag: false,
     });
   };
 
@@ -109,9 +107,9 @@ export default class SideMenuContent extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activePath !== this.props.activePath) {
-      if (this.collapsedMenuPaths !== null) {
-        this.props.collapsedMenuPaths(this.collapsedMenuPaths);
-      }
+      // if (this.collapsedMenuPaths !== null) {
+      //   this.props.collapsedMenuPaths(this.collapsedMenuPaths);
+      // }
 
       this.initRender(
         this.parentArr[0] ? this.parentArr[this.parentArr.length - 1] : []

@@ -34,14 +34,14 @@ const navigationConfig = [
     permissions: ['admin', 'editor'],
     navLink: '/people',
   },
-  {
-    id: 'companyDetails',
-    title: 'Company Details',
-    type: 'item',
-    icon: <Icon.Folder size={20} />,
-    permissions: ['admin', 'editor'],
-    navLink: '/CompanyDetails',
-  },
+  // {
+  //   id: 'companyDetails',
+  //   title: 'Company Details',
+  //   type: 'item',
+  //   icon: <Icon.Folder size={20} />,
+  //   permissions: ['admin', 'editor'],
+  //   navLink: '/companyDetails',
+  // },
   {
     id: 'settings',
     title: 'Settings',

@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import ParcelLogo from '../../../assets/img/logo/logo.svg';
 
 export default function SidebarHeader({
-  toggleSidebarMenu,
+  // toggleSidebarMenu,
   activeTheme,
   collapsed,
   toggle,
@@ -26,7 +26,7 @@ export default function SidebarHeader({
             {collapsed === false ? (
               <Disc
                 onClick={() => {
-                  toggleSidebarMenu(true);
+                  // toggleSidebarMenu(true);
                   toggle();
                 }}
                 className={classnames(
@@ -42,7 +42,7 @@ export default function SidebarHeader({
             ) : (
               <Circle
                 onClick={() => {
-                  toggleSidebarMenu(false);
+                  // toggleSidebarMenu(false);
                   toggle();
                 }}
                 className={classnames(

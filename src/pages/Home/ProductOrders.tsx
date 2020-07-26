@@ -21,12 +21,11 @@ let warningLight = '#FFC085';
 let dangerLight = '#f29292';
 
 export default function ProductOrders() {
-  const [options, setOptions] = useState({
+  const [options] = useState({
     colors: [primary, warning, danger],
     fill: {
       type: 'gradient',
       gradient: {
-        // enabled: true,
         shade: 'dark',
         type: 'vertical',
         shadeIntensity: 0.5,
@@ -70,7 +69,7 @@ export default function ProductOrders() {
     },
     labels: ['Finished', 'Pending', 'Rejected'],
   });
-  const [series, setSeries] = useState([70, 52, 26]);
+  const [series] = useState([70, 52, 26]);
 
   return (
     <Card>

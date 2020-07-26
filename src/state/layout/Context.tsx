@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useReducer } from 'react';
 import { LayoutReducer } from './Reducers';
 
-const initialLayoutState: any = [];
+const initialLayoutState: any = { theme: 'light', sidebarCollapsed: true };
 
 export const LayoutContext = createContext<{
   layout: any;
