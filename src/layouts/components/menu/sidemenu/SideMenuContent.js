@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import navigationConfig from '../../../../configs/navigationConfig';
+import navigationConfig from './navigationConfig';
 import SideMenuGroup from './SideMenuGroup';
 import { Badge } from 'reactstrap';
 import { ChevronRight } from 'react-feather';

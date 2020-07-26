@@ -8,7 +8,6 @@ import {
   Badge,
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import axios from 'axios';
 import * as Icon from 'react-feather';
 import { history } from '../../../history';
 
@@ -53,12 +52,6 @@ class NavbarUser extends React.PureComponent {
     navbarSearch: false,
     suggestions: [],
   };
-
-  componentDidMount() {
-    axios.get('/api/main-search/data').then(({ data }) => {
-      this.setState({ suggestions: data.searchResult });
-    });
-  }
 
   handleNavbarSearch = () => {
     this.setState({

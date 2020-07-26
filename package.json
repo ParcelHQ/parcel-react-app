@@ -99,6 +99,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-table": "^7.0.19",
     "@types/reactstrap": "^8.5.0",
+    "@types/redux-debounced": "^0.2.19",
     "node-sass": "^4.14.1",
     "typescript": "^3.9.7"
   },

@@ -6,8 +6,6 @@ import { connect } from 'react-redux';
 import {
   changeMode,
   collapseSidebar,
-  changeNavbarColor,
-  changeNavbarType,
   changeMenuColor,
 } from '../redux/actions/customizer/index';
 
@@ -187,14 +185,7 @@ class VerticalLayout extends PureComponent {
 
   render() {
     let appProps = this.props.app.customizer;
-    let menuThemeArr = [
-      'primary',
-      'success',
-      'danger',
-      'info',
-      'warning',
-      'dark',
-    ];
+
     let sidebarProps = {
       toggleSidebarMenu: this.props.collapseSidebar,
       toggle: this.toggleSidebarMenu,
@@ -205,7 +196,6 @@ class VerticalLayout extends PureComponent {
       activePath: this.props.match.path,
       collapsedMenuPaths: this.handleCollapsedMenuPaths,
       currentLang: this.state.currentLang,
-      activeTheme: appProps.menuTheme,
       collapsed: this.state.collapsedContent,
       permission: this.props.permission,
       deviceWidth: this.state.width,
@@ -218,24 +208,15 @@ class VerticalLayout extends PureComponent {
       changeCurrentLang: this.handleCurrentLanguage,
       handleAppOverlay: this.handleAppOverlay,
       appOverlayState: this.state.appOverlay,
-      navbarColor: appProps.navbarColor,
-      navbarType: appProps.navbarType,
     };
 
     return (
       <div
-        className={classnames(
-          `wrapper vertical-layout theme-${appProps.menuTheme}`,
-          {
-            'menu-collapsed':
-              this.state.collapsedContent === true && this.state.width >= 1200,
-            'navbar-static': appProps.navbarType === 'static',
-            'navbar-sticky': appProps.navbarType === 'sticky',
-            'navbar-floating': appProps.navbarType === 'floating',
-            'navbar-hidden': appProps.navbarType === 'hidden',
-            'theme-primary': !menuThemeArr.includes(appProps.menuTheme),
-          }
-        )}
+        className={classnames('wrapper vertical-layout theme-primary', {
+          'menu-collapsed':
+            this.state.collapsedContent === true && this.state.width >= 1200,
+          'navbar-floating': appProps.navbarType === 'floating',
+        })}
       >
         <Sidebar {...sidebarProps} />
         <div
@@ -264,7 +245,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   changeMode,
   collapseSidebar,
-  changeNavbarColor,
-  changeNavbarType,
   changeMenuColor,
 })(VerticalLayout);
