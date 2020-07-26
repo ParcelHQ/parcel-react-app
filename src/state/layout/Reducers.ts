@@ -1,18 +1,18 @@
-const initState = {
+import { CHANGE_MODE, COLLAPSE_SIDEBAR } from './Constants';
+
+const INIT_STATE = {
   theme: 'light',
   sidebarCollapsed: true,
 };
 
-const customizerReducer = (state = initState, action: any) => {
+export const LayoutReducer = (state = INIT_STATE, action: any) => {
   switch (action.type) {
-    case 'CHANGE_MODE':
+    case CHANGE_MODE:
       return { ...state, theme: action.mode };
-    case 'COLLAPSE_SIDEBAR':
+    case COLLAPSE_SIDEBAR:
       return { ...state, sidebarCollapsed: action.value };
 
     default:
       return state;
   }
 };
-
-export default customizerReducer;

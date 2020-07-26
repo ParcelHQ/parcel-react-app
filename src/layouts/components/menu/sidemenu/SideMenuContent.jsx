@@ -7,7 +7,7 @@ import { Badge } from 'reactstrap';
 import { ChevronRight } from 'react-feather';
 import { history } from '../../../../history';
 
-class SideMenuContent extends React.Component {
+export default class SideMenuContent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -262,7 +262,6 @@ class SideMenuContent extends React.Component {
         return this.redirectUnauthorized();
       }
     });
-    return <React.Fragment>{menuItems}</React.Fragment>;
+    return <>{menuItems}</>;
   }
 }
-export default SideMenuContent;

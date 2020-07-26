@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import LoggedInLayout from '../../layouts/LoggedInLayout';
 import LoggedOutLayout from '../../layouts/LoggedOutLayout';
-import themeConfig from '../../configs/themeConfig';
 const layouts = {
   vertical: LoggedInLayout,
   full: LoggedOutLayout,
@@ -11,7 +10,7 @@ const layouts = {
 export const ContextLayout = createContext();
 
 export function Layout({ children }: any) {
-  const [activeLayout, setActiveLayout] = useState(themeConfig.layout);
+  const [activeLayout, setActiveLayout] = useState('vertical');
   const [width, setWidth] = useState(window.innerWidth);
   const [lastLayout, setLastLayout] = useState<null | string>(null);
 
@@ -36,8 +35,6 @@ export function Layout({ children }: any) {
     document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
     if (activeLayout === 'horizontal' && width <= 1199)
       setActiveLayout('vertical');
-    else if (themeConfig.layout === 'horizontal' && width >= 1200)
-      setActiveLayout('horizontal');
     else setActiveLayout('vertical');
   }, [width, activeLayout, lastLayout]);
 

@@ -5,6 +5,8 @@ import rootReducer from '../reducers/rootReducer';
 
 const middlewares = [thunk, createDebounce()];
 
-const store = createStore(rootReducer, {}, applyMiddleware(...middlewares));
-
-export { store };
+export const store = createStore(
+  rootReducer,
+  {},
+  applyMiddleware(...middlewares)
+);

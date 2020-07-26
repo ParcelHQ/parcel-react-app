@@ -3,11 +3,7 @@ import classnames from 'classnames';
 import Sidebar from './components/menu/Sidebar';
 import Navbar from './components/navbar/Navbar';
 import { connect } from 'react-redux';
-import {
-  changeMode,
-  collapseSidebar,
-  changeMenuColor,
-} from '../redux/actions/customizer/index';
+import { changeMode, collapseSidebar } from '../redux/actions/customizer/index';
 
 class LoggedInLayout extends PureComponent {
   state = {
@@ -239,5 +235,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   changeMode,
   collapseSidebar,
-  changeMenuColor,
 })(LoggedInLayout);
