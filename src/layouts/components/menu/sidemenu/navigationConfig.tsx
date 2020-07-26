@@ -9,7 +9,14 @@ const navigationConfig = [
     permissions: ['admin', 'editor'],
     navLink: '/',
   },
-
+  {
+    id: 'payroll',
+    title: 'Payroll',
+    type: 'item',
+    icon: <Icon.DollarSign size={20} />,
+    permissions: ['admin', 'editor'],
+    navLink: '/payroll',
+  },
   {
     id: 'accounting',
     title: 'Accounting',

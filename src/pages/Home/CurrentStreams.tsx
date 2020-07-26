@@ -8,10 +8,10 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
+  Progress,
 } from 'reactstrap';
 import Chart from 'react-apexcharts';
-import { Circle, ChevronDown } from 'react-feather';
-import BrowserStats from './BrowserStats';
+import { Circle, ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 
 let primary = '#7367F0';
 let warning = '#FF9F43';
@@ -74,15 +74,17 @@ export default function ProductOrders() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Product Orders</CardTitle>
+        <CardTitle>Current Streams</CardTitle>
         <UncontrolledDropdown>
           <DropdownToggle tag="small" className="text-bold-500 cursor-pointer">
-            Last 7 days <ChevronDown size={10} />
+            All <ChevronDown size={10} />
           </DropdownToggle>
           <DropdownMenu right>
-            <DropdownItem>Last 28 days</DropdownItem>
-            <DropdownItem>Last Month</DropdownItem>
-            <DropdownItem>Last Year</DropdownItem>
+            <DropdownItem>All</DropdownItem>
+            <DropdownItem>Finance</DropdownItem>
+            <DropdownItem>Engineering</DropdownItem>
+            <DropdownItem>Marketing</DropdownItem>
+            <DropdownItem>Sales</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
       </CardHeader>
@@ -121,7 +123,67 @@ export default function ProductOrders() {
           </div>
         </div>
       </CardBody>
-      <BrowserStats />
+      <Card>
+        <CardHeader>
+          <CardTitle>Individual Breakdown</CardTitle>
+        </CardHeader>
+        <CardBody>
+          <div className="d-flex justify-content-between mb-25">
+            <div className="browser-info">
+              <p className="mb-25">Google Chrome</p>
+              <h4>73%</h4>
+            </div>
+            <div className="stastics-info text-right">
+              <span>
+                800 <ArrowUp size={15} className="text-success" />
+              </span>
+              <span className="text-muted d-block">13:16</span>
+            </div>
+          </div>
+          <Progress className="mb-2" value="73" />
+          <div className="d-flex justify-content-between mb-25">
+            <div className="browser-info">
+              <p className="mb-25">Opera</p>
+              <h4>8%</h4>
+            </div>
+            <div className="stastics-info text-right">
+              <span>
+                -200 <ArrowDown size={15} className="text-danger" />
+              </span>
+              <span className="text-muted d-block">13:16</span>
+            </div>
+          </div>
+          <Progress className="mb-2" value="8" />
+
+          <div className="d-flex justify-content-between mb-25">
+            <div className="browser-info">
+              <p className="mb-25">Firefox</p>
+              <h4>19%</h4>
+            </div>
+            <div className="stastics-info text-right">
+              <span>
+                100 <ArrowUp size={15} className="text-success" />
+              </span>
+              <span className="text-muted d-block">13:16</span>
+            </div>
+          </div>
+          <Progress className="mb-2" value="19" />
+
+          <div className="d-flex justify-content-between mb-25">
+            <div className="browser-info">
+              <p className="mb-25">Internet Explorer</p>
+              <h4>27%</h4>
+            </div>
+            <div className="stastics-info text-right">
+              <span>
+                -450 <ArrowDown size={15} className="text-danger" />
+              </span>
+              <span className="text-muted d-block">13:16</span>
+            </div>
+          </div>
+          <Progress className="mb-2" value="27" />
+        </CardBody>
+      </Card>
     </Card>
   );
 }

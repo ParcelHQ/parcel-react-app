@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 export default function BreadCrumb({
   breadCrumbTitle,
-  breadCrumbParent,
+  // breadCrumbParent,
   breadCrumbParent2,
   breadCrumbParent3,
   breadCrumbActive,
@@ -29,9 +29,9 @@ export default function BreadCrumb({
                     <Home className="align-top" size={15} />
                   </NavLink>
                 </BreadcrumbItem>
-                <BreadcrumbItem tag="li" className="text-primary">
+                {/* <BreadcrumbItem tag="li" className="text-primary">
                   {breadCrumbParent}
-                </BreadcrumbItem>
+                </BreadcrumbItem> */}
                 {breadCrumbParent2 ? (
                   <BreadcrumbItem tag="li" className="text-primary">
                     {breadCrumbParent2}

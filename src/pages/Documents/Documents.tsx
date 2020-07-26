@@ -1,20 +1,17 @@
 import React from 'react';
-import { Row, Col } from 'reactstrap';
+import Breadcrumbs from '../../components/BreadCrumbs';
+import Table from '../../components/Tables/ReactTables';
+
+import { makeData } from './TableData';
 
 import Import from '../../components/Import';
-import SimpleTable from '../../components/Tables/SimpleTable';
-import 'react-table/react-table.css';
-import '../../assets/scss/plugins/extensions/react-tables.scss';
 
 const Documents = () => {
   return (
     <>
+      <Breadcrumbs breadCrumbTitle="Documents" breadCrumbActive="Documents" />
       <Import />
-      <Row>
-        <Col sm="12">
-          <SimpleTable />
-        </Col>
-      </Row>
+      <Table data={makeData()} title={'Transaction History'} />
     </>
   );
 };

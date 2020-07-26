@@ -28,9 +28,7 @@ export function Layout({ children }: any) {
       }
     };
 
-    //@ts-ignore
-    if (window !== 'undefined')
-      window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('resize', handleWindowResize);
 
     document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
     if (activeLayout === 'horizontal' && width <= 1199)

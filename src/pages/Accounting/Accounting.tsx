@@ -1,8 +1,14 @@
 import React from 'react';
-import ReactTables from '../../components/Tables/ReactTables';
+import Breadcrumbs from '../../components/BreadCrumbs';
+import Table from '../../components/Tables/ReactTables';
 
-const Accounting = () => {
-  return <ReactTables />;
-};
+import { makeData } from './TableData';
 
-export default Accounting;
+export default function Accounting() {
+  return (
+    <>
+      <Breadcrumbs breadCrumbTitle="Accounting" breadCrumbActive="Accounting" />
+      <Table data={makeData()} title={'Transaction History'} />
+    </>
+  );
+}

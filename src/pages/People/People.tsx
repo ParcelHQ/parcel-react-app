@@ -1,8 +1,16 @@
 import React from 'react';
-import ReactTables from '../../components/Tables/ReactTables';
+import Breadcrumbs from '../../components/BreadCrumbs';
+import Table from '../../components/Tables/ReactTables';
+
+import { makeData } from './TableData';
 
 const People = () => {
-  return <ReactTables />;
+  return (
+    <>
+      <Breadcrumbs breadCrumbTitle="People" breadCrumbActive="People" />
+      <Table data={makeData()} title={'People'} />
+    </>
+  );
 };
 
 export default People;

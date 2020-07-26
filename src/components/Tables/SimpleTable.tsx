@@ -1,18 +1,17 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
 import ReactTable from 'react-table';
-import { makeData } from './TableData';
 
-export default function SimpleTable() {
+export default function SimpleTable({ data, title }: any) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Simple</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardBody>
         {/* @ts-ignore */}
         <ReactTable
-          data={makeData()}
+          data={data}
           columns={[
             {
               Header: 'Name',

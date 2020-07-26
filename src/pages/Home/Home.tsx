@@ -1,21 +1,18 @@
 import React from 'react';
-import ReactTables from '../../components/Tables/ReactTables';
 import StatisticsCard from './StatisticsCard';
-import ProductOrders from './ProductOrders';
-import Breadcrumbs from '../../components/BreadCrumbs';
+import CurrentStreams from './CurrentStreams';
+import Table from '../../components/Tables/ReactTables';
+
+import { makeData } from './TableData';
 
 export default function Home() {
   return (
     <>
-      <Breadcrumbs
-        breadCrumbTitle="Statistics Cards"
-        breadCrumbParent="Card"
-        breadCrumbActive="Statistics Cards"
-      />
       <StatisticsCard />
 
-      <ProductOrders />
-      <ReactTables />
+      <CurrentStreams />
+
+      <Table data={makeData()} title={'Recent Activity'} />
     </>
   );
 }
