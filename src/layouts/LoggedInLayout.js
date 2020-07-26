@@ -9,7 +9,7 @@ import {
   changeMenuColor,
 } from '../redux/actions/customizer/index';
 
-class VerticalLayout extends PureComponent {
+class LoggedInLayout extends PureComponent {
   state = {
     width: window.innerWidth,
     sidebarState: this.props.app.customizer.sidebarCollapsed,
@@ -29,12 +29,6 @@ class VerticalLayout extends PureComponent {
         width: window.innerWidth,
       }));
     }
-  };
-
-  handleCustomizer = (bool) => {
-    this.setState({
-      customizer: bool,
-    });
   };
 
   componentDidMount() {
@@ -246,4 +240,4 @@ export default connect(mapStateToProps, {
   changeMode,
   collapseSidebar,
   changeMenuColor,
-})(VerticalLayout);
+})(LoggedInLayout);

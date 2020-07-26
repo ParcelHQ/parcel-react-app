@@ -1,10 +1,10 @@
 import React, { createContext, useState, useEffect } from 'react';
-import VerticalLayout from '../../layouts/VerticalLayout';
-import FullLayout from '../../layouts/FullpageLayout';
+import LoggedInLayout from '../../layouts/LoggedInLayout';
+import LoggedOutLayout from '../../layouts/LoggedOutLayout';
 import themeConfig from '../../configs/themeConfig';
 const layouts = {
-  vertical: VerticalLayout,
-  full: FullLayout,
+  vertical: LoggedInLayout,
+  full: LoggedOutLayout,
 };
 
 //@ts-ignore
@@ -46,7 +46,7 @@ export function Layout({ children }: any) {
       value={{
         state: { activeLayout, width, lastLayout },
         fullLayout: layouts['full'],
-        VerticalLayout: layouts['vertical'],
+        LoggedInLayout: layouts['vertical'],
       }}
     >
       {children}

@@ -23,7 +23,7 @@ const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
         <ContextLayout.Consumer>
           {(context: any) => {
             let LayoutTag =
-              fullLayout === true ? context.fullLayout : context.VerticalLayout;
+              fullLayout === true ? context.fullLayout : context.LoggedInLayout;
             return (
               <LayoutTag {...props}>
                 <Suspense fallback={<Spinner />}>

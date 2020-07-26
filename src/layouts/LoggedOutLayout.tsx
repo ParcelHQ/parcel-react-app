@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-export default function FullPageLayout({ children }: any) {
+export default function LoggedOutLayout({ children }: any) {
   return (
     <div
       className={classnames(
