@@ -20,7 +20,7 @@ import '../../assets/scss/plugins/extensions/dropzone.scss';
 
 function Uploader(props: any) {
   const { getRootProps, getInputProps } = useDropzone({
-    accept: '.xlsx, .xls, .csv, .jpeg, .json, .jpg, .png, .svg',
+    accept: '.xlsx, .xls, .csv',
     onDrop: (acceptedFiles) => {
       var reader = new FileReader();
       reader.onload = function () {
