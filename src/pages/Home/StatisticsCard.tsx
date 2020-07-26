@@ -11,7 +11,7 @@ import { ReactComponent as USDTLogo } from '../../assets/currency/usdt.svg';
 export default function StatisticsCards() {
   return (
     <Row>
-      <Col lg="3" sm="6">
+      <Col lg="3" xs="6">
         <StatisticsCard
           hideChart
           iconRight
@@ -22,7 +22,7 @@ export default function StatisticsCards() {
           statTitle="ETH"
         />
       </Col>
-      <Col lg="3" sm="6">
+      <Col lg="3" xs="6">
         <StatisticsCard
           hideChart
           iconRight
@@ -33,7 +33,7 @@ export default function StatisticsCards() {
           statTitle="DAI"
         />
       </Col>
-      <Col lg="3" sm="6">
+      <Col lg="3" xs="6">
         <StatisticsCard
           hideChart
           iconRight
@@ -44,7 +44,7 @@ export default function StatisticsCards() {
           statTitle="USDC"
         />
       </Col>
-      <Col lg="3" sm="6">
+      <Col lg="3" xs="6">
         <StatisticsCard
           hideChart
           iconRight

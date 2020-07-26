@@ -10,14 +10,6 @@ const navigationConfig = [
     navLink: '/',
   },
   {
-    id: 'payroll',
-    title: 'Payroll',
-    type: 'item',
-    icon: <Icon.DollarSign size={20} />,
-    permissions: ['admin', 'editor'],
-    navLink: '/payroll',
-  },
-  {
     id: 'accounting',
     title: 'Accounting',
     type: 'item',
@@ -40,6 +32,14 @@ const navigationConfig = [
     icon: <Icon.Users size={20} />,
     permissions: ['admin', 'editor'],
     navLink: '/people',
+  },
+  {
+    id: 'payroll',
+    title: 'Payroll',
+    type: 'item',
+    icon: <Icon.DollarSign size={20} />,
+    permissions: ['admin', 'editor'],
+    navLink: '/payroll',
   },
   // {
   //   id: 'companyDetails',

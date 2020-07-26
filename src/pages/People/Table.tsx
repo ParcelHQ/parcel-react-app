@@ -2,12 +2,11 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
 import ReactTable from 'react-table';
 
-export default function SimpleTable({ headers, data, title }: any) {
-  console.log('headers:', headers);
+export default function Table({ data }: any) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>Manage Employees</CardTitle>
       </CardHeader>
       <CardBody>
         {/* @ts-ignore */}
@@ -15,16 +14,24 @@ export default function SimpleTable({ headers, data, title }: any) {
           data={data}
           columns={[
             {
-              Header: 'First Name',
-              accessor: 'firstName',
+              Header: 'Name',
+              accessor: 'name',
             },
             {
-              Header: 'Last Name',
-              accessor: 'lastName',
+              Header: 'Address/ENS',
+              accessor: 'addressOrEns',
             },
             {
-              Header: 'Full Name',
-              id: 'full',
+              Header: 'Currency',
+              id: 'currency',
+            },
+            {
+              Header: 'Salary',
+              id: 'salary',
+            },
+            {
+              Header: 'Actions',
+              id: 'actions',
             },
           ]}
           defaultPageSize={10}

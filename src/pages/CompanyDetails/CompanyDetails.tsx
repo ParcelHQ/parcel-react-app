@@ -1,7 +1,5 @@
-import React from "react";
+import React from 'react';
 
-const CompanyDetails = () => {
+export default function CompanyDetails() {
   return <div>CompanyDetails</div>;
-};
-
-export default CompanyDetails;
+}
