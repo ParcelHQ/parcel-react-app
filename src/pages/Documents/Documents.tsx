@@ -1,12 +1,11 @@
 import React from 'react';
-import Breadcrumbs from '../../components/BreadCrumbs';
 import Table from './Table';
+import Breadcrumbs from '../../components/BreadCrumbs';
+import Import from '../../components/Import';
 import 'react-table/react-table.css';
 import '../../assets/scss/plugins/extensions/react-tables.scss';
 
 import { makeData } from './TableData';
-
-import Import from '../../components/Import';
 
 export default function Documents() {
   return (
