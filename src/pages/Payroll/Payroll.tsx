@@ -1,6 +1,6 @@
 import React from 'react';
 import Breadcrumbs from '../../components/BreadCrumbs';
-// import ListViewConfig from './DataListConfig';
+import ListViewConfig from './DataListConfig';
 import { Row, Col, Button } from 'reactstrap';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
@@ -46,6 +46,7 @@ export default function Payroll() {
           <Button onClick={() => massPayout()}>Mass Payout</Button>
         </Col>
       </Row>
+      <ListViewConfig />
     </>
   );
 }

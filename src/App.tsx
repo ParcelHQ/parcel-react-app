@@ -11,9 +11,6 @@ import Error from './components/Error';
 export default function App() {
   const { error } = useWeb3React();
   return (
-    <AuthWrapper>
-      {!!error && <Error error={error} />}
-      <Router />
-    </AuthWrapper>
+    <AuthWrapper>{!!error ? <Error error={error} /> : <Router />}</AuthWrapper>
   );
 }

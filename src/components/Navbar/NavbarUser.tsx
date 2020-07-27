@@ -10,6 +10,7 @@ import { history } from '../../history';
 import { LayoutContext } from '../../state/layout/Context';
 import { CHANGE_MODE } from '../../state/layout/Constants';
 import Notification from './Notification';
+import Avatar from '../Avatar';
 
 export default function NavbarUser({ userImg, userName }: any) {
   const { layout, dispatch } = useContext(LayoutContext);
@@ -35,13 +36,7 @@ export default function NavbarUser({ userImg, userName }: any) {
             <span className="user-status">Available</span>
           </div>
           <span data-tour="user">
-            <img
-              src={userImg}
-              className="round"
-              height="40"
-              width="40"
-              alt="avatar"
-            />
+            <Avatar color="primary" content="JD" status="online" />
           </span>
         </DropdownToggle>
         <DropdownMenu right>

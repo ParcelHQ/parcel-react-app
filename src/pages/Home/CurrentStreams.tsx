@@ -85,7 +85,7 @@ export default function ProductOrders() {
             <DropdownItem>Finance</DropdownItem>
             <DropdownItem>Engineering</DropdownItem>
             <DropdownItem>Marketing</DropdownItem>
-            <DropdownItem>Sales</DropdownItem>
+            <DropdownItem>HR</DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
       </CardHeader>

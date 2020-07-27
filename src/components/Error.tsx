@@ -21,7 +21,7 @@ function getErrorMessage(error: Error) {
 
 export default function AlertMessage({ error }: { error: Error }) {
   return (
-    <Alert color="warning">
+    <Alert color="danger">
       <div className="alert-heading">
         Please resolve the issue before continuing.
       </div>
