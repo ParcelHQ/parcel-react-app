@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   UncontrolledDropdown,
   DropdownMenu,
@@ -6,14 +6,30 @@ import {
   DropdownToggle,
   Media,
   Badge,
+  Button,
 } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import * as Icon from 'react-feather';
 import { history } from '../../../history';
+import { LayoutContext } from '../../../state/layout/Context';
+import { CHANGE_MODE } from '../../../state/layout/Constants';
 
 export default function NavbarUser({ userImg, userName }: any) {
+  const { layout, dispatch } = useContext(LayoutContext);
+
   return (
     <ul className="nav navbar-nav navbar-nav-user float-right">
+      {/* <Button
+        outline
+        color="flat-primary"
+        onClick={() => dispatch({ type: CHANGE_MODE, mode: 'light' })}
+      >
+        {layout.theme === 'dark' ? (
+          <Icon.Sun size={21} />
+        ) : (
+          <Icon.Moon size={21} />
+        )}
+      </Button> */}
       <UncontrolledDropdown tag="li" className="dropdown-notification nav-item">
         <DropdownToggle tag="a" className="nav-link nav-link-label">
           <Icon.Bell size={21} />

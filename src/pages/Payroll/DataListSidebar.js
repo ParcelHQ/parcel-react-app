@@ -4,7 +4,7 @@ import { X } from 'react-feather';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import classnames from 'classnames';
 
-class DataListSidebar extends Component {
+export default class DataListSidebar extends Component {
   state = {
     id: '',
     name: '',
@@ -101,7 +101,7 @@ class DataListSidebar extends Component {
         })}
       >
         <div className="data-list-sidebar-header mt-2 px-2 d-flex justify-content-between">
-          <h4>{data !== null ? 'UPDATE DATA' : 'ADD NEW DATA'}</h4>
+          <h4>{data !== null ? 'UPDATE EMPLOYEE' : 'ADD NEW EMPLOYEE'}</h4>
           <X size={20} onClick={() => handleSidebar(false, true)} />
         </div>
         <PerfectScrollbar
@@ -235,4 +235,3 @@ class DataListSidebar extends Component {
     );
   }
 }
-export default DataListSidebar;

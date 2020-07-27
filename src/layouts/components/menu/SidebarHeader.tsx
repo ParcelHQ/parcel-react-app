@@ -6,7 +6,6 @@ import ParcelLogo from '../../../assets/img/logo/logo.svg';
 
 export default function SidebarHeader({
   // toggleSidebarMenu,
-  activeTheme,
   collapsed,
   toggle,
   sidebarVisibility,
@@ -30,11 +29,7 @@ export default function SidebarHeader({
                   toggle();
                 }}
                 className={classnames(
-                  'toggle-icon icon-x d-none d-xl-block font-medium-4',
-                  {
-                    'text-primary': activeTheme === 'primary',
-                    'text-dark': activeTheme === 'dark',
-                  }
+                  'toggle-icon icon-x d-none d-xl-block font-medium-4 text-primary'
                 )}
                 size={20}
                 data-tour="toggle-icon"
@@ -46,11 +41,7 @@ export default function SidebarHeader({
                   toggle();
                 }}
                 className={classnames(
-                  'toggle-icon icon-x d-none d-xl-block font-medium-4',
-                  {
-                    'text-primary': activeTheme === 'primary',
-                    'text-dark': activeTheme === 'dark',
-                  }
+                  'toggle-icon icon-x d-none d-xl-block font-medium-4 text-primary'
                 )}
                 size={20}
               />
@@ -58,22 +49,13 @@ export default function SidebarHeader({
             <X
               onClick={sidebarVisibility}
               className={classnames(
-                'toggle-icon icon-x d-block d-xl-none font-medium-4',
-                {
-                  'text-primary': activeTheme === 'primary',
-                  'text-dark': activeTheme === 'dark',
-                }
+                'toggle-icon icon-x d-block d-xl-none font-medium-4 text-primary'
               )}
               size={20}
             />
           </div>
         </li>
       </ul>
-      <div
-        className={classnames('shadow-bottom', {
-          'd-none': menuShadow === false,
-        })}
-      />
     </div>
   );
 }

@@ -8,8 +8,8 @@ export default function LoggedInLayout({ children, match }: any) {
   const { layout } = useContext(LayoutContext);
 
   const [width, setWidth] = useState(window.innerWidth);
-  const [sidebarState, setSidebarState] = useState(true); //!CHANGE
-  const [collapsedContent, setCollapsedContent] = useState(true); //!CHANGE
+  const [sidebarState, setSidebarState] = useState(true);
+  const [collapsedContent, setCollapsedContent] = useState(true);
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [appOverlay, setAppOverlay] = useState(false);
 
@@ -61,20 +61,22 @@ export default function LoggedInLayout({ children, match }: any) {
 
   return (
     <div
-      className={classnames('wrapper vertical-layout theme-primary', {
-        'menu-collapsed': collapsedContent === true && width >= 1200,
-        'navbar-floating': true,
-      })}
+      className={classnames(
+        'wrapper vertical-layout theme-primary navbar-floating',
+        {
+          'menu-collapsed': collapsedContent === true && width >= 1200,
+        }
+      )}
     >
       <Sidebar
-        toggle={toggleSidebarMenu}
-        sidebarState={sidebarState}
-        sidebarHover={(val: any) => setSidebarState(val)}
-        sidebarVisibility={handleSidebarVisibility}
-        visibilityState={sidebarHidden}
         activePath={match.path}
         collapsed={collapsedContent}
         deviceWidth={width}
+        sidebarState={sidebarState}
+        sidebarHover={(val: any) => setSidebarState(val)}
+        sidebarVisibility={handleSidebarVisibility}
+        toggle={toggleSidebarMenu}
+        visibilityState={sidebarHidden}
       />
 
       <div

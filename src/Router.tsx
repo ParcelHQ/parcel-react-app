@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
 import { history } from './history';
 import Spinner from './components/Spinner/Loading-spinner';
-import { ContextLayout } from './utility/context/Layout';
+import { LayoutContext } from './state/layout/Context';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -20,8 +20,9 @@ const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
     {...rest}
     render={(props: any) => {
       return (
-        <ContextLayout.Consumer>
+        <LayoutContext.Consumer>
           {(context: any) => {
+            console.log('context:', context);
             let LayoutTag =
               fullLayout === true ? context.fullLayout : context.LoggedInLayout;
             return (
@@ -32,7 +33,7 @@ const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
               </LayoutTag>
             );
           }}
-        </ContextLayout.Consumer>
+        </LayoutContext.Consumer>
       );
     }}
   />
