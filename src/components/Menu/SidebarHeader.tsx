@@ -2,14 +2,12 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Disc, X, Circle } from 'react-feather';
 import classnames from 'classnames';
-import ParcelLogo from '../../../assets/img/logo/logo.svg';
+import ParcelLogo from '../../assets/img/logo/logo.svg';
 
 export default function SidebarHeader({
-  // toggleSidebarMenu,
   collapsed,
   toggle,
   sidebarVisibility,
-  menuShadow,
 }: any) {
   return (
     <div className="navbar-header">
@@ -24,10 +22,7 @@ export default function SidebarHeader({
           <div className="nav-link modern-nav-toggle">
             {collapsed === false ? (
               <Disc
-                onClick={() => {
-                  // toggleSidebarMenu(true);
-                  toggle();
-                }}
+                onClick={() => toggle()}
                 className={classnames(
                   'toggle-icon icon-x d-none d-xl-block font-medium-4 text-primary'
                 )}
@@ -36,10 +31,7 @@ export default function SidebarHeader({
               />
             ) : (
               <Circle
-                onClick={() => {
-                  // toggleSidebarMenu(false);
-                  toggle();
-                }}
+                onClick={() => toggle()}
                 className={classnames(
                   'toggle-icon icon-x d-none d-xl-block font-medium-4 text-primary'
                 )}

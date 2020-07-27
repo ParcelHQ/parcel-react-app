@@ -3,11 +3,7 @@ import classnames from 'classnames';
 
 export default function LoggedOutLayout({ children }: any) {
   return (
-    <div
-      className={classnames(
-        'full-layout wrapper bg-full-screen-image blank-page dark-layout'
-      )}
-    >
+    <div className={classnames('full-layout wrapper blank-page dark-layout')}>
       <div className="app-content">
         <div className="content-wrapper">
           <div className="content-body">

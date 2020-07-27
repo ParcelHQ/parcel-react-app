@@ -41,6 +41,12 @@ export default {
   [RINKEBY_ID]: {
     parcelFactory: '0x1C48cA86248C6B60545BCBb412341D638F62AdE0',
     parcelWallet: '0xB7ffEF4d23247B67d63da5Bd95b13a67FD938ef2',
-    tokens: {},
+    massPayouts: '0x9244fB7C104c09de4D5B7D41ce151ad29c837Ce4',
+    tokens: {
+      DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+      WETH: '0xc778417e063141139fce010982780140aa0cd5ab',
+      USDC: '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
+      ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    },
   },
 };

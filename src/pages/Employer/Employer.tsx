@@ -3,10 +3,11 @@ import { Card, CardBody, Row, Col, Button } from 'reactstrap';
 import Logo from '../../assets/img/logo/logoPng.png';
 import * as Icons from 'react-feather';
 import { Link } from 'react-router-dom';
+
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
-export default function Landing() {
+export default function Employer(): JSX.Element {
   const { active } = useWeb3React<Web3Provider>();
 
   return (
@@ -30,28 +31,34 @@ export default function Landing() {
 
             <Row>
               <Col lg={6} md={12}>
-                <Link to="/employer">
+                <Link to="/create">
                   <Button
+                    // style={{
+                    //   height: '96px',
+                    //   width: 'auto',
+                    // }}
+                    outline
                     className="mr-1 mb-1 btn-block"
                     color="primary"
                     size="lg"
                     disabled={!active}
                   >
-                    <Icons.UserPlus size={14} />
-                    Sign in as Employer
+                    <Icons.PlusCircle size={14} />
+                    Create an Organization
                   </Button>
                 </Link>
               </Col>
               <Col lg={6} md={12}>
                 <Link to="/organizations">
                   <Button
+                    outline
                     className="mr-1 mb-1 btn-block"
                     color="primary"
                     size="lg"
                     disabled={!active}
                   >
-                    <Icons.Users size={14} />
-                    Sign in as Employee
+                    <Icons.Search size={14} />
+                    Open an Organization
                   </Button>
                 </Link>
               </Col>

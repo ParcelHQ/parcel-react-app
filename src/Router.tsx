@@ -3,6 +3,7 @@ import { Router, Switch, Route } from 'react-router-dom';
 import { history } from './history';
 import Spinner from './components/Spinner/Loading-spinner';
 import { LayoutContext } from './state/layout/Context';
+import { useEagerConnect, useInactiveListener } from './hooks';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -13,8 +14,10 @@ const Documents = lazy(() => import('./pages/Documents'));
 const People = lazy(() => import('./pages/People'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Landing = lazy(() => import('./pages/Landing'));
+const Create = lazy(() => import('./pages/Create'));
+const Organizations = lazy(() => import('./pages/Organizations'));
+const Employer = lazy(() => import('./pages/Employer'));
 
-// Set Layout and Component Using App Route
 const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
   <Route
     {...rest}
@@ -22,7 +25,6 @@ const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
       return (
         <LayoutContext.Consumer>
           {(context: any) => {
-            console.log('context:', context);
             let LayoutTag =
               fullLayout === true ? context.fullLayout : context.LoggedInLayout;
             return (
@@ -40,6 +42,9 @@ const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
 );
 
 export default function AppRouter() {
+  const triedEager = useEagerConnect();
+
+  useInactiveListener(!triedEager);
   return (
     <Router history={history}>
       <Switch>
@@ -52,6 +57,9 @@ export default function AppRouter() {
         <AppRoute path="/payroll" component={Payroll} />
         <AppRoute path="/settings" component={Settings} />
         <AppRoute path="/landing" component={Landing} fullLayout />
+        <AppRoute path="/organizations" component={Organizations} fullLayout />
+        <AppRoute path="/create" component={Create} fullLayout />
+        <AppRoute path="/employer" component={Employer} fullLayout />
       </Switch>
     </Router>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import classnames from 'classnames';
-import Sidebar from './components/menu/Sidebar';
-import Navbar from './components/navbar/Navbar';
+import Sidebar from '../components/Menu/Sidebar';
+import Navbar from '../components/Navbar';
 import { LayoutContext } from '../state/layout/Context';
 
 export default function LoggedInLayout({ children, match }: any) {
