@@ -3,8 +3,10 @@ import { CardBody } from 'reactstrap';
 import Logo from '../../assets/img/logo/logoPng.png';
 import * as Icons from 'react-feather';
 import { Link } from 'react-router-dom';
+
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+
 import styled from '@emotion/styled';
 
 const Box = styled.div`
@@ -41,7 +43,7 @@ const StyledButton = styled.button`
   }
 `;
 
-export default function Landing() {
+export default function Employer(): JSX.Element {
   const { active } = useWeb3React<Web3Provider>();
 
   return (
@@ -59,17 +61,17 @@ export default function Landing() {
         </h1>
         <h1 className="font-large-1 my-1">Manage Crypto Payroll Seamlessly</h1>
         <ButtonWrapper>
-          <Link to="/employer">
+          <Link to="/create">
             <StyledButton disabled={!active} style={{ marginBottom: '1rem' }}>
-              <Icons.UserPlus size={15} style={{ marginRight: '0.5rem' }} />
-              Sign in as Employer
+              <Icons.PlusCircle size={15} style={{ marginRight: '0.5rem' }} />
+              Create an Organization
             </StyledButton>
           </Link>
 
           <Link to="/organizations">
             <StyledButton disabled={!active}>
-              <Icons.Users size={15} style={{ marginRight: '0.5rem' }} />
-              Sign in as Employee
+              <Icons.Search size={15} style={{ marginRight: '0.5rem' }} />
+              Open an Organization
             </StyledButton>
           </Link>
         </ButtonWrapper>

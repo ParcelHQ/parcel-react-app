@@ -13,7 +13,6 @@ export default function LoggedInLayout({ children, match }: any) {
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [appOverlay, setAppOverlay] = useState(false);
 
-  //@ts-ignore
   useEffect(() => {
     let mounted = true;
 
@@ -24,10 +23,7 @@ export default function LoggedInLayout({ children, match }: any) {
         false
       );
 
-      // document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
-      return layout.theme === 'dark'
-        ? document.body.classList.add('dark-layout')
-        : null;
+      if (layout.theme === 'dark') document.body.classList.add('dark-layout');
     }
 
     return () => {

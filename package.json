@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
     "@ethersproject/contracts": "^5.0.2",
     "@ethersproject/keccak256": "^5.0.2",
     "@ethersproject/providers": "^5.0.5",
