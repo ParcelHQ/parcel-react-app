@@ -5,6 +5,7 @@ import { Row, Col, Button } from 'reactstrap';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import MassPayout from '../../abis/MassPayouts.json';
+import Table from './Table';
 
 export default function Payroll() {
   const massPayoutsContract = useContract(
@@ -47,6 +48,7 @@ export default function Payroll() {
         </Col>
       </Row>
       <ListViewConfig />
+      <Table />
     </>
   );
 }
