@@ -3,6 +3,7 @@ import DataTable from 'react-data-table-component';
 import { Button, Modal, ModalHeader, ModalFooter, Input } from 'reactstrap';
 import classnames from 'classnames';
 import { Edit, Trash, Plus, ArrowDown } from 'react-feather';
+import styled from '@emotion/styled';
 
 import { EmployeeContext } from '../../state/employee/Context';
 import Sidebar from './Sidebar';
@@ -115,13 +116,87 @@ export default function PayrollList() {
     []
   );
 
+  const TextField = styled.input`
+    height: 32px;
+    width: 200px;
+    border-radius: 3px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid #e5e5e5;
+    padding: 0 32px 0 16px;
+    &:hover {
+      cursor: pointer;
+    }
+  `;
+
+  const ClearButton = styled(Button)`
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 34px;
+    width: 32px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+
+  const FilterComponent = ({ filterText, onFilter, onClear }: any) => (
+    <>
+      <TextField
+        id="search"
+        type="text"
+        placeholder="Filter By Name"
+        value={filterText}
+        onChange={onFilter}
+      />
+      <ClearButton type="button" onClick={onClear}>
+        X
+      </ClearButton>
+    </>
+  );
+
+  const [filterText, setFilterText] = useState<any>('');
+  const [resetPaginationToggle, setResetPaginationToggle] = useState<any>(
+    false
+  );
+
+  const filteredItems = data.filter(
+    (item: any) =>
+      item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  const subHeaderComponentMemo = useMemo(() => {
+    const handleClear = () => {
+      if (filterText) {
+        setFilterText('');
+      }
+    };
+    return (
+      <FilterComponent
+        onFilter={(e: any) => setFilterText(e.target.value)}
+        onClear={handleClear}
+        filterText={filterText}
+      />
+    );
+  }, [filterText]);
+
   return (
     <>
       <div className={'data-list list-view'}>
         <DataTable
           //@ts-ignore
           columns={columns}
-          data={data}
+          // data={data}
+          //!here
+          data={filteredItems}
+          // subHeaderComponent={subHeaderComponentMemo}
+          // selectableRows
+          // persistTableHead
+          //!here
           noHeader
           subHeader
           responsive
@@ -131,9 +206,9 @@ export default function PayrollList() {
           paginationServer
           fixedHeader
           sortIcon={<ArrowDown />}
-          subHeaderComponent={
-            <CustomHeader handleSidebar={handleSidebar} rowsPerPage={5} />
-          }
+          // subHeaderComponent={
+          //   <CustomHeader handleSidebar={handleSidebar} rowsPerPage={5} />
+          // }
           customStyles={{
             headRow: {
               style: {
