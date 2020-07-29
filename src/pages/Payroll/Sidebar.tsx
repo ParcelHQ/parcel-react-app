@@ -18,13 +18,21 @@ const ButtonWrapper = styled.div`
   margin: auto;
 `;
 
+interface ISelectedUser {
+  id: any;
+  name: string;
+  addressOrEns: string;
+  department: string;
+  salary: number;
+  currency: string;
+}
+
 export default function Sidebar({
   show,
   handleSidebar,
   addNew,
   selectedRow,
 }: any) {
-  console.log('selectedRow:', selectedRow);
   const { createEmployee, updateEmployee, employees } = useContext(
     EmployeeContext
   );
@@ -37,7 +45,7 @@ export default function Sidebar({
   const [startDate, setStartDate] = useState<any>(new Date());
   const [endDate, setEndDate] = useState<any>(new Date());
 
-  const [selectedUser, setSeletedUser] = useState<any>({
+  const [selectedUser, setSeletedUser] = useState<ISelectedUser>({
     id: null,
     name: '',
     addressOrEns: '',
@@ -70,11 +78,10 @@ export default function Sidebar({
         endDate,
       });
     else {
-      console.log('update');
-      // updateEmployee(selectedUser);
+      updateEmployee(selectedUser);
     }
 
-    handleSidebar(false, true);
+    // handleSidebar(false, true);
   };
 
   return (
@@ -232,7 +239,7 @@ export default function Sidebar({
                     onChange={(e: any) =>
                       setSeletedUser({
                         ...selectedUser,
-                        salary: e.target.value,
+                        salary: parseFloat(e.target.value),
                       })
                     }
                   />
