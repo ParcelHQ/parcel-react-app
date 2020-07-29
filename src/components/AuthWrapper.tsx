@@ -5,6 +5,13 @@ import { Button } from 'reactstrap';
 
 import { injected } from '../utility/connectors';
 import { useEagerConnect, useInactiveListener } from '../hooks';
+import styled from '@emotion/styled';
+
+const StyledButton = styled(Button)`
+  margin-top: 1rem;
+  position: fixed;
+  right: 20px;
+`;
 
 export default function AuthWrapper({
   children,
@@ -19,13 +26,14 @@ export default function AuthWrapper({
   return (
     <>
       {active && !error && !!account ? null : (
-        <Button
+        <StyledButton
           onClick={() => activate(injected)}
           disabled={!triedEager || !!error}
         >
           Connect
-        </Button>
+        </StyledButton>
       )}
+
       {children}
     </>
   );

@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'reactstrap';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { formatEther } from '@ethersproject/units';
+import { useTokens } from '../../utility/tokens';
+import IERC20 from '@uniswap/v2-core/build/IERC20.json';
+import useContract from '../../hooks/useContract';
 
 import StatisticsCard from '../../components/StatisticsCard';
-import { Cpu, Server, Activity, AlertOctagon } from 'react-feather';
 import { ReactComponent as ETHLogo } from '../../assets/currency/eth.svg';
 import { ReactComponent as DAILogo } from '../../assets/currency/dai.svg';
 import { ReactComponent as USDCLogo } from '../../assets/currency/usdc.svg';
 import { ReactComponent as USDTLogo } from '../../assets/currency/usdt.svg';
 
 export default function StatisticsCards() {
+  const tokens = useTokens();
+  const daiContract = useContract(tokens[0][5].address, IERC20.abi);
+  const usdcContract = useContract(tokens[0][6].address, IERC20.abi);
+  const { account, library, chainId } = useWeb3React<Web3Provider>();
+  const [ethBalance, setEthBalance] = useState<any>(0);
+  const [daiBalance, setDaiBalance] = useState<any>(0);
+  const [usdcBalance, setUsdcBalance] = useState<any>(0);
+  const [usdtBalance, setUsdtBalance] = useState<any>(0);
+
+  useEffect(() => {
+    let isStale = false;
+    (async () => {
+      if (account && !isStale) {
+        if (library) {
+          const balance = formatEther(await library.getBalance(account));
+          setEthBalance(parseFloat(balance).toFixed(2));
+        }
+
+        if (daiContract) {
+          const balance = formatEther(await daiContract.balanceOf(account));
+          setDaiBalance(parseFloat(balance).toFixed(2));
+        }
+
+        if (usdcContract) {
+          const balance = formatEther(await usdcContract.balanceOf(account));
+          setUsdcBalance(parseFloat(balance).toFixed(2));
+        }
+      }
+    })();
+
+    return () => {
+      isStale = true;
+    };
+  }, [account, library, chainId, daiContract, usdcContract]);
+
   return (
     <Row>
       <Col lg="3" xs="6">
@@ -16,9 +56,8 @@ export default function StatisticsCards() {
           hideChart
           iconRight
           iconBg="primary"
-          // icon={<Cpu className="primary" size={22} />}
           icon={<ETHLogo />}
-          stat="52.3"
+          stat={ethBalance}
           statTitle="ETH"
         />
       </Col>
@@ -27,9 +66,8 @@ export default function StatisticsCards() {
           hideChart
           iconRight
           iconBg="primary"
-          // icon={<Server className="primary" size={22} />}
           icon={<DAILogo />}
-          stat="5000"
+          stat={daiBalance}
           statTitle="DAI"
         />
       </Col>
@@ -38,9 +76,8 @@ export default function StatisticsCards() {
           hideChart
           iconRight
           iconBg="primary"
-          // icon={<Activity className="primary" size={22} />}
           icon={<USDCLogo />}
-          stat="4000"
+          stat={usdcBalance}
           statTitle="USDC"
         />
       </Col>
@@ -49,9 +86,8 @@ export default function StatisticsCards() {
           hideChart
           iconRight
           iconBg="primary"
-          // icon={<AlertOctagon className="primary" size={22} />}
           icon={<USDTLogo />}
-          stat="3000"
+          stat={usdtBalance}
           statTitle="USDT"
         />
       </Col>

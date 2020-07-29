@@ -5,6 +5,8 @@ import {
   DropdownItem,
   DropdownToggle,
 } from 'reactstrap';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 import * as Icon from 'react-feather';
 import { history } from '../../history';
 import { LayoutContext } from '../../state/layout/Context';
@@ -14,6 +16,12 @@ import Avatar from '../Avatar';
 
 export default function NavbarUser({ userImg, userName }: any) {
   const { layout, dispatch } = useContext(LayoutContext);
+  const { deactivate } = useWeb3React<Web3Provider>();
+
+  function signOut() {
+    deactivate();
+    history.push('/landing');
+  }
 
   return (
     <ul className="nav navbar-nav navbar-nav-user float-right">
@@ -44,28 +52,9 @@ export default function NavbarUser({ userImg, userName }: any) {
             <Icon.User size={14} className="mr-50" />
             <span className="align-middle">Edit Profile</span>
           </DropdownItem>
-          <DropdownItem tag="a" href="#">
-            <Icon.Mail size={14} className="mr-50" />
-            <span className="align-middle">My Inbox</span>
-          </DropdownItem>
-          <DropdownItem tag="a" href="#">
-            <Icon.CheckSquare size={14} className="mr-50" />
-            <span className="align-middle">Tasks</span>
-          </DropdownItem>
-          <DropdownItem tag="a" href="#">
-            <Icon.MessageSquare size={14} className="mr-50" />
-            <span className="align-middle">Chats</span>
-          </DropdownItem>
-          <DropdownItem tag="a" href="#">
-            <Icon.Heart size={14} className="mr-50" />
-            <span className="align-middle">WishList</span>
-          </DropdownItem>
+
           <DropdownItem divider />
-          <DropdownItem
-            tag="a"
-            href="#"
-            onClick={(e) => history.push('/pages/login')}
-          >
+          <DropdownItem tag="a" href="#" onClick={() => signOut()}>
             <Icon.Power size={14} className="mr-50" />
             <span className="align-middle">Log Out</span>
           </DropdownItem>

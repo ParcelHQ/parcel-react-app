@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import styled from '@emotion/styled';
+import { useHistory } from 'react-router-dom';
 
 const Box = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ const StyledButton = styled.button`
 
 export default function Landing() {
   const { active } = useWeb3React<Web3Provider>();
+  let history = useHistory();
 
   return (
     <Box>
@@ -59,19 +61,22 @@ export default function Landing() {
         </h1>
         <h1 className="font-large-1 my-1">Manage Crypto Payroll Seamlessly</h1>
         <ButtonWrapper>
-          <Link to="/employer">
-            <StyledButton disabled={!active} style={{ marginBottom: '1rem' }}>
-              <Icons.UserPlus size={15} style={{ marginRight: '0.5rem' }} />
-              Sign in as Employer
-            </StyledButton>
-          </Link>
+          <StyledButton
+            disabled={!active}
+            style={{ marginBottom: '1rem' }}
+            onClick={() => history.push('/employer')}
+          >
+            <Icons.UserPlus size={15} style={{ marginRight: '0.5rem' }} />
+            Sign in as Employer
+          </StyledButton>
 
-          <Link to="/organizations">
-            <StyledButton disabled={!active}>
-              <Icons.Users size={15} style={{ marginRight: '0.5rem' }} />
-              Sign in as Employee
-            </StyledButton>
-          </Link>
+          <StyledButton
+            disabled={!active}
+            onClick={() => history.push('/organizations')}
+          >
+            <Icons.Users size={15} style={{ marginRight: '0.5rem' }} />
+            Sign in as Employee
+          </StyledButton>
         </ButtonWrapper>
       </CardBody>
     </Box>

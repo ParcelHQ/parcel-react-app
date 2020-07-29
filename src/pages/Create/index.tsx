@@ -89,9 +89,10 @@ export default function Create() {
           <Card className="auth-card bg-transparent shadow-none rounded-0 mb-0 w-100">
             <CardBody className="text-center">
               <h1 className="font-large-3 my-1">Register a Name</h1>
+              <h1 className="font-large-1 my-1">Create a Parcel ID</h1>
               <form onSubmit={handleSubmit}>
                 <FormGroup
-                  className="my-3"
+                  className="my-1"
                   style={{ width: '50%', margin: 'auto' }}
                 >
                   <Label aria-labelledby="ensName" />
@@ -112,7 +113,12 @@ export default function Create() {
                     <FormFeedback>{error}</FormFeedback>
                   </InputGroup>
                 </FormGroup>
-                <Button type="submit" color="primary" disabled={isSubmitting}>
+                <Button
+                  className="my-1"
+                  type="submit"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? <Spinner color="light" /> : 'Submit'}
                 </Button>
               </form>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
 import ReactTable from 'react-table';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Table({ data }: any) {
   return (
