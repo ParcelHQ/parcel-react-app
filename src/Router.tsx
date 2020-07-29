@@ -59,7 +59,7 @@ export default function AppRouter() {
             );
           }}
         /> */}
-        <AppRoute exact path="/home" component={Home} />
+        <AppRoute exact path="/" component={Home} />
         <AppRoute path="/about" component={About} />
         <AppRoute path="/accounting" component={Accounting} />
         <AppRoute path="/documents" component={Documents} />
