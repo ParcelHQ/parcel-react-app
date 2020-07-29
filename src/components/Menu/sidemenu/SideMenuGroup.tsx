@@ -44,6 +44,7 @@ export default function SideMenuGroup({
     }
 
     return () => {};
+    //eslint-disable-next-line
   }, []);
 
   function renderChild(

@@ -38,12 +38,13 @@ export default function Payroll() {
     <>
       <Breadcrumbs breadCrumbTitle="Payroll" breadCrumbActive="Payroll" />
       <Row>
-        <Col sm="12">{/* <ListViewConfig /> */}</Col>
+        <Col sm="12">
+          <ListViewConfig />
+        </Col>
         <Col sm="12">
           <Button onClick={() => massPayout()}>Mass Payout</Button>
         </Col>
       </Row>
-      <ListViewConfig />
     </>
   );
 }

@@ -5,17 +5,17 @@ import Spinner from './components/Spinner/Loading-spinner';
 import { LayoutContext } from './state/layout/Context';
 import { useEagerConnect, useInactiveListener } from './hooks';
 
-const Home = lazy(() => import('./pages/home'));
-const About = lazy(() => import('./pages/about'));
-const Accounting = lazy(() => import('./pages/accounting'));
-const Payroll = lazy(() => import('./pages/payroll'));
-const Documents = lazy(() => import('./pages/documents'));
-const People = lazy(() => import('./pages/people'));
-const Settings = lazy(() => import('./pages/settings'));
-const Landing = lazy(() => import('./pages/landing'));
-const Create = lazy(() => import('./pages/create'));
-const Organizations = lazy(() => import('./pages/organizations'));
-const Employer = lazy(() => import('./pages/employer'));
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Accounting = lazy(() => import('./pages/Accounting'));
+const Payroll = lazy(() => import('./pages/Payroll'));
+const Documents = lazy(() => import('./pages/Documents'));
+const People = lazy(() => import('./pages/People'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Landing = lazy(() => import('./pages/Landing'));
+const Create = lazy(() => import('./pages/Create'));
+const Organizations = lazy(() => import('./pages/Organizations'));
+const Employer = lazy(() => import('./pages/Employer'));
 
 const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
   <Route

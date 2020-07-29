@@ -136,7 +136,6 @@ export default function DataListSidebar({
             <Button
               className="ml-1"
               color="danger"
-              outline
               onClick={() => handleSidebar(false, true)}
             >
               Cancel
