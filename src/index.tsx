@@ -4,6 +4,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { ContractProvider } from './state/contracts/Context';
 import { LayoutProvider } from './state/layout/Context';
+import { EmployeeProvider } from './state/employee/Context';
 import Spinner from './components/Spinner/Fallback-spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
@@ -21,8 +22,10 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <ContractProvider>
         <LayoutProvider>
-          <Global styles={GlobalStyle} />
-          <LazyApp />
+          <EmployeeProvider>
+            <Global styles={GlobalStyle} />
+            <LazyApp />
+          </EmployeeProvider>
         </LayoutProvider>
       </ContractProvider>
     </Web3ReactProvider>

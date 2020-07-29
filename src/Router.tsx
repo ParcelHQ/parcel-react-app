@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import { history } from './history';
 import Spinner from './components/Spinner/Loading-spinner';
 import { LayoutContext } from './state/layout/Context';
@@ -12,7 +12,7 @@ const Payroll = lazy(() => import('./pages/Payroll'));
 const Documents = lazy(() => import('./pages/Documents'));
 const People = lazy(() => import('./pages/People'));
 const Settings = lazy(() => import('./pages/Settings'));
-const Landing = lazy(() => import('./pages/Landing'));
+const Landing = lazy(() => import('./pages/SignIn'));
 const Create = lazy(() => import('./pages/Create'));
 const Organizations = lazy(() => import('./pages/Organizations'));
 const Employer = lazy(() => import('./pages/Employer'));
@@ -44,17 +44,29 @@ export default function AppRouter() {
   const triedEager = useEagerConnect();
 
   useInactiveListener(!triedEager);
+
   return (
     <Router history={history}>
       <Switch>
-        <AppRoute exact path="/" component={Home} />
+        {/* <AppRoute
+          exact
+          path="/"
+          render={() => {
+            return triedEager ? (
+              <Redirect to="/home" />
+            ) : (
+              <Redirect to="/signin" />
+            );
+          }}
+        /> */}
+        <AppRoute exact path="/home" component={Home} />
         <AppRoute path="/about" component={About} />
         <AppRoute path="/accounting" component={Accounting} />
         <AppRoute path="/documents" component={Documents} />
         <AppRoute path="/people" component={People} />
         <AppRoute path="/payroll" component={Payroll} />
         <AppRoute path="/settings" component={Settings} />
-        <AppRoute path="/landing" component={Landing} fullLayout />
+        <AppRoute path="/signin" component={Landing} fullLayout />
         <AppRoute path="/organizations" component={Organizations} fullLayout />
         <AppRoute path="/create" component={Create} fullLayout />
         <AppRoute path="/employer" component={Employer} fullLayout />

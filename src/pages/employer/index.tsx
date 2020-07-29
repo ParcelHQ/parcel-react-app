@@ -30,16 +30,19 @@ const StyledButton = styled.button`
   height: 96px;
   width: auto;
   background: white;
+  color: #484848;
   border: 2px solid #d3d3d3;
   border-radius: 6px;
   text-align: center;
   width: 16rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease 0s;
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   &:hover {
-    border: 2px solid #6f6be9;
-    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
-    transform: translateY(-5px);
+    border: ${({ disabled }) => !disabled && '1px solid #6f6be9'};
+    box-shadow: ${({ disabled }) =>
+      !disabled && '0px 15px 20px rgba(0, 0, 0, 0.3);'};
+    transform: ${({ disabled }) => !disabled && 'translateY(-5px)'};
   }
 `;
 

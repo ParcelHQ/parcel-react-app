@@ -83,7 +83,7 @@ export default function Create() {
 
   return (
     <>
-      {submitted && <Redirect to="/" />}
+      {submitted && <Redirect to="/home" />}
       <Row className="m-0">
         <Col sm="12">
           <Card className="auth-card bg-transparent shadow-none rounded-0 mb-0 w-100">

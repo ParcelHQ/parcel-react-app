@@ -1,37 +1,18 @@
 import React from 'react';
 
-export default function CheckBoxes({
-  className,
-  color,
-  defaultChecked,
-  checked,
-  value,
-  disabled,
-  onClick,
-  size,
-  onChange,
-  icon,
-  label,
-}: any) {
+export default function CheckBoxes({ checked, value, onClick, onChange }: any) {
   return (
-    <div
-      className={`vx-checkbox-con ${
-        className ? className : ''
-      } vx-checkbox-${color}`}
-    >
+    <div className={'vx-checkbox-con vx-checkbox-primary'}>
       <input
         type="checkbox"
-        defaultChecked={defaultChecked}
         checked={checked}
         value={value}
-        disabled={disabled}
         onClick={onClick ? onClick : null}
         onChange={onChange ? onChange : null}
       />
-      <span className={`vx-checkbox vx-checkbox-${size ? size : 'md'}`}>
-        <span className="vx-checkbox--check">{icon}</span>
+      <span className={'vx-checkbox vx-checkbox-sm'}>
+        <span className="vx-checkbox--check" />
       </span>
-      <span>{label}</span>
     </div>
   );
 }
