@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
+import parcel from 'parcel-sdk';
 import ReactPaginate from 'react-paginate';
 import DataTable from 'react-data-table-component';
 import { Button, Modal, ModalHeader, ModalFooter, Input } from 'reactstrap';
@@ -19,6 +20,10 @@ import Checkbox from '../../components/CheckBoxes';
 import '../../assets/scss/plugins/extensions/react-paginate.scss';
 import '../../assets/scss/pages/data-list.scss';
 
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelWallet from '../../abis/ParcelWallet.json';
+
 export default function PayrollList() {
   const { employees, deleteEmployee } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
@@ -27,6 +32,14 @@ export default function PayrollList() {
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [addNew, setAddNew] = useState<any>(false);
   const [modal, setModal] = useState(false);
+
+  const parcelWalletContract = useContract(
+    addresses[RINKEBY_ID].parcelWallet,
+    ParcelWallet,
+    true
+  );
+
+  console.log('parcelWalletContract:', parcelWalletContract);
 
   useEffect(() => {
     setData(employees);
@@ -154,7 +167,7 @@ export default function PayrollList() {
   `;
 
   useEffect(() => {
-    console.log(selectedRows);
+    // console.log(selectedRows);
   }, [selectedRows]);
 
   const handleChange = useCallback((state: any) => {
@@ -169,10 +182,200 @@ export default function PayrollList() {
     setFilteredData(e.target.value);
   };
 
+  const [department, setDepartment] = useState('');
+
+  async function createDepartment() {
+    const DEPARTMENT = ['Engineering', 'Finance', 'Marketing', 'HR'];
+
+    const key = '12345';
+
+    const encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+      JSON.stringify(DEPARTMENT), //IF ARRAY/OBJECT, USE JSON.stringify(), ELSE USE STRING
+      key
+    );
+
+    console.log('encryptedDepartmentData:', encryptedDepartmentData);
+
+    let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
+
+    let result;
+
+    if (parcelWalletContract) {
+      result = await parcelWalletContract.addFile('1', departmentHash.string);
+    }
+    console.log('result:', result);
+  }
+
+  async function getFiles() {
+    if (parcelWalletContract) {
+      let files = await parcelWalletContract.files('1');
+      console.log('files:', files);
+
+      let filesFromIpfs = await parcel.ipfs.getData(files);
+
+      let filesDecrypted = parcel.cryptoUtils.decryptData(
+        filesFromIpfs,
+        '12345'
+      );
+
+      filesDecrypted = JSON.parse(filesDecrypted);
+      console.log('filesDecrypted:', filesDecrypted);
+      console.log(typeof filesDecrypted);
+    }
+  }
+
+  async function addPerson() {
+    const PERSON = [
+      {
+        address: '0x1d9999be880e7e516dEefdA00a3919BdDE9C1707',
+        name: 'Brennan Fife',
+        salary: '100000',
+        salaryCurrency: 'DAI',
+        department: 'Engineering',
+      },
+      {
+        address: '0x0',
+        name: 'Zucks',
+        salary: '1000000',
+        salaryCurrency: 'USDC',
+        department: 'Marketing',
+      },
+    ];
+
+    const key = '12345';
+
+    const encryptedPersonData = parcel.cryptoUtils.encryptData(
+      JSON.stringify(PERSON),
+      key
+    );
+
+    console.log('encryptedPersonData:', encryptedPersonData);
+
+    let personHash = await parcel.ipfs.addData(encryptedPersonData);
+
+    let result;
+
+    if (parcelWalletContract) {
+      result = await parcelWalletContract.addFile('2', personHash.string);
+    }
+    console.log('result:', result);
+  }
+
+  async function getPeople() {
+    if (parcelWalletContract) {
+      let people = await parcelWalletContract.files('2');
+      console.log('people:', people);
+
+      let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(
+        peopleFromIpfs,
+        '12345'
+      );
+
+      peopleDecrypted = JSON.parse(peopleDecrypted);
+      console.log('peopleDecrypted:', peopleDecrypted);
+      console.log(typeof peopleDecrypted);
+    }
+  }
+
+  async function addAnotherPerson() {
+    if (parcelWalletContract) {
+      let people = await parcelWalletContract.files('2');
+      console.log('people:', people);
+
+      let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(
+        peopleFromIpfs,
+        '12345'
+      );
+
+      peopleDecrypted = JSON.parse(peopleDecrypted);
+
+      const personObject = {
+        address: '0x0',
+        name: 'Bezos',
+        salary: '1000000',
+        salaryCurrency: 'USDC',
+        department: 'Marketing',
+      };
+
+      peopleDecrypted.push(personObject);
+
+      let key = '12345';
+
+      const encryptedPersonData = parcel.cryptoUtils.encryptData(
+        JSON.stringify(peopleDecrypted),
+        key
+      );
+
+      console.log('encryptedPersonData:', encryptedPersonData);
+
+      let personHash = await parcel.ipfs.addData(encryptedPersonData);
+      console.log('personHash:', personHash);
+
+      let newUpdatedEmployees = await parcelWalletContract.addFile(
+        '2',
+        personHash.string
+      );
+      console.log('newUpdatedEmployees:', newUpdatedEmployees);
+    }
+  }
+
+  async function updatePerson() {
+    if (parcelWalletContract) {
+      let people = await parcelWalletContract.files('2');
+      console.log('people:', people);
+
+      let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(
+        peopleFromIpfs,
+        '12345'
+      );
+
+      console.log('peopleDecrypted:', JSON.parse(peopleDecrypted));
+
+      let parsed = JSON.parse(peopleDecrypted);
+
+      parsed[1].salary = '2';
+
+      const encryptedUpdate = parcel.cryptoUtils.encryptData(
+        JSON.stringify(parsed),
+        '12345'
+      );
+
+      console.log('encryptedUpdate:', encryptedUpdate);
+
+      let personHash = await parcel.ipfs.addData(encryptedUpdate);
+      console.log('personHash:', personHash);
+
+      let result = await parcelWalletContract.addFile('2', personHash.string);
+      console.log('result:', result);
+    }
+  }
+
   return (
     <>
-      <div className={'data-list list-view'}>
-        <DataTable
+      {/* <form onSubmit={createDepartment}>
+        <input
+          type="text"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
+        />
+       
+      </form> */}
+      <button onClick={() => createDepartment()}>create</button>
+      <button onClick={() => getFiles()}>get files</button>
+      <button onClick={() => addPerson()}>add person</button>
+      <button onClick={() => getPeople()}>get people</button>
+      <button onClick={() => addAnotherPerson()}>add another person</button>
+      <button onClick={() => updatePerson()}>update person</button>
+      {/* <button onClick={() => deletePerson()}>delete person</button> */}
+      {/* <div className={'data-list list-view'}> */}
+
+      {/* <DataTable
           //@ts-ignore
           columns={columns}
           // data={data}
@@ -253,8 +456,8 @@ export default function PayrollList() {
         />
       </div>
 
-      <Modal isOpen={modal} toggle={() => setModal(!modal)} centered>
-        <ModalHeader toggle={() => setModal(!modal)}>
+      <Modal isOpen={modal} toggle={() => setModal(!modal)} centered> */}
+      {/* <ModalHeader toggle={() => setModal(!modal)}>
           Confirm Delete?
         </ModalHeader>
 
@@ -272,7 +475,7 @@ export default function PayrollList() {
             Cancel
           </Button>
         </ModalFooter>
-      </Modal>
+      </Modal> */}
     </>
   );
 }
