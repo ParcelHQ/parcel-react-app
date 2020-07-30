@@ -6,6 +6,10 @@ import { Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import Flatpickr from 'react-flatpickr';
 import styled from '@emotion/styled';
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelWallet from '../../abis/ParcelWallet.json';
+import parcel from 'parcel-sdk';
 
 import 'flatpickr/dist/themes/light.css';
 import '../../assets/scss/plugins/forms/flatpickr/flatpickr.scss';
@@ -23,7 +27,7 @@ interface ISelectedUser {
   name: string;
   addressOrEns: string;
   department: string;
-  salary: number;
+  salary: any;
   currency: string;
 }
 
@@ -36,21 +40,26 @@ export default function Sidebar({
   const { createEmployee, updateEmployee, employees } = useContext(
     EmployeeContext
   );
-
+  const KEY = '12345';
   const [name, setName] = useState<any>('');
   const [addressOrEns, setAddressOrEns] = useState<any>('');
   const [department, setDepartment] = useState<any>('Engineering');
   const [currency, setCurrency] = useState<any>('');
-  const [salary, setSalary] = useState<any>(0);
+  const [salary, setSalary] = useState<any>('');
   const [startDate, setStartDate] = useState<any>(new Date());
   const [endDate, setEndDate] = useState<any>(new Date());
+  const parcelWalletContract: any = useContract(
+    addresses[RINKEBY_ID].parcelWallet,
+    ParcelWallet,
+    true
+  );
 
   const [selectedUser, setSeletedUser] = useState<ISelectedUser>({
     id: null,
     name: '',
     addressOrEns: '',
     department: '',
-    salary: 0,
+    salary: '',
     currency: '',
   });
 
@@ -64,21 +73,99 @@ export default function Sidebar({
     }
   }, [selectedRow]);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (addNew)
-      createEmployee({
-        name,
-        addressOrEns,
-        department,
-        currency,
-        salary,
-        startDate,
-        endDate,
-      });
-    else {
-      updateEmployee(selectedUser);
+    if (addNew) {
+      // createEmployee({
+      //   name,
+      //   addressOrEns,
+      //   department,
+      //   currency,
+      //   salary,
+      //   startDate,
+      //   endDate,
+      // });
+
+      //!if no people
+      //   name,
+      //   addressOrEns,
+      //   department,
+      //   currency,
+      //   salary,
+      //   startDate,
+      //   endDate,
+      const PERSON = [
+        {
+          address: '0x1d9999be880e7e516dEefdA00a3919BdDE9C1707',
+          name: 'Brennan Fife',
+          salary: '100000',
+          salaryCurrency: 'DAI',
+          department: 'Engineering',
+        },
+      ];
+
+      const encryptedPersonData = parcel.cryptoUtils.encryptData(
+        JSON.stringify(PERSON),
+        KEY
+      );
+
+      let personHash = await parcel.ipfs.addData(encryptedPersonData);
+
+      let result = await parcelWalletContract.addFile('2', personHash.string);
+
+      //! if there are already people
+      // let people = await parcelWalletContract.files('2');
+      // let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+      // let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
+
+      // peopleDecrypted = JSON.parse(peopleDecrypted);
+
+      // const personObject = {
+      //   address: '0x0',
+      //   name: 'Bezos',
+      //   salary: '1000000',
+      //   salaryCurrency: 'USDC',
+      //   department: 'Marketing',
+      // };
+
+      // peopleDecrypted.push(personObject);
+
+      // const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
+      //   JSON.stringify(peopleDecrypted),
+      //   KEY
+      // );
+
+      // let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
+
+      // let newUpdatedEmployees = await parcelWalletContract.addFile(
+      //   '2',
+      //   newPersonHash.string
+      // );
+    } else {
+      // updateEmployee(selectedUser);
+
+      let people = await parcelWalletContract.files('2');
+
+      let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
+
+      console.log('peopleDecrypted:', JSON.parse(peopleDecrypted));
+
+      let parsed = JSON.parse(peopleDecrypted);
+
+      parsed[1].salary = '2';
+
+      const encryptedUpdate = parcel.cryptoUtils.encryptData(
+        JSON.stringify(parsed),
+        KEY
+      );
+
+      let personHash = await parcel.ipfs.addData(encryptedUpdate);
+
+      let result = await parcelWalletContract.addFile('2', personHash.string);
     }
 
     // handleSidebar(false, true);
@@ -226,7 +313,7 @@ export default function Sidebar({
 
                 {addNew ? (
                   <Input
-                    type="number"
+                    type="text"
                     id="salary"
                     value={salary}
                     onChange={(e: any) => setSalary(e.target.value)}

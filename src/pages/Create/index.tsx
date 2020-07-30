@@ -26,11 +26,11 @@ import { Redirect } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 export default function Create() {
-  const { library } = useWeb3React<Web3Provider>();
+  const { library, account } = useWeb3React<Web3Provider>();
   const [ensName, setEnsName] = useState('');
   const parcelFactoryContract = useContract(
     addresses[RINKEBY_ID].parcelFactory,
-    ParcelFactoryContract.abi,
+    ParcelFactoryContract,
     true
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,14 +70,21 @@ export default function Create() {
             nameHash,
             ensFullDomainHash
           );
+
           toast.info('Transaction Submitted');
-          const result = await tx.wait();
-          toast.success(`Transaction ${result.blockHash} Confirmed`);
+          await tx.wait();
+          if (!!parcelFactoryContract) {
+            let parcelOrgAddress = await parcelFactoryContract.registered(
+              account
+            );
+            console.log('parcelOrgAddress:', parcelOrgAddress);
+          }
           setSubmitted(true);
         } catch (error) {
           toast.error('Transaction Failed');
         }
     }
+
     setIsSubmitting(false);
   }
 

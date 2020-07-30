@@ -56,7 +56,7 @@ export default function AppRouter() {
 
   const parcelFactoryContract = useContract(
     addresses[RINKEBY_ID].parcelFactory,
-    ParcelFactoryContract.abi,
+    ParcelFactoryContract,
     true
   );
 
@@ -84,28 +84,17 @@ export default function AppRouter() {
   return (
     <Router history={history}>
       <Switch>
-        {/* <AppRoute
-          exact
-          path="/"
-          render={() => {
-            return isRegistered ? (
-              <Redirect to="/home" />
-            ) : (
-              <Redirect to="/signin" />
-            );
-          }}
-        /> */}
-        <AppRoute exact path="/" component={Home} />
+        <AppRoute exact path="/" component={Landing} fullLayout />
+        <AppRoute path="/organizations" component={Organizations} fullLayout />
+        <AppRoute path="/create" component={Create} fullLayout />
+        <AppRoute path="/employer" component={Employer} fullLayout />
+        <AppRoute path="/home" component={Home} />
         <AppRoute path="/about" component={About} />
         <AppRoute path="/accounting" component={Accounting} />
         <AppRoute path="/documents" component={Documents} />
         <AppRoute path="/people" component={People} />
         <AppRoute path="/payroll" component={Payroll} />
         <AppRoute path="/settings" component={Settings} />
-        <AppRoute path="/signin" component={Landing} fullLayout />
-        <AppRoute path="/organizations" component={Organizations} fullLayout />
-        <AppRoute path="/create" component={Create} fullLayout />
-        <AppRoute path="/employer" component={Employer} fullLayout />
       </Switch>
     </Router>
   );

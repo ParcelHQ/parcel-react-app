@@ -8,7 +8,17 @@ import React, {
 import parcel from 'parcel-sdk';
 import ReactPaginate from 'react-paginate';
 import DataTable from 'react-data-table-component';
-import { Button, Modal, ModalHeader, ModalFooter, Input } from 'reactstrap';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  Input,
+  FormGroup,
+  ModalBody,
+  Label,
+  Spinner,
+} from 'reactstrap';
 import classnames from 'classnames';
 import { Edit, Trash, Plus, ArrowDown, Check } from 'react-feather';
 import styled from '@emotion/styled';
@@ -31,15 +41,20 @@ export default function PayrollList() {
   const [selectedRow, setSelectedRow] = useState<any>();
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [addNew, setAddNew] = useState<any>(false);
-  const [modal, setModal] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [addDepartmentModal, setAddDepartmentModal] = useState(false);
+  const [department, setDepartment] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [filteredData, setFilteredData] = useState<any>();
+  const [value, setValue] = useState<any>();
+
+  const KEY = '12345';
 
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,
     ParcelWallet,
     true
   );
-
-  console.log('parcelWalletContract:', parcelWalletContract);
 
   useEffect(() => {
     setData(employees);
@@ -60,11 +75,19 @@ export default function PayrollList() {
             className="add-new-btn"
             color="primary"
             onClick={() => handleSidebar(true, true)}
-            outline
+            style={{ marginRight: '1rem' }}
           >
-            <Plus size={15} />
+            <Plus size={15} /> Add Employee
+          </Button>
+          <Button
+            className="add-new-btn"
+            color="primary"
+            onClick={() => setAddDepartmentModal(true)}
+          >
+            <Plus size={15} /> Add Department
           </Button>
         </div>
+
         <div className="actions-right d-flex flex-wrap mt-sm-0 mt-2">
           <div className="filter-section">
             <Input
@@ -95,7 +118,7 @@ export default function PayrollList() {
           size={20}
           onClick={() => {
             setSelectedRow(row);
-            setModal(!modal);
+            setConfirmationModal(!confirmationModal);
           }}
         />
       </div>
@@ -174,208 +197,73 @@ export default function PayrollList() {
     setSelectedRows(state.selectedRows);
   }, []);
 
-  const [filteredData, setFilteredData] = useState<any>();
-  const [value, setValue] = useState<any>();
-
   const handleFilter = (e: any) => {
     setValue(e.target.value);
     setFilteredData(e.target.value);
   };
 
-  const [department, setDepartment] = useState('');
-
   async function createDepartment() {
-    const DEPARTMENT = ['Engineering', 'Finance', 'Marketing', 'HR'];
+    setLoading(true);
+    try {
+      let encryptedDepartmentData;
+      //TODO: ADD ARRAY, STILL USING JSON.stringify()
+      if (department === 'object')
+        encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+          JSON.stringify(department),
+          KEY
+        );
+      else
+        encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+          department,
+          KEY
+        );
 
-    const key = '12345';
+      let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
 
-    const encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-      JSON.stringify(DEPARTMENT), //IF ARRAY/OBJECT, USE JSON.stringify(), ELSE USE STRING
-      key
-    );
-
-    console.log('encryptedDepartmentData:', encryptedDepartmentData);
-
-    let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
-
-    let result;
-
-    if (parcelWalletContract) {
-      result = await parcelWalletContract.addFile('1', departmentHash.string);
+      if (parcelWalletContract) {
+        let result = await parcelWalletContract.addFile(
+          '1',
+          departmentHash.string
+        );
+      }
+    } catch (error) {
+      console.error(error);
     }
-    console.log('result:', result);
+    setLoading(false);
+    setAddDepartmentModal(false);
   }
 
   async function getFiles() {
     if (parcelWalletContract) {
       let files = await parcelWalletContract.files('1');
-      console.log('files:', files);
 
       let filesFromIpfs = await parcel.ipfs.getData(files);
 
-      let filesDecrypted = parcel.cryptoUtils.decryptData(
-        filesFromIpfs,
-        '12345'
-      );
+      let filesDecrypted = parcel.cryptoUtils.decryptData(filesFromIpfs, KEY);
 
-      filesDecrypted = JSON.parse(filesDecrypted);
-      console.log('filesDecrypted:', filesDecrypted);
-      console.log(typeof filesDecrypted);
+      if (typeof filesDecrypted !== 'string')
+        filesDecrypted = JSON.parse(filesDecrypted);
     }
-  }
-
-  async function addPerson() {
-    const PERSON = [
-      {
-        address: '0x1d9999be880e7e516dEefdA00a3919BdDE9C1707',
-        name: 'Brennan Fife',
-        salary: '100000',
-        salaryCurrency: 'DAI',
-        department: 'Engineering',
-      },
-      {
-        address: '0x0',
-        name: 'Zucks',
-        salary: '1000000',
-        salaryCurrency: 'USDC',
-        department: 'Marketing',
-      },
-    ];
-
-    const key = '12345';
-
-    const encryptedPersonData = parcel.cryptoUtils.encryptData(
-      JSON.stringify(PERSON),
-      key
-    );
-
-    console.log('encryptedPersonData:', encryptedPersonData);
-
-    let personHash = await parcel.ipfs.addData(encryptedPersonData);
-
-    let result;
-
-    if (parcelWalletContract) {
-      result = await parcelWalletContract.addFile('2', personHash.string);
-    }
-    console.log('result:', result);
   }
 
   async function getPeople() {
     if (parcelWalletContract) {
       let people = await parcelWalletContract.files('2');
-      console.log('people:', people);
 
       let peopleFromIpfs = await parcel.ipfs.getData(people);
 
-      let peopleDecrypted = parcel.cryptoUtils.decryptData(
-        peopleFromIpfs,
-        '12345'
-      );
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
 
       peopleDecrypted = JSON.parse(peopleDecrypted);
-      console.log('peopleDecrypted:', peopleDecrypted);
-      console.log(typeof peopleDecrypted);
-    }
-  }
-
-  async function addAnotherPerson() {
-    if (parcelWalletContract) {
-      let people = await parcelWalletContract.files('2');
-      console.log('people:', people);
-
-      let peopleFromIpfs = await parcel.ipfs.getData(people);
-
-      let peopleDecrypted = parcel.cryptoUtils.decryptData(
-        peopleFromIpfs,
-        '12345'
-      );
-
-      peopleDecrypted = JSON.parse(peopleDecrypted);
-
-      const personObject = {
-        address: '0x0',
-        name: 'Bezos',
-        salary: '1000000',
-        salaryCurrency: 'USDC',
-        department: 'Marketing',
-      };
-
-      peopleDecrypted.push(personObject);
-
-      let key = '12345';
-
-      const encryptedPersonData = parcel.cryptoUtils.encryptData(
-        JSON.stringify(peopleDecrypted),
-        key
-      );
-
-      console.log('encryptedPersonData:', encryptedPersonData);
-
-      let personHash = await parcel.ipfs.addData(encryptedPersonData);
-      console.log('personHash:', personHash);
-
-      let newUpdatedEmployees = await parcelWalletContract.addFile(
-        '2',
-        personHash.string
-      );
-      console.log('newUpdatedEmployees:', newUpdatedEmployees);
-    }
-  }
-
-  async function updatePerson() {
-    if (parcelWalletContract) {
-      let people = await parcelWalletContract.files('2');
-      console.log('people:', people);
-
-      let peopleFromIpfs = await parcel.ipfs.getData(people);
-
-      let peopleDecrypted = parcel.cryptoUtils.decryptData(
-        peopleFromIpfs,
-        '12345'
-      );
-
-      console.log('peopleDecrypted:', JSON.parse(peopleDecrypted));
-
-      let parsed = JSON.parse(peopleDecrypted);
-
-      parsed[1].salary = '2';
-
-      const encryptedUpdate = parcel.cryptoUtils.encryptData(
-        JSON.stringify(parsed),
-        '12345'
-      );
-
-      console.log('encryptedUpdate:', encryptedUpdate);
-
-      let personHash = await parcel.ipfs.addData(encryptedUpdate);
-      console.log('personHash:', personHash);
-
-      let result = await parcelWalletContract.addFile('2', personHash.string);
-      console.log('result:', result);
     }
   }
 
   return (
     <>
-      {/* <form onSubmit={createDepartment}>
-        <input
-          type="text"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        />
-       
-      </form> */}
-      <button onClick={() => createDepartment()}>create</button>
-      <button onClick={() => getFiles()}>get files</button>
-      <button onClick={() => addPerson()}>add person</button>
-      <button onClick={() => getPeople()}>get people</button>
-      <button onClick={() => addAnotherPerson()}>add another person</button>
-      <button onClick={() => updatePerson()}>update person</button>
-      {/* <button onClick={() => deletePerson()}>delete person</button> */}
-      {/* <div className={'data-list list-view'}> */}
-
-      {/* <DataTable
+      <div className={'data-list list-view'}>
+        <button onClick={() => getFiles()}>get departments</button>
+        <button onClick={() => getPeople()}>get people</button>
+        <DataTable
           //@ts-ignore
           columns={columns}
           // data={data}
@@ -456,8 +344,12 @@ export default function PayrollList() {
         />
       </div>
 
-      <Modal isOpen={modal} toggle={() => setModal(!modal)} centered> */}
-      {/* <ModalHeader toggle={() => setModal(!modal)}>
+      <Modal
+        isOpen={confirmationModal}
+        toggle={() => setConfirmationModal(!confirmationModal)}
+        centered
+      >
+        <ModalHeader toggle={() => setConfirmationModal(!confirmationModal)}>
           Confirm Delete?
         </ModalHeader>
 
@@ -466,16 +358,65 @@ export default function PayrollList() {
             color="primary"
             onClick={() => {
               deleteEmployee(selectedRow.id);
-              setModal(!modal);
+              setConfirmationModal(!confirmationModal);
             }}
           >
             Delete
           </Button>{' '}
-          <Button color="secondary" onClick={() => setModal(!modal)}>
+          <Button
+            color="secondary"
+            onClick={() => setConfirmationModal(!confirmationModal)}
+          >
             Cancel
           </Button>
         </ModalFooter>
-      </Modal> */}
+      </Modal>
+
+      <Modal
+        isOpen={addDepartmentModal}
+        toggle={() => setAddDepartmentModal(!addDepartmentModal)}
+        centered
+      >
+        <ModalHeader toggle={() => setAddDepartmentModal(!addDepartmentModal)}>
+          Add Department
+        </ModalHeader>
+
+        <ModalBody>
+          {loading ? (
+            <div style={{ width: '100%', textAlign: 'center' }}>
+              <Spinner size="lg" color="primary" />
+            </div>
+          ) : (
+            <FormGroup>
+              <Label for="department">Department</Label>
+              <Input
+                type="text"
+                id="department"
+                required
+                placeholder="i.e. Marketing"
+                value={department}
+                onChange={(e: any) => setDepartment(e.target.value)}
+              />
+            </FormGroup>
+          )}
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            disabled={loading}
+            color="primary"
+            onClick={() => createDepartment()}
+          >
+            Add
+          </Button>{' '}
+          <Button
+            color="secondary"
+            onClick={() => setAddDepartmentModal(!addDepartmentModal)}
+          >
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 }

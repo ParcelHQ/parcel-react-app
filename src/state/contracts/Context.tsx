@@ -8,7 +8,7 @@ const PARCEL_FACTORY_ADDRESS = '0x1C48cA86248C6B60545BCBb412341D638F62AdE0';
 
 const ParcelFactoryContract = new Contract(
   PARCEL_FACTORY_ADDRESS,
-  ParcelFactory.abi
+  ParcelFactory
 );
 
 const initialContractState: any = [];

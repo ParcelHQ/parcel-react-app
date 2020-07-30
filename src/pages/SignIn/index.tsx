@@ -5,6 +5,10 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import styled from '@emotion/styled';
 import { useHistory } from 'react-router-dom';
+import { useContract } from '../../hooks';
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import ParcelFactoryContract from '../../abis/ParcelFactory.json';
+import { ZERO_ADDRESS } from '../../utility/constants';
 
 import Logo from '../../assets/img/logo/logoPng.png';
 
@@ -46,8 +50,29 @@ const StyledButton = styled.button<{ disabled: boolean }>`
 `;
 
 export default function Landing() {
-  const { active } = useWeb3React<Web3Provider>();
+  const { active, account } = useWeb3React<Web3Provider>();
   let history = useHistory();
+
+  const parcelFactoryContract = useContract(
+    addresses[RINKEBY_ID].parcelFactory,
+    ParcelFactoryContract,
+    true
+  );
+
+  console.log('parcelFactoryContract:', parcelFactoryContract);
+
+  // async function checkStatus() {
+  //   if (parcelFactoryContract && account) {
+  //     let requester = await parcelFactoryContract.registered(account);
+  //     console.log('requester:', requester);
+  //     if (requester === !ZERO_ADDRESS) {
+  //       console.log('ZERO_ADDRESS:', ZERO_ADDRESS);
+  //       history.push('/dashboard');
+  //     }
+  //   } else {
+  //     return;
+  //   }
+  // }
 
   return (
     <Box>
