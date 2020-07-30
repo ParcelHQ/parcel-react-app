@@ -1,9 +1,9 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 import ReactTable from 'react-table';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function Table({ data }: any) {
+  console.log('data:', data);
   return (
     <Card>
       <CardBody>
@@ -21,10 +21,10 @@ export default function Table({ data }: any) {
             },
             {
               Header: 'Salary',
-              id: 'salary',
+              accessor: 'salary',
             },
           ]}
-          defaultPageSize={10}
+          defaultPageSize={5}
           className="-striped -highlight"
         />
       </CardBody>

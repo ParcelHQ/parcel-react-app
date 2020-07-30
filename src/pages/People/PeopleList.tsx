@@ -1,12 +1,20 @@
-import React, { useMemo, useState, useEffect, useContext } from 'react';
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
+import ReactPaginate from 'react-paginate';
 import DataTable from 'react-data-table-component';
 import { Button, Modal, ModalHeader, ModalFooter, Input } from 'reactstrap';
 import classnames from 'classnames';
-import { Edit, Trash, Plus, ArrowDown } from 'react-feather';
+import { Edit, Trash, Plus, ArrowDown, Check } from 'react-feather';
 import styled from '@emotion/styled';
 
 import { EmployeeContext } from '../../state/employee/Context';
 import Sidebar from './Sidebar';
+import Checkbox from '../../components/CheckBoxes';
 
 import '../../assets/scss/plugins/extensions/react-paginate.scss';
 import '../../assets/scss/pages/data-list.scss';
@@ -16,6 +24,7 @@ export default function PayrollList() {
   const [data, setData] = useState(employees);
   const [sidebar, setSidebar] = useState<any>(false);
   const [selectedRow, setSelectedRow] = useState<any>();
+  const [selectedRows, setSelectedRows] = useState<any>([]);
   const [addNew, setAddNew] = useState<any>(false);
   const [modal, setModal] = useState(false);
 
@@ -144,45 +153,21 @@ export default function PayrollList() {
     justify-content: center;
   `;
 
-  const FilterComponent = ({ filterText, onFilter, onClear }: any) => (
-    <>
-      <TextField
-        id="search"
-        type="text"
-        placeholder="Filter By Name"
-        value={filterText}
-        onChange={onFilter}
-      />
-      <ClearButton type="button" onClick={onClear}>
-        X
-      </ClearButton>
-    </>
-  );
+  useEffect(() => {
+    console.log(selectedRows);
+  }, [selectedRows]);
 
-  const [filterText, setFilterText] = useState<any>('');
-  const [resetPaginationToggle, setResetPaginationToggle] = useState<any>(
-    false
-  );
+  const handleChange = useCallback((state: any) => {
+    setSelectedRows(state.selectedRows);
+  }, []);
 
-  const filteredItems = data.filter(
-    (item: any) =>
-      item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
-  );
+  const [filteredData, setFilteredData] = useState<any>();
+  const [value, setValue] = useState<any>();
 
-  const subHeaderComponentMemo = useMemo(() => {
-    const handleClear = () => {
-      if (filterText) {
-        setFilterText('');
-      }
-    };
-    return (
-      <FilterComponent
-        onFilter={(e: any) => setFilterText(e.target.value)}
-        onClear={handleClear}
-        filterText={filterText}
-      />
-    );
-  }, [filterText]);
+  const handleFilter = (e: any) => {
+    setValue(e.target.value);
+    setFilteredData(e.target.value);
+  };
 
   return (
     <>
@@ -191,12 +176,7 @@ export default function PayrollList() {
           //@ts-ignore
           columns={columns}
           // data={data}
-          //!here
-          data={filteredItems}
-          // subHeaderComponent={subHeaderComponentMemo}
-          // selectableRows
-          // persistTableHead
-          //!here
+          data={filteredData ? filteredData : data}
           noHeader
           subHeader
           responsive
@@ -205,10 +185,24 @@ export default function PayrollList() {
           pagination
           paginationServer
           fixedHeader
+          // selectableRows
+          // onSelectedRowsChange={handleChange}
+          // selectableRowsComponent={Checkbox}
+          // onSelectedRowsChange={(data) => setSelectedRows(data.selectedRows)}
+          selectableRowsComponentProps={{
+            color: 'primary',
+            icon: <Check className="vx-icon" size={12} />,
+            label: '',
+            size: 'sm',
+          }}
           sortIcon={<ArrowDown />}
-          // subHeaderComponent={
-          //   <CustomHeader handleSidebar={handleSidebar} rowsPerPage={5} />
-          // }
+          subHeaderComponent={
+            <CustomHeader
+              handleSidebar={handleSidebar}
+              rowsPerPage={5}
+              handleFilter={handleFilter}
+            />
+          }
           customStyles={{
             headRow: {
               style: {

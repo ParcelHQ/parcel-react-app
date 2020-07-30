@@ -55,22 +55,24 @@ const Import = () => {
   const onSubmit = async (event: any) => {
     event.preventDefault();
     setIsSubmitting(true);
-    try {
-      library!
-        .getSigner(account!)
-        .signMessage(buffer)
-        .then((signature: any) => {
-          return parcel.cryptoUtils.encryptData(buffer, signature);
-        })
-        .then((encryptedData) => {
-          return parcel.ipfs.addData(encryptedData);
-        })
-        .then((res) => {
-          parcelWalletContract!.addFile(1, res.string);
-        });
-    } catch (error) {
-      console.error(error);
-      setIsSubmitting(false);
+    if (library && account) {
+      try {
+        library
+          .getSigner(account)
+          .signMessage(buffer)
+          .then((signature: any) => {
+            return parcel.cryptoUtils.encryptData(buffer, signature);
+          })
+          .then((encryptedData) => {
+            return parcel.ipfs.addData(encryptedData);
+          })
+          .then((res) => {
+            parcelWalletContract!.addFile(1, res.string);
+          });
+      } catch (error) {
+        console.error(error);
+        setIsSubmitting(false);
+      }
     }
 
     setIsSubmitting(false);
