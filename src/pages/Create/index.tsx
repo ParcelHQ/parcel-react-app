@@ -76,13 +76,19 @@ export default function Create() {
           toast.info('Transaction Submitted');
           await tx.wait();
 
+          toast.success('Waiting for the confirmation');
           let parcelOrgAddress = await parcelFactoryContract.registered(
             account
           );
 
+          toast.success('Transaction Confirmed');
+
+          console.log("parcelOrgAddress: ",parcelOrgAddress);
+          localStorage.setItem('PARCEL_WALLET_ADDRESS',parcelOrgAddress);
+
           createParcelWallet(parcelOrgAddress);
 
-          // setSubmitted(true);
+          setSubmitted(true);
         } catch (error) {
           toast.error('Transaction Failed');
 

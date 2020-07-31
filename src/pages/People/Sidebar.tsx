@@ -14,6 +14,8 @@ import parcel from 'parcel-sdk';
 import 'flatpickr/dist/themes/light.css';
 import '../../assets/scss/plugins/forms/flatpickr/flatpickr.scss';
 import { EmployeeContext } from '../../state/employee/Context';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ButtonWrapper = styled.div`
   margin-top: 3rem;
@@ -109,10 +111,14 @@ export default function Sidebar({
           JSON.stringify(PERSON),
           KEY
         );
+        console.log("encryptedPersonData ",encryptedPersonData);
 
         let personHash = await parcel.ipfs.addData(encryptedPersonData);
+        console.log(personHash);
 
-        await parcelWalletContract.addFile('2', personHash.string);
+        let result = await parcelWalletContract.addFile('2', personHash.string);
+        await result.wait();
+        toast.success("Person added successfully!")
       } else {
         let people = await parcelWalletContract.files('2');
         let peopleFromIpfs = await parcel.ipfs.getData(people);
@@ -132,7 +138,9 @@ export default function Sidebar({
 
         let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
 
-        await parcelWalletContract.addFile('2', newPersonHash.string);
+        let result = await parcelWalletContract.addFile('2', newPersonHash.string);
+        await result.wait();
+        toast.success("Person added successfully!")
       }
     } else {
       // updateEmployee(selectedUser);
@@ -154,7 +162,9 @@ export default function Sidebar({
 
       let personHash = await parcel.ipfs.addData(encryptedUpdate);
 
-      await parcelWalletContract.addFile('2', personHash.string);
+      let result = await parcelWalletContract.addFile('2', personHash.string);
+      await result.wait();
+      toast.success("Person Updated successfully!")
     }
 
     handleSidebar(false, true);
@@ -244,7 +254,7 @@ export default function Sidebar({
                     }
                   >
                     <option disabled value="">
-                      -
+                      Engineering
                     </option>
                     <option value="Engineering">Engineering</option>
                     <option value="Finance">Finance</option>
@@ -394,6 +404,18 @@ export default function Sidebar({
               </Button>
             </ButtonWrapper>
           </Row>
+
+          <ToastContainer
+            position="bottom-center"
+            autoClose={3000}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </form>
       </PerfectScrollbar>
     </div>

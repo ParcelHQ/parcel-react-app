@@ -70,18 +70,22 @@ export default function Documents() {
             '3'
           );
 
+          console.log("documentsFromContractHash ",documentsFromContractHash)
+
           let documentsFromIpfs = await parcel.ipfs.getData(
             documentsFromContractHash
           );
 
+          console.log("documentsFromIpfs ",documentsFromIpfs);
+
           let decryptedData = parcel.cryptoUtils.decryptedData(
             documentsFromIpfs,
-            'signature'
+            "signature"
           );
 
           console.log('decryptedData:', decryptedData);
 
-          console.log('JSON.parse(decryptedData):', JSON.parse(decryptedData));
+          // console.log('JSON.parse(decryptedData):', JSON.parse(decryptedData));
           setDocumentsData(JSON.parse(decryptedData));
         } catch (error) {}
       }

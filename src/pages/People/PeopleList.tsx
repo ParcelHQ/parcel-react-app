@@ -30,6 +30,8 @@ import '../../assets/scss/pages/data-list.scss';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function PayrollList() {
   const { employees } = useContext(EmployeeContext);
@@ -64,6 +66,7 @@ export default function PayrollList() {
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
+        console.log(parcelWalletContract)
         try {
           let people = await parcelWalletContract.files('2');
 
@@ -75,6 +78,7 @@ export default function PayrollList() {
           );
 
           peopleDecrypted = JSON.parse(peopleDecrypted);
+          console.log(peopleDecrypted);
           setData(peopleDecrypted);
         } catch (error) {}
       }
@@ -179,21 +183,63 @@ export default function PayrollList() {
     setLoading(true);
     if (parcelWalletContract) {
       try {
-        let DEP = [];
-        DEP.push(department);
+        let getDepartments = await parcelWalletContract!.files('1');
+        if(getDepartments != '') {
+          let departmentsFromIpfs = await parcel.ipfs.getData(getDepartments);
 
-        let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-          JSON.stringify(DEP),
-          KEY
-        );
+          let departmentsDecrypted = parcel.cryptoUtils.decryptData(
+            departmentsFromIpfs,
+            KEY
+          );
 
-        let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
+          departmentsDecrypted = JSON.parse(departmentsDecrypted);
 
-        let result = await parcelWalletContract.addFile(
-          '1',
-          departmentHash.string
-        );
-        console.log('result:', result);
+          departmentsDecrypted.push(department);
+
+          let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(departmentsDecrypted),
+            KEY
+          );
+
+          let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
+          console.log(departmentHash);
+
+
+          let result = await parcelWalletContract!.addFile(
+            '1',
+            departmentHash.string
+          );
+
+          toast.success('Transaction Submitted');
+          console.log('result:', result);
+          await result.wait();
+          toast.success('Transaction Confirmed');
+
+        } else {
+
+          let departments = [];
+          departments.push(department);
+
+          let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(departments),
+            KEY
+          );
+
+          let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
+          console.log(departmentHash);
+
+          let result = await parcelWalletContract!.addFile(
+            '1',
+            departmentHash.string
+          );
+
+          toast.success('Transaction Submitted');
+          console.log('result:', result);
+          await result.wait();
+          toast.success('Transaction Confirmed');
+
+        }
+
       } catch (error) {
         console.error(error);
       }
@@ -361,6 +407,18 @@ export default function PayrollList() {
           </Button>
         </ModalFooter>
       </Modal>
+
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }
