@@ -1,16 +1,6 @@
 import React, { useState, useContext } from 'react';
 import classnames from 'classnames';
-import {
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-} from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import { EmployeeContext } from '../../state/employee/Context';
 import Table from './Table';
 import 'react-table/react-table.css';
@@ -34,46 +24,41 @@ export default function TabsFilled({ departments }: any) {
   });
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Employees</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <Nav tabs className="nav-fill">
-          <NavItem>
-            <NavLink
-              className={classnames({
-                active: active === '1',
-              })}
-              onClick={() => {
-                toggle('1');
-              }}
-            >
-              Engineering
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={classnames({
-                active: active === '2',
-              })}
-              onClick={() => {
-                toggle('2');
-              }}
-            >
-              Marketing
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={active}>
-          <TabPane tabId="1">
-            <Table data={engineering} />
-          </TabPane>
-          <TabPane tabId="2">
-            <Table data={marketing} />
-          </TabPane>
-        </TabContent>
-      </CardBody>
-    </Card>
+    <>
+      <Nav tabs className="nav-fill">
+        <NavItem>
+          <NavLink
+            className={classnames({
+              active: active === '1',
+            })}
+            onClick={() => {
+              toggle('1');
+            }}
+          >
+            Engineering
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={classnames({
+              active: active === '2',
+            })}
+            onClick={() => {
+              toggle('2');
+            }}
+          >
+            Marketing
+          </NavLink>
+        </NavItem>
+      </Nav>
+      <TabContent activeTab={active}>
+        <TabPane tabId="1">
+          <Table data={engineering} />
+        </TabPane>
+        <TabPane tabId="2">
+          <Table data={marketing} />
+        </TabPane>
+      </TabContent>
+    </>
   );
 }

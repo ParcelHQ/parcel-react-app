@@ -19,7 +19,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import classnames from 'classnames';
-import { Edit, Trash, Plus, ArrowDown, Check } from 'react-feather';
+import { Edit, Trash, Plus, ArrowDown } from 'react-feather';
 
 import { EmployeeContext } from '../../state/employee/Context';
 import Sidebar from './Sidebar';
@@ -40,8 +40,7 @@ export default function PayrollList() {
   const [selectedRow, setSelectedRow] = useState<any>();
   const [addNew, setAddNew] = useState<any>(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
-  const [addDepartmentModal, setAddDepartmentModal] = useState(false);
-  const [department, setDepartment] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   const KEY = '12345';
@@ -66,11 +65,11 @@ export default function PayrollList() {
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        console.log(parcelWalletContract)
+        console.log(parcelWalletContract);
         try {
           let people = await parcelWalletContract.files('2');
-          console.log("people ",people)
-          if (people != ''){
+          console.log('people ', people);
+          if (people !== '') {
             let peopleFromIpfs = await parcel.ipfs.getData(people);
 
             let peopleDecrypted = parcel.cryptoUtils.decryptData(
@@ -100,13 +99,6 @@ export default function PayrollList() {
             style={{ marginRight: '1rem' }}
           >
             <Plus size={15} /> Add Employee
-          </Button>
-          <Button
-            className="add-new-btn"
-            color="primary"
-            onClick={() => setAddDepartmentModal(true)}
-          >
-            <Plus size={15} /> Add Department
           </Button>
         </div>
 
@@ -182,76 +174,6 @@ export default function PayrollList() {
     ],
     []
   );
-
-  async function createDepartment() {
-    setLoading(true);
-    if (parcelWalletContract) {
-      try {
-        let getDepartments = await parcelWalletContract!.files('1');
-        if(getDepartments != '') {
-          let departmentsFromIpfs = await parcel.ipfs.getData(getDepartments);
-
-          let departmentsDecrypted = parcel.cryptoUtils.decryptData(
-            departmentsFromIpfs,
-            KEY
-          );
-
-          departmentsDecrypted = JSON.parse(departmentsDecrypted);
-
-          departmentsDecrypted.push(department);
-
-          let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-            JSON.stringify(departmentsDecrypted),
-            KEY
-          );
-
-          let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
-          console.log(departmentHash);
-
-
-          let result = await parcelWalletContract!.addFile(
-            '1',
-            departmentHash.string
-          );
-
-          toast.success('Transaction Submitted');
-          console.log('result:', result);
-          await result.wait();
-          toast.success('Transaction Confirmed');
-
-        } else {
-
-          let departments = [];
-          departments.push(department);
-
-          let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-            JSON.stringify(departments),
-            KEY
-          );
-
-          let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
-          console.log(departmentHash);
-
-          let result = await parcelWalletContract!.addFile(
-            '1',
-            departmentHash.string
-          );
-
-          toast.success('Transaction Submitted');
-          console.log('result:', result);
-          await result.wait();
-          toast.success('Transaction Confirmed');
-
-        }
-
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    setLoading(false);
-    setAddDepartmentModal(false);
-    setDepartment('');
-  }
 
   async function deleteEmployee() {
     if (parcelWalletContract) {
@@ -362,52 +284,6 @@ export default function PayrollList() {
           <Button
             color="secondary"
             onClick={() => setConfirmationModal(!confirmationModal)}
-          >
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      <Modal
-        isOpen={addDepartmentModal}
-        toggle={() => setAddDepartmentModal(!addDepartmentModal)}
-        centered
-      >
-        <ModalHeader toggle={() => setAddDepartmentModal(!addDepartmentModal)}>
-          Add Department
-        </ModalHeader>
-
-        <ModalBody>
-          {loading ? (
-            <div style={{ width: '100%', textAlign: 'center' }}>
-              <Spinner size="lg" color="primary" />
-            </div>
-          ) : (
-            <FormGroup>
-              <Label for="department">Department</Label>
-              <Input
-                type="text"
-                id="department"
-                required
-                placeholder="i.e. Marketing"
-                value={department}
-                onChange={(e: any) => setDepartment(e.target.value)}
-              />
-            </FormGroup>
-          )}
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            disabled={loading}
-            color="primary"
-            onClick={() => createDepartment()}
-          >
-            Add
-          </Button>{' '}
-          <Button
-            color="secondary"
-            onClick={() => setAddDepartmentModal(!addDepartmentModal)}
           >
             Cancel
           </Button>
