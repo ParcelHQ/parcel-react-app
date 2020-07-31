@@ -169,7 +169,7 @@ export default function Payroll() {
     <>
       <Breadcrumbs breadCrumbTitle="Payroll" breadCrumbActive="Payroll" />
       <Row>
-        <Col md="6" sm="12">
+        <Col sm="12">
           <Button
             className="add-new-btn mr-1"
             color="primary"
@@ -194,11 +194,13 @@ export default function Payroll() {
           </CustomInput>
         </Col>
 
-        {options ? (
-          <PayrollTable selectedDepartment={selectedDepartment} />
-        ) : (
-          <h1>No departments</h1>
-        )}
+        <Col sm="12">
+          {options ? (
+            <PayrollTable selectedDepartment={selectedDepartment} />
+          ) : (
+            <h1>No departments</h1>
+          )}
+        </Col>
 
         <Col sm="12">
           <FlexWrap>
