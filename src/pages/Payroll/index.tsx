@@ -20,16 +20,6 @@ import {
 import { Plus } from 'react-feather';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import styled from '@emotion/styled';
-
-const FlexWrap = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const FlexButton = styled(Button)`
-  margin: 0 5px;
-`;
 
 export default function Payroll() {
   const KEY = '12345';
@@ -142,29 +132,6 @@ export default function Payroll() {
     setAddDepartmentModal(false);
   }
 
-  async function massPayout() {
-    if (parcelWalletContract) {
-      const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-      const TOKENS_REQUESTED = [
-        '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
-        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-      ];
-      const EMPLOYEE_ADDRESSES = [
-        '0x36eC99A4CA6F1a3E3299aEB94587F34A9E6adA1f',
-        '0x36eC99A4CA6F1a3E3299aEB94587F34A9E6adA1f',
-      ];
-      const VALUES_TO_SEND = ['100000000000000000', '100000000000000000'];
-
-      let res = await parcelWalletContract.massPayout(
-        ETH_ADDRESS,
-        TOKENS_REQUESTED,
-        EMPLOYEE_ADDRESSES,
-        VALUES_TO_SEND
-      );
-      console.log('res:', res);
-    }
-  }
-
   return (
     <>
       <Breadcrumbs breadCrumbTitle="Payroll" breadCrumbActive="Payroll" />
@@ -175,7 +142,8 @@ export default function Payroll() {
             color="primary"
             onClick={() => setAddDepartmentModal(true)}
           >
-            <Plus size={15} /> <span className="align-middle">Add</span>
+            <Plus size={15} />{' '}
+            <span className="align-middle">Add Department</span>
           </Button>
           <CustomInput
             type="select"
@@ -200,18 +168,6 @@ export default function Payroll() {
           ) : (
             <h1>No departments</h1>
           )}
-        </Col>
-
-        <Col sm="12">
-          <FlexWrap>
-            <FlexButton color="primary" disabled={true}>
-              Stream
-            </FlexButton>
-
-            <FlexButton color="primary" outline onClick={() => massPayout()}>
-              Pay
-            </FlexButton>
-          </FlexWrap>
         </Col>
       </Row>
       <Modal

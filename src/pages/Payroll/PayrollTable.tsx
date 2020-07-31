@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useContext } from 'react';
 import parcel from 'parcel-sdk';
 import DataTable from 'react-data-table-component';
-import {} from 'reactstrap';
+import { Button, Col } from 'reactstrap';
 import { ArrowDown } from 'react-feather';
 import Checkbox from '../../components/CheckBoxes';
 
@@ -14,8 +14,18 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 
+import styled from '@emotion/styled';
+
+const FlexWrap = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const FlexButton = styled(Button)`
+  margin: 0 5px;
+`;
+
 export default function PayrollTable({ selectedDepartment }: any) {
-  console.log('selectedDepartment:', selectedDepartment);
   const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
   const [selectedRow, setSelectedRow] = useState<any>();
@@ -96,49 +106,109 @@ export default function PayrollTable({ selectedDepartment }: any) {
     []
   );
 
-  return (
-    <div className={'data-list list-view'}>
-      <DataTable
-        //@ts-ignore
-        columns={columns}
-        data={data}
-        noHeader
-        responsive
-        pointerOnHover
-        fixedHeader
-        sortIcon={<ArrowDown />}
-        selectableRows
-        selectableRowsHighlight
-        onSelectedRowsChange={(data) => setSelectedRow(data.selectedRows)}
-        selectableRowsComponent={Checkbox}
-        customStyles={{
-          headRow: {
-            style: {
-              border: 'none',
-            },
-          },
-          headCells: {
-            style: {
-              color: '#202124',
-              fontSize: '14px',
-            },
-          },
-          rows: {
-            highlightOnHoverStyle: {
-              backgroundColor: 'rgb(230, 244, 244)',
-              borderBottomColor: '#FFFFFF',
-              borderRadius: '25px',
-              outline: '1px solid #FFFFFF',
-            },
-          },
+  async function massPayout() {
+    if (parcelWalletContract) {
+      //! CURRENCY TO SEND WITH
+      const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+      const DAI_ADDRESS = '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735';
+      const USDC_ADDRESS = '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b';
 
-          pagination: {
-            style: {
-              border: 'none',
+      //! TOKENS_REQUESTED
+      let TOKENS_REQUESTED: any[] = [];
+      selectedRow.forEach((employee: any) => {
+        switch (employee.salaryCurrency) {
+          case 'DAI':
+            TOKENS_REQUESTED.push(DAI_ADDRESS);
+            break;
+          case 'ETH':
+            TOKENS_REQUESTED.push(ETH_ADDRESS);
+            break;
+          case 'USDC':
+            TOKENS_REQUESTED.push(USDC_ADDRESS);
+            break;
+
+          default:
+            return;
+        }
+      });
+
+      //! EMPLOYEE_ADDRESSES
+      let EMPLOYEE_ADDRESSES: any[] = [];
+      selectedRow.forEach((employee: any) => {
+        EMPLOYEE_ADDRESSES.push(employee.address);
+      });
+
+      //! VALUES_TO_SEND
+      const VALUES_TO_SEND = ['1000000000000000000', '1000000'];
+
+      let res = await parcelWalletContract.massPayout(
+        DAI_ADDRESS,
+        TOKENS_REQUESTED,
+        EMPLOYEE_ADDRESSES,
+        VALUES_TO_SEND
+      );
+      console.log('res:', res);
+      TOKENS_REQUESTED = [];
+      EMPLOYEE_ADDRESSES = [];
+    }
+  }
+
+  return (
+    <>
+      <div className={'data-list list-view'}>
+        <DataTable
+          //@ts-ignore
+          columns={columns}
+          data={data}
+          noHeader
+          responsive
+          pointerOnHover
+          fixedHeader
+          sortIcon={<ArrowDown />}
+          selectableRows
+          selectableRowsHighlight
+          onSelectedRowsChange={(data) => setSelectedRow(data.selectedRows)}
+          selectableRowsComponent={Checkbox}
+          customStyles={{
+            headRow: {
+              style: {
+                border: 'none',
+              },
             },
-          },
-        }}
-      />
-    </div>
+            headCells: {
+              style: {
+                color: '#202124',
+                fontSize: '14px',
+              },
+            },
+            rows: {
+              highlightOnHoverStyle: {
+                backgroundColor: 'rgb(230, 244, 244)',
+                borderBottomColor: '#FFFFFF',
+                borderRadius: '25px',
+                outline: '1px solid #FFFFFF',
+              },
+            },
+
+            pagination: {
+              style: {
+                border: 'none',
+              },
+            },
+          }}
+        />
+      </div>
+      <Col sm="12">
+        <FlexWrap>
+          <FlexButton color="primary" disabled={true}>
+            Stream
+          </FlexButton>
+
+          <FlexButton color="primary" outline onClick={() => massPayout()}>
+            Pay
+          </FlexButton>
+        </FlexWrap>
+      </Col>
+    </>
   );
 }

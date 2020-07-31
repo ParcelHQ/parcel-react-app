@@ -40,6 +40,7 @@ export default function PayrollList() {
   const [selectedRow, setSelectedRow] = useState<any>();
   const [addNew, setAddNew] = useState<any>(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -176,6 +177,7 @@ export default function PayrollList() {
   );
 
   async function deleteEmployee() {
+    setIsDeleting(true);
     if (parcelWalletContract) {
       let people = await parcelWalletContract.files('2');
       let peopleFromIpfs = await parcel.ipfs.getData(people);
@@ -199,6 +201,7 @@ export default function PayrollList() {
       await parcelWalletContract.addFile('2', personHash.string);
     }
 
+    setIsDeleting(false);
     setConfirmationModal(!confirmationModal);
   }
 
