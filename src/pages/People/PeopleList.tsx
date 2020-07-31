@@ -69,17 +69,21 @@ export default function PayrollList() {
         console.log(parcelWalletContract)
         try {
           let people = await parcelWalletContract.files('2');
+          console.log("people ",people)
+          if (people != ''){
+            let peopleFromIpfs = await parcel.ipfs.getData(people);
 
-          let peopleFromIpfs = await parcel.ipfs.getData(people);
+            let peopleDecrypted = parcel.cryptoUtils.decryptData(
+              peopleFromIpfs,
+              KEY
+            );
 
-          let peopleDecrypted = parcel.cryptoUtils.decryptData(
-            peopleFromIpfs,
-            KEY
-          );
-
-          peopleDecrypted = JSON.parse(peopleDecrypted);
-          console.log(peopleDecrypted);
-          setData(peopleDecrypted);
+            peopleDecrypted = JSON.parse(peopleDecrypted);
+            console.log(peopleDecrypted);
+            setData(peopleDecrypted);
+          } else {
+            console.log(`Zero Employees registered yet!`);
+          }
         } catch (error) {}
       }
     })();
@@ -262,6 +266,8 @@ export default function PayrollList() {
       const newUpdate = parsed.filter(
         (employee: any) => employee.address !== selectedRow.address
       );
+
+      console.log(newUpdate);
 
       const encryptedUpdate = parcel.cryptoUtils.encryptData(
         JSON.stringify(newUpdate),
