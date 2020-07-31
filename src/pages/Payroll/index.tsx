@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Breadcrumbs from '../../components/BreadCrumbs';
-import { Row, Col } from 'reactstrap';
-import TabsTable from './TabsTable';
+import { Row, Col, CustomInput } from 'reactstrap';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import parcel from 'parcel-sdk';
-import NewTable from './NewTable';
+import PayrollTable from './PayrollTable';
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
   Button,
   Modal,
   ModalHeader,
@@ -25,11 +20,22 @@ import {
 import { Plus } from 'react-feather';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import styled from '@emotion/styled';
+
+const FlexWrap = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const FlexButton = styled(Button)`
+  margin: 0 5px;
+`;
 
 export default function Payroll() {
   const KEY = '12345';
-  const [departments, setDepartments] = useState('');
-  const [department, setDepartment] = useState('');
+  const [options, setOptions] = useState<any>([]);
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [newDepartment, setNewDepartment] = useState('');
   const [addDepartmentModal, setAddDepartmentModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -44,10 +50,8 @@ export default function Payroll() {
       if (parcelWalletContract) {
         try {
           let files = await parcelWalletContract.files('1');
-          console.log('files:', files);
 
           let filesFromIpfs = await parcel.ipfs.getData(files);
-          console.log('filesFromIpfs:', filesFromIpfs);
 
           let filesDecrypted = parcel.cryptoUtils.decryptData(
             filesFromIpfs,
@@ -56,15 +60,18 @@ export default function Payroll() {
 
           if (filesDecrypted) {
             filesDecrypted = JSON.parse(filesDecrypted);
-            console.log('filesDecrypted:', filesDecrypted);
-            setDepartments(filesDecrypted);
+
+            let newOutcomes = [];
+            for (let i = 0; i < filesDecrypted.length; i++) {
+              newOutcomes.push(filesDecrypted[i]);
+            }
+            setOptions(newOutcomes);
           }
         } catch (error) {
           console.error(error);
         }
       }
     })();
-    return () => {};
   }, [parcelWalletContract]);
 
   async function createDepartment() {
@@ -82,10 +89,33 @@ export default function Payroll() {
 
           departmentsDecrypted = JSON.parse(departmentsDecrypted);
 
-          departmentsDecrypted.push(department);
+          departmentsDecrypted.push(newDepartment);
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
             JSON.stringify(departmentsDecrypted),
+            KEY
+          );
+
+          let departmentHash = await parcel.ipfs.addData(
+            encryptedDepartmentData
+          );
+          console.log(departmentHash);
+
+          let result = await parcelWalletContract!.addFile(
+            '1',
+            departmentHash.string
+          );
+
+          // toast.info('Transaction Submitted');
+          console.log('result:', result);
+          await result.wait();
+          toast.success('Transaction Confirmed');
+        } else {
+          let departments = [];
+          departments.push(newDepartment);
+
+          let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(departments),
             KEY
           );
 
@@ -103,29 +133,6 @@ export default function Payroll() {
           console.log('result:', result);
           await result.wait();
           toast.success('Transaction Confirmed');
-        } else {
-          let departments = [];
-          departments.push(department);
-
-          let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-            JSON.stringify(departments),
-            KEY
-          );
-
-          let departmentHash = await parcel.ipfs.addData(
-            encryptedDepartmentData
-          );
-          console.log(departmentHash);
-
-          let result = await parcelWalletContract!.addFile(
-            '1',
-            departmentHash.string
-          );
-
-          toast.success('Transaction Submitted');
-          console.log('result:', result);
-          await result.wait();
-          toast.success('Transaction Confirmed');
         }
       } catch (error) {
         console.error(error);
@@ -133,35 +140,76 @@ export default function Payroll() {
     }
     setLoading(false);
     setAddDepartmentModal(false);
-    setDepartment('');
+  }
+
+  async function massPayout() {
+    if (parcelWalletContract) {
+      const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+      const TOKENS_REQUESTED = [
+        '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      ];
+      const EMPLOYEE_ADDRESSES = [
+        '0x36eC99A4CA6F1a3E3299aEB94587F34A9E6adA1f',
+        '0x36eC99A4CA6F1a3E3299aEB94587F34A9E6adA1f',
+      ];
+      const VALUES_TO_SEND = ['100000000000000000', '100000000000000000'];
+
+      let res = await parcelWalletContract.massPayout(
+        ETH_ADDRESS,
+        TOKENS_REQUESTED,
+        EMPLOYEE_ADDRESSES,
+        VALUES_TO_SEND
+      );
+      console.log('res:', res);
+    }
   }
 
   return (
     <>
       <Breadcrumbs breadCrumbTitle="Payroll" breadCrumbActive="Payroll" />
       <Row>
+        <Col md="6" sm="12">
+          <Button
+            className="add-new-btn mr-1"
+            color="primary"
+            onClick={() => setAddDepartmentModal(true)}
+          >
+            <Plus size={15} /> <span className="align-middle">Add</span>
+          </Button>
+          <CustomInput
+            type="select"
+            name="select"
+            id="selectDepartment"
+            value={selectedDepartment}
+            aria-label="Select a department"
+            onChange={(e: any) => setSelectedDepartment(e.target.value)}
+            style={{ width: '200px' }}
+          >
+            {options.map((option: any) => (
+              <option key={option} value={option} aria-label={option}>
+                {option}
+              </option>
+            ))}
+          </CustomInput>
+        </Col>
+
+        {options ? (
+          <PayrollTable selectedDepartment={selectedDepartment} />
+        ) : (
+          <h1>No departments</h1>
+        )}
+
         <Col sm="12">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Button
-                  className="add-new-btn"
-                  color="primary"
-                  onClick={() => setAddDepartmentModal(true)}
-                >
-                  <Plus size={15} /> Add Department
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardBody>
-              {departments ? (
-                // <TabsTable departments={departments} />
-                <NewTable departments={departments} />
-              ) : (
-                <h1>No departments</h1>
-              )}
-            </CardBody>
-          </Card>
+          <FlexWrap>
+            <FlexButton color="primary" disabled={true}>
+              Stream
+            </FlexButton>
+
+            <FlexButton color="primary" outline onClick={() => massPayout()}>
+              Pay
+            </FlexButton>
+          </FlexWrap>
         </Col>
       </Row>
       <Modal
@@ -186,8 +234,8 @@ export default function Payroll() {
                 id="department"
                 required
                 placeholder="i.e. Marketing"
-                value={department}
-                onChange={(e: any) => setDepartment(e.target.value)}
+                value={newDepartment}
+                onChange={(e: any) => setNewDepartment(e.target.value)}
               />
             </FormGroup>
           )}
