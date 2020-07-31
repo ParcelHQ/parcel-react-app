@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { CREATE_EMPLOYEE, DELETE_EMPLOYEE, UPDATE_EMPLOYEE } from './Constants';
 
 export default function EmployeeReducer(state: any, action: any) {
-  console.log('state:', state);
   switch (action.type) {
     case CREATE_EMPLOYEE:
       return [

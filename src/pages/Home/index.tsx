@@ -9,8 +9,8 @@ import 'react-table/react-table.css';
 import '../../assets/scss/plugins/extensions/react-tables.scss';
 
 export default function Home() {
-  const { organization } = useContext(OrganizationContext);
-  console.log('organization:', organization);
+  // const { organization } = useContext(OrganizationContext);
+
   return (
     <>
       <StatisticsCard />

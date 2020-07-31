@@ -65,7 +65,6 @@ export default function AppRouter() {
     if (!isStale && parcelFactoryContract) {
       (async () => {
         let res = await parcelFactoryContract.registered(account);
-        // console.log(typeof res);
 
         //If they are not registed
         if (res !== ZERO_ADDRESS) {

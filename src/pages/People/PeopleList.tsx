@@ -36,8 +36,6 @@ export default function PayrollList() {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-
   const KEY = '12345';
 
   const parcelWalletContract = useContract(
@@ -60,10 +58,9 @@ export default function PayrollList() {
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        console.log(parcelWalletContract);
         try {
           let people = await parcelWalletContract.files('2');
-          console.log('people ', people);
+
           if (people !== '') {
             let peopleFromIpfs = await parcel.ipfs.getData(people);
 
@@ -177,15 +174,10 @@ export default function PayrollList() {
       let peopleFromIpfs = await parcel.ipfs.getData(people);
       let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
       let parsed = JSON.parse(peopleDecrypted);
-      console.log('parsed:', parsed);
-
-      console.log(selectedRow);
 
       const newUpdate = parsed.filter(
         (employee: any) => employee.address !== selectedRow.address
       );
-
-      console.log(newUpdate);
 
       const encryptedUpdate = parcel.cryptoUtils.encryptData(
         JSON.stringify(newUpdate),

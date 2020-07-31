@@ -15,7 +15,7 @@ const Notification = () => {
       <DropdownToggle tag="a" className="nav-link nav-link-label">
         <Icon.Bell size={21} />
         <Badge pill color="primary" className="badge-up">
-          2
+          1
         </Badge>
       </DropdownToggle>
       <DropdownMenu tag="ul" right className="dropdown-menu-media">

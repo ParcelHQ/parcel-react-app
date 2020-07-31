@@ -117,7 +117,6 @@ export default function Sidebar({
           console.log('encryptedPersonData ', encryptedPersonData);
 
           let personHash = await parcel.ipfs.addData(encryptedPersonData);
-          console.log(personHash);
 
           let result = await parcelWalletContract.addFile(
             '2',

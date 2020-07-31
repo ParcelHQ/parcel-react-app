@@ -6,7 +6,6 @@ export const getParcelWalletAddress = () => {
   if (address) {
     address = address.replace(/'/g, '');
     address = address.replace(/'/g, '"');
-    console.log(address);
     return address;
   }
   return address;

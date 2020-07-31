@@ -59,8 +59,6 @@ export default function Landing() {
     true
   );
 
-  console.log('parcelFactoryContract:', parcelFactoryContract);
-
   // async function checkStatus() {
   //   if (parcelFactoryContract && account) {
   //     let requester = await parcelFactoryContract.registered(account);

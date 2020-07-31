@@ -83,8 +83,7 @@ export default function Create() {
 
           toast.success('Transaction Confirmed');
 
-          console.log("parcelOrgAddress: ",parcelOrgAddress);
-          localStorage.setItem('PARCEL_WALLET_ADDRESS',parcelOrgAddress);
+          localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
           addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;
 
           // createParcelWallet(parcelOrgAddress);

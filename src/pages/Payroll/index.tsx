@@ -89,7 +89,6 @@ export default function Payroll() {
           let departmentHash = await parcel.ipfs.addData(
             encryptedDepartmentData
           );
-          console.log(departmentHash);
 
           let result = await parcelWalletContract!.addFile(
             '1',
@@ -97,7 +96,6 @@ export default function Payroll() {
           );
 
           // toast.info('Transaction Submitted');
-          console.log('result:', result);
           await result.wait();
           toast.success('Transaction Confirmed');
         } else {
@@ -112,7 +110,6 @@ export default function Payroll() {
           let departmentHash = await parcel.ipfs.addData(
             encryptedDepartmentData
           );
-          console.log(departmentHash);
 
           let result = await parcelWalletContract!.addFile(
             '1',
@@ -120,7 +117,6 @@ export default function Payroll() {
           );
 
           toast.info('Transaction Submitted');
-          console.log('result:', result);
           await result.wait();
           toast.success('Transaction Confirmed');
         }

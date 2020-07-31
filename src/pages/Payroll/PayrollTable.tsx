@@ -30,10 +30,6 @@ export default function PayrollTable({ selectedDepartment }: any) {
   const [data, setData] = useState(employees);
   const [selectedRow, setSelectedRow] = useState<any>();
 
-  useEffect(() => {
-    console.log(selectedRow);
-  }, [selectedRow]);
-
   const KEY = '12345';
 
   const parcelWalletContract = useContract(
@@ -51,10 +47,9 @@ export default function PayrollTable({ selectedDepartment }: any) {
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        console.log(parcelWalletContract);
         try {
           let people = await parcelWalletContract.files('2');
-          console.log('people ', people);
+
           if (people !== '') {
             let peopleFromIpfs = await parcel.ipfs.getData(people);
 
@@ -64,7 +59,6 @@ export default function PayrollTable({ selectedDepartment }: any) {
             );
 
             peopleDecrypted = JSON.parse(peopleDecrypted);
-            console.log(peopleDecrypted);
             setData(peopleDecrypted);
           } else {
             console.log(`Zero Employees registered yet!`);
@@ -163,7 +157,6 @@ export default function PayrollTable({ selectedDepartment }: any) {
         EMPLOYEE_ADDRESSES,
         VALUES_TO_SEND
       );
-      console.log('res:', res);
       TOKENS_REQUESTED = [];
       EMPLOYEE_ADDRESSES = [];
     }
