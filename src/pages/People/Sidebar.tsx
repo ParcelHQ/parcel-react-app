@@ -2,7 +2,7 @@ import React, { useState, useContext, ChangeEvent, useEffect } from 'react';
 import { Label, Input, FormGroup, Button } from 'reactstrap';
 import { X } from 'react-feather';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Spinner } from 'reactstrap';
 import classnames from 'classnames';
 import Flatpickr from 'react-flatpickr';
 import styled from '@emotion/styled';
@@ -39,6 +39,7 @@ export default function Sidebar({
   const [startDate, setStartDate] = useState<any>(new Date());
   const [endDate, setEndDate] = useState<any>(new Date());
   const [index, setIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const parcelWalletContract: any = useContract(
     addresses[RINKEBY_ID].parcelWallet,
     ParcelWallet,
@@ -102,69 +103,85 @@ export default function Sidebar({
     //   endDate,
     // });
 
-    if (addNew) {
-      if (!areTherePeople) {
-        let PERSON: any[] = [];
-        PERSON.push(newUser);
+    try {
+      setIsSubmitting(true);
+      if (addNew) {
+        if (!areTherePeople) {
+          let PERSON: any[] = [];
+          PERSON.push(newUser);
 
-        const encryptedPersonData = parcel.cryptoUtils.encryptData(
-          JSON.stringify(PERSON),
-          KEY
-        );
-        console.log("encryptedPersonData ",encryptedPersonData);
+          const encryptedPersonData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(PERSON),
+            KEY
+          );
+          console.log('encryptedPersonData ', encryptedPersonData);
 
-        let personHash = await parcel.ipfs.addData(encryptedPersonData);
-        console.log(personHash);
+          let personHash = await parcel.ipfs.addData(encryptedPersonData);
+          console.log(personHash);
 
-        let result = await parcelWalletContract.addFile('2', personHash.string);
-        await result.wait();
-        toast.success("Person added successfully!")
+          let result = await parcelWalletContract.addFile(
+            '2',
+            personHash.string
+          );
+          await result.wait();
+          toast.success('Person added successfully!');
+        } else {
+          let people = await parcelWalletContract.files('2');
+          let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+          let peopleDecrypted = parcel.cryptoUtils.decryptData(
+            peopleFromIpfs,
+            KEY
+          );
+          peopleDecrypted = JSON.parse(peopleDecrypted);
+
+          peopleDecrypted.push(newUser);
+
+          const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(peopleDecrypted),
+            KEY
+          );
+
+          let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
+
+          let result = await parcelWalletContract.addFile(
+            '2',
+            newPersonHash.string
+          );
+          await result.wait();
+          toast.success('Person added successfully!');
+        }
       } else {
+        // updateEmployee(selectedUser);
+
         let people = await parcelWalletContract.files('2');
+
         let peopleFromIpfs = await parcel.ipfs.getData(people);
 
         let peopleDecrypted = parcel.cryptoUtils.decryptData(
           peopleFromIpfs,
           KEY
         );
-        peopleDecrypted = JSON.parse(peopleDecrypted);
 
-        peopleDecrypted.push(newUser);
+        let parsed = JSON.parse(peopleDecrypted);
 
-        const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
-          JSON.stringify(peopleDecrypted),
+        parsed[index] = selectedUser;
+
+        const encryptedUpdate = parcel.cryptoUtils.encryptData(
+          JSON.stringify(parsed),
           KEY
         );
 
-        let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
+        let personHash = await parcel.ipfs.addData(encryptedUpdate);
 
-        let result = await parcelWalletContract.addFile('2', newPersonHash.string);
+        let result = await parcelWalletContract.addFile('2', personHash.string);
         await result.wait();
-        toast.success("Person added successfully!")
+        toast.success('Person Updated successfully!');
       }
-    } else {
-      // updateEmployee(selectedUser);
-
-      let people = await parcelWalletContract.files('2');
-
-      let peopleFromIpfs = await parcel.ipfs.getData(people);
-
-      let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
-
-      let parsed = JSON.parse(peopleDecrypted);
-
-      parsed[index] = selectedUser;
-
-      const encryptedUpdate = parcel.cryptoUtils.encryptData(
-        JSON.stringify(parsed),
-        KEY
-      );
-
-      let personHash = await parcel.ipfs.addData(encryptedUpdate);
-
-      let result = await parcelWalletContract.addFile('2', personHash.string);
-      await result.wait();
-      toast.success("Person Updated successfully!")
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error(error);
+      setIsSubmitting(false);
     }
 
     handleSidebar(false, true);
@@ -254,7 +271,7 @@ export default function Sidebar({
                     }
                   >
                     <option disabled value="">
-                      Engineering
+                      -
                     </option>
                     <option value="Engineering">Engineering</option>
                     <option value="Finance">Finance</option>
@@ -281,7 +298,6 @@ export default function Sidebar({
                 )}
               </FormGroup>
             </Col>
-
             <Col sm="12">
               <FormGroup>
                 <Label htmlFor="salary">Salary</Label>
@@ -391,17 +407,24 @@ export default function Sidebar({
               </>
             )}
             <ButtonWrapper>
-              <Button color="primary" type="submit">
-                {addNew ? 'Submit' : 'Update'}
-              </Button>
-              <Button
-                className="ml-1"
-                outline
-                color="primary"
-                onClick={() => handleSidebar(false, true)}
-              >
-                Cancel
-              </Button>
+              {isSubmitting ? (
+                <Spinner color="primary" />
+              ) : (
+                <>
+                  <Button color="primary" type="submit">
+                    {addNew ? 'Submit' : 'Update'}
+                  </Button>
+
+                  <Button
+                    className="ml-1"
+                    outline
+                    color="primary"
+                    onClick={() => handleSidebar(false, true)}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              )}
             </ButtonWrapper>
           </Row>
 

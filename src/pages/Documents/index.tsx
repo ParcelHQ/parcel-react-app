@@ -95,6 +95,7 @@ export default function Documents() {
   const onSubmit = async (event: any) => {
     event.preventDefault();
     setIsSubmitting(true);
+
     if (library && account) {
       try {
 
