@@ -39,10 +39,10 @@ export default function NavbarUser({ userImg, userName }: any) {
       <Notification />
       <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
         <DropdownToggle tag="a" className="nav-link dropdown-user-link">
-          <div className="user-nav d-sm-flex d-none">
+          {/* <div className="user-nav d-sm-flex d-none">
             <span className="user-name text-bold-600">{userName}</span>
             <span className="user-status">Available</span>
-          </div>
+          </div> */}
           <span data-tour="user">
             <Avatar color="primary" content="JD" status="online" />
           </span>
