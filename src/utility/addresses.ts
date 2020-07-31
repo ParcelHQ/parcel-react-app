@@ -1,7 +1,7 @@
 export const MAINNET_ID = 1;
 export const RINKEBY_ID = 3;
 
-const getParcelWalletAddress = () => {
+export const getParcelWalletAddress = () => {
   let address = localStorage.getItem('PARCEL_WALLET_ADDRESS');
   if (address) {
     address = address.replace(/'/g, '');

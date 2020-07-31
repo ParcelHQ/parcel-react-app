@@ -198,7 +198,8 @@ export default function PayrollList() {
         KEY
       );
       let personHash = await parcel.ipfs.addData(encryptedUpdate);
-      await parcelWalletContract.addFile('2', personHash.string);
+      let res = await parcelWalletContract.addFile('2', personHash.string);
+      await res.wait();
     }
 
     setIsDeleting(false);

@@ -6,6 +6,7 @@ import { formatEther } from '@ethersproject/units';
 import { useTokens } from '../../utility/tokens';
 import IERC20 from '@uniswap/v2-core/build/IERC20.json';
 import useContract from '../../hooks/useContract';
+import { getParcelWalletAddress } from '../../utility/addresses';
 
 import StatisticsCard from '../../components/StatisticsCard';
 import { ReactComponent as ETHLogo } from '../../assets/currency/eth.svg';
@@ -17,6 +18,9 @@ export default function StatisticsCards() {
   const tokens = useTokens();
   const daiContract = useContract(tokens[0][5].address, IERC20.abi);
   const usdcContract = useContract(tokens[0][6].address, IERC20.abi);
+
+  const parcelWalletAddress = getParcelWalletAddress();
+
   const { account, library, chainId } = useWeb3React<Web3Provider>();
   const [ethBalance, setEthBalance] = useState<any>(0);
   const [daiBalance, setDaiBalance] = useState<any>(0);
@@ -28,17 +32,23 @@ export default function StatisticsCards() {
     (async () => {
       if (account && !isStale) {
         if (library) {
-          const balance = formatEther(await library.getBalance(account));
+          const balance = formatEther(
+            await library.getBalance(parcelWalletAddress!)
+          );
           setEthBalance(parseFloat(balance).toFixed(2));
         }
 
         if (daiContract) {
-          const balance = formatEther(await daiContract.balanceOf(account));
+          const balance = formatEther(
+            await daiContract.balanceOf(parcelWalletAddress)
+          );
           setDaiBalance(parseFloat(balance).toFixed(2));
         }
 
         if (usdcContract) {
-          const balance = formatEther(await usdcContract.balanceOf(account));
+          const balance = formatEther(
+            await usdcContract.balanceOf(parcelWalletAddress)
+          );
           setUsdcBalance(parseFloat(balance).toFixed(2));
         }
       }

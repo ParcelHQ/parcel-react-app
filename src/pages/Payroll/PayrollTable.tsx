@@ -107,6 +107,9 @@ export default function PayrollTable({ selectedDepartment }: any) {
   );
 
   async function massPayout() {
+    if (!selectedRow) {
+      return;
+    }
     if (parcelWalletContract) {
       //! CURRENCY TO SEND WITH
       const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -139,7 +142,20 @@ export default function PayrollTable({ selectedDepartment }: any) {
       });
 
       //! VALUES_TO_SEND
-      const VALUES_TO_SEND = ['1000000000000000000', '1000000'];
+      let VALUES_TO_SEND: any[] = [];
+      selectedRow.forEach((employee: any) => {
+        switch (employee.salaryCurrency) {
+          case 'DAI':
+            VALUES_TO_SEND.push('1000000000000000000');
+            break;
+          case 'USDC':
+            VALUES_TO_SEND.push('1000000');
+            break;
+
+          default:
+            return;
+        }
+      });
 
       let res = await parcelWalletContract.massPayout(
         DAI_ADDRESS,
