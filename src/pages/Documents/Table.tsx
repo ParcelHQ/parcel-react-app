@@ -24,10 +24,10 @@ export default function Table({ data }: any) {
             },
             {
               Header: 'File Size',
-              id: 'fileSize',
+              accessor: 'size',
             },
           ]}
-          defaultPageSize={10}
+          defaultPageSize={5}
           className="-striped -highlight"
         />
       </CardBody>

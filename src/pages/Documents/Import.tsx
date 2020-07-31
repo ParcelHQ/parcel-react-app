@@ -57,18 +57,27 @@ const Import = () => {
     setIsSubmitting(true);
     if (library && account) {
       try {
-        library
-          .getSigner(account)
-          .signMessage(buffer)
-          .then((signature: any) => {
-            return parcel.cryptoUtils.encryptData(buffer, signature);
-          })
-          .then((encryptedData) => {
-            return parcel.ipfs.addData(encryptedData);
-          })
-          .then((res) => {
-            parcelWalletContract!.addFile(1, res.string);
-          });
+        let documentsData = [];
+        let file = acceptedFiles[0];
+        documentsData.push({
+          name : file.name,
+          size: file.size,
+          content : buffer,
+          owner : account
+        });
+
+        console.log(documentsData)
+        let encryptedDocumentData = parcel.cryptoUtils.encryptData(JSON.stringify(documentsData), "signature");
+        console.log(encryptedDocumentData);
+
+        let encryptedDocumentDataHash = await parcel.ipfs.addData(encryptedDocumentData);
+        console.log(encryptedDocumentDataHash);
+
+        let b = await parcel.ipfs.getData(encryptedDocumentDataHash.string);
+        console.log(b);
+
+        let result = await parcelWalletContract!.addFile('3', encryptedDocumentDataHash.string);
+        console.log(result);
       } catch (error) {
         console.error(error);
         setIsSubmitting(false);

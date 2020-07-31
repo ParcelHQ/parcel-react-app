@@ -34,6 +34,14 @@ export function makeData(len = 100) {
   });
 }
 
+export const documentsDummyData = [
+  {
+    name : "Tarun",
+    owner : "hi",
+    size: 2885
+  }
+]
+
 export const nestedData = [
   {
     first_name: 'Soledad',
