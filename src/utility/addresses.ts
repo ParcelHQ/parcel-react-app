@@ -39,8 +39,8 @@ export default {
     },
   },
   [RINKEBY_ID]: {
-    parcelFactory: '0xA29871a6169Fd0F6e868F952F996a8d7008026C8',
-    parcelWallet: '0x88cc63Cd8ac62D9a2DB44eBb0888224DD81a8651', //TODO: change this to global address when created
+    parcelFactory: '0xbF2BC5F244C382EF02D0E323245579C2961eF94B',
+    parcelWallet: '0x33479FC07e4A507b1fF2E7b63c06BA1Ea5ccC02A', //TODO: change this to global address when created
     massPayouts: '0x9244fB7C104c09de4D5B7D41ce151ad29c837Ce4',
     tokens: {
       DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',

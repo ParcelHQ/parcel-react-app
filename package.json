@@ -64,7 +64,7 @@
     "styled-components": "^5.1.1",
     "uuid": "^8.3.0",
     "xlsx": "^0.16.4",
-    "yup": "^0.29.1"
+    "yup": "^0.29.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -78,7 +78,7 @@
     "@types/classnames": "^2.2.10",
     "@types/file-saver": "^2.0.1",
     "@types/match-sorter": "^4.0.0",
-    "@types/node": "^14.0.26",
+    "@types/node": "^14.0.27",
     "@types/prismjs": "^1.16.1",
     "@types/react": "^16.9.43",
     "@types/react-datepicker": "^3.1.0",
@@ -87,7 +87,7 @@
     "@types/react-hammerjs": "^1.0.1",
     "@types/react-paginate": "^6.2.1",
     "@types/react-router-dom": "^5.1.5",
-    "@types/react-select": "^3.0.14",
+    "@types/react-select": "^3.0.15",
     "@types/react-table": "^7.0.19",
     "@types/reactstrap": "^8.5.0",
     "@types/uuid": "^8.0.0",

@@ -1,12 +1,11 @@
 import React, {
   useMemo,
-  useState,
   useCallback,
+  useState,
   useEffect,
   useContext,
 } from 'react';
 import parcel from 'parcel-sdk';
-import ReactPaginate from 'react-paginate';
 import DataTable from 'react-data-table-component';
 import {
   Button,
@@ -21,11 +20,9 @@ import {
 } from 'reactstrap';
 import classnames from 'classnames';
 import { Edit, Trash, Plus, ArrowDown, Check } from 'react-feather';
-import styled from '@emotion/styled';
 
 import { EmployeeContext } from '../../state/employee/Context';
 import Sidebar from './Sidebar';
-import Checkbox from '../../components/CheckBoxes';
 
 import '../../assets/scss/plugins/extensions/react-paginate.scss';
 import '../../assets/scss/pages/data-list.scss';
@@ -35,18 +32,15 @@ import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 
 export default function PayrollList() {
-  const { employees, deleteEmployee } = useContext(EmployeeContext);
+  const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
   const [sidebar, setSidebar] = useState<any>(false);
   const [selectedRow, setSelectedRow] = useState<any>();
-  const [selectedRows, setSelectedRows] = useState<any>([]);
   const [addNew, setAddNew] = useState<any>(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [addDepartmentModal, setAddDepartmentModal] = useState(false);
   const [department, setDepartment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [filteredData, setFilteredData] = useState<any>();
-  const [value, setValue] = useState<any>();
 
   const KEY = '12345';
 
@@ -66,6 +60,26 @@ export default function PayrollList() {
     setSidebar(boolean);
     if (addNew === true) setAddNew(true);
   };
+
+  useEffect(() => {
+    (async () => {
+      if (parcelWalletContract) {
+        try {
+          let people = await parcelWalletContract.files('2');
+
+          let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+          let peopleDecrypted = parcel.cryptoUtils.decryptData(
+            peopleFromIpfs,
+            KEY
+          );
+
+          peopleDecrypted = JSON.parse(peopleDecrypted);
+          setData(peopleDecrypted);
+        } catch (error) {}
+      }
+    })();
+  }, [parcelWalletContract]);
 
   const CustomHeader = ({ handleSidebar, handleFilter }: any) => {
     return (
@@ -140,12 +154,12 @@ export default function PayrollList() {
       },
       {
         name: 'Address / ENS',
-        selector: 'addressOrEns',
+        selector: 'address',
         sortable: true,
       },
       {
         name: 'Currency',
-        selector: 'currency',
+        selector: 'salaryCurrency',
         sortable: true,
       },
       {
@@ -161,138 +175,76 @@ export default function PayrollList() {
     []
   );
 
-  const TextField = styled.input`
-    height: 32px;
-    width: 200px;
-    border-radius: 3px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border: 1px solid #e5e5e5;
-    padding: 0 32px 0 16px;
-    &:hover {
-      cursor: pointer;
-    }
-  `;
-
-  const ClearButton = styled(Button)`
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    height: 34px;
-    width: 32px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  `;
-
-  useEffect(() => {
-    // console.log(selectedRows);
-  }, [selectedRows]);
-
-  const handleChange = useCallback((state: any) => {
-    setSelectedRows(state.selectedRows);
-  }, []);
-
-  const handleFilter = (e: any) => {
-    setValue(e.target.value);
-    setFilteredData(e.target.value);
-  };
-
   async function createDepartment() {
     setLoading(true);
-    try {
-      let encryptedDepartmentData;
-      //TODO: ADD ARRAY, STILL USING JSON.stringify()
-      if (department === 'object')
-        encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-          JSON.stringify(department),
-          KEY
-        );
-      else
-        encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-          department,
+    if (parcelWalletContract) {
+      try {
+        let DEP = [];
+        DEP.push(department);
+
+        let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
+          JSON.stringify(DEP),
           KEY
         );
 
-      let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
+        let departmentHash = await parcel.ipfs.addData(encryptedDepartmentData);
 
-      if (parcelWalletContract) {
         let result = await parcelWalletContract.addFile(
           '1',
           departmentHash.string
         );
+        console.log('result:', result);
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
     setLoading(false);
     setAddDepartmentModal(false);
+    setDepartment('');
   }
 
-  async function getFiles() {
-    if (parcelWalletContract) {
-      let files = await parcelWalletContract.files('1');
-
-      let filesFromIpfs = await parcel.ipfs.getData(files);
-
-      let filesDecrypted = parcel.cryptoUtils.decryptData(filesFromIpfs, KEY);
-
-      if (typeof filesDecrypted !== 'string')
-        filesDecrypted = JSON.parse(filesDecrypted);
-    }
-  }
-
-  async function getPeople() {
+  async function deleteEmployee() {
     if (parcelWalletContract) {
       let people = await parcelWalletContract.files('2');
-
       let peopleFromIpfs = await parcel.ipfs.getData(people);
-
       let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
+      let parsed = JSON.parse(peopleDecrypted);
+      console.log('parsed:', parsed);
 
-      peopleDecrypted = JSON.parse(peopleDecrypted);
+      console.log(selectedRow);
+
+      const newUpdate = parsed.filter(
+        (employee: any) => employee.address !== selectedRow.address
+      );
+
+      const encryptedUpdate = parcel.cryptoUtils.encryptData(
+        JSON.stringify(newUpdate),
+        KEY
+      );
+      let personHash = await parcel.ipfs.addData(encryptedUpdate);
+      await parcelWalletContract.addFile('2', personHash.string);
     }
+
+    setConfirmationModal(!confirmationModal);
   }
 
   return (
     <>
       <div className={'data-list list-view'}>
-        <button onClick={() => getFiles()}>get departments</button>
-        <button onClick={() => getPeople()}>get people</button>
         <DataTable
           //@ts-ignore
           columns={columns}
-          // data={data}
-          data={filteredData ? filteredData : data}
+          data={data}
           noHeader
           subHeader
           responsive
           pointerOnHover
-          selectableRowsHighlight
           pagination
           paginationServer
           fixedHeader
-          // selectableRows
-          // onSelectedRowsChange={handleChange}
-          // selectableRowsComponent={Checkbox}
-          // onSelectedRowsChange={(data) => setSelectedRows(data.selectedRows)}
-          selectableRowsComponentProps={{
-            color: 'primary',
-            icon: <Check className="vx-icon" size={12} />,
-            label: '',
-            size: 'sm',
-          }}
           sortIcon={<ArrowDown />}
           subHeaderComponent={
-            <CustomHeader
-              handleSidebar={handleSidebar}
-              rowsPerPage={5}
-              handleFilter={handleFilter}
-            />
+            <CustomHeader handleSidebar={handleSidebar} rowsPerPage={5} />
           }
           customStyles={{
             headRow: {
@@ -313,14 +265,6 @@ export default function PayrollList() {
                 borderRadius: '25px',
                 outline: '1px solid #FFFFFF',
               },
-              // selectedHighlighStyle: {
-              //   backgroundColor: 'rgba(115,103,240,.05)',
-              //   color: '#7367F0 !important',
-              //   boxShadow: '0 0 1px 0 #7367F0 !important',
-              //   '&:hover': {
-              //     transform: 'translateY(0px) !important',
-              //   },
-              // },
             },
 
             pagination: {
@@ -335,6 +279,7 @@ export default function PayrollList() {
           handleSidebar={handleSidebar}
           addNew={addNew}
           selectedRow={selectedRow}
+          data={data}
         />
         <div
           className={classnames('data-list-overlay', {
@@ -357,8 +302,7 @@ export default function PayrollList() {
           <Button
             color="primary"
             onClick={() => {
-              deleteEmployee(selectedRow.id);
-              setConfirmationModal(!confirmationModal);
+              deleteEmployee();
             }}
           >
             Delete

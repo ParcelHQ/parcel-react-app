@@ -22,39 +22,37 @@ const ButtonWrapper = styled.div`
   margin: auto;
 `;
 
-interface ISelectedUser {
-  id: any;
-  name: string;
-  addressOrEns: string;
-  department: string;
-  salary: any;
-  currency: string;
-}
-
 export default function Sidebar({
   show,
   handleSidebar,
   addNew,
   selectedRow,
+  data,
 }: any) {
   const { createEmployee, updateEmployee, employees } = useContext(
     EmployeeContext
   );
+  const [areTherePeople, setAreTherePeople] = useState(false);
   const KEY = '12345';
-  const [name, setName] = useState<any>('');
-  const [addressOrEns, setAddressOrEns] = useState<any>('');
-  const [department, setDepartment] = useState<any>('Engineering');
-  const [currency, setCurrency] = useState<any>('');
-  const [salary, setSalary] = useState<any>('');
   const [startDate, setStartDate] = useState<any>(new Date());
   const [endDate, setEndDate] = useState<any>(new Date());
+  const [index, setIndex] = useState(0);
   const parcelWalletContract: any = useContract(
     addresses[RINKEBY_ID].parcelWallet,
     ParcelWallet,
     true
   );
 
-  const [selectedUser, setSeletedUser] = useState<ISelectedUser>({
+  const [newUser, setNewUser] = useState<any>({
+    id: null,
+    name: '',
+    address: '',
+    department: '',
+    salary: '',
+    salaryCurrency: '',
+  });
+
+  const [selectedUser, setSeletedUser] = useState<any>({
     id: null,
     name: '',
     addressOrEns: '',
@@ -65,84 +63,77 @@ export default function Sidebar({
 
   useEffect(() => {
     if (selectedRow) {
-      const employeeId = selectedRow.id;
-      const selectedUser = employees.find(
-        (emp: any) => emp.id === parseInt(employeeId)
-      );
-      setSeletedUser(selectedUser);
+      for (let i = 0; i < data.length; i++) {
+        if (selectedRow.address === data[i].address) {
+          setIndex(i);
+          break;
+        }
+      }
     }
-  }, [selectedRow]);
+  }, [selectedRow, data]);
+
+  useEffect(() => {
+    if (index) {
+      setSeletedUser(data[index]);
+    }
+  }, [index, data]);
+
+  useEffect(() => {
+    (async () => {
+      if (parcelWalletContract) {
+        let areTherePeople = await parcelWalletContract.files('2');
+        setAreTherePeople(!!areTherePeople);
+      }
+    })();
+  }, [parcelWalletContract]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
+    // createEmployee({
+    //   name,
+    //   addressOrEns,
+    //   department,
+    //   currency,
+    //   salary,
+    //   startDate,
+    //   endDate,
+    // });
+
     if (addNew) {
-      // createEmployee({
-      //   name,
-      //   addressOrEns,
-      //   department,
-      //   currency,
-      //   salary,
-      //   startDate,
-      //   endDate,
-      // });
+      if (!areTherePeople) {
+        let PERSON: any[] = [];
+        PERSON.push(newUser);
 
-      //!if no people
-      //   name,
-      //   addressOrEns,
-      //   department,
-      //   currency,
-      //   salary,
-      //   startDate,
-      //   endDate,
-      const PERSON = [
-        {
-          address: '0x1d9999be880e7e516dEefdA00a3919BdDE9C1707',
-          name: 'Brennan Fife',
-          salary: '100000',
-          salaryCurrency: 'DAI',
-          department: 'Engineering',
-        },
-      ];
+        const encryptedPersonData = parcel.cryptoUtils.encryptData(
+          JSON.stringify(PERSON),
+          KEY
+        );
 
-      const encryptedPersonData = parcel.cryptoUtils.encryptData(
-        JSON.stringify(PERSON),
-        KEY
-      );
+        let personHash = await parcel.ipfs.addData(encryptedPersonData);
 
-      let personHash = await parcel.ipfs.addData(encryptedPersonData);
+        await parcelWalletContract.addFile('2', personHash.string);
+      } else {
+        let people = await parcelWalletContract.files('2');
+        let peopleFromIpfs = await parcel.ipfs.getData(people);
 
-      let result = await parcelWalletContract.addFile('2', personHash.string);
+        let peopleDecrypted = parcel.cryptoUtils.decryptData(
+          peopleFromIpfs,
+          KEY
+        );
+        peopleDecrypted = JSON.parse(peopleDecrypted);
 
-      //! if there are already people
-      // let people = await parcelWalletContract.files('2');
-      // let peopleFromIpfs = await parcel.ipfs.getData(people);
+        peopleDecrypted.push(newUser);
 
-      // let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
+        const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
+          JSON.stringify(peopleDecrypted),
+          KEY
+        );
 
-      // peopleDecrypted = JSON.parse(peopleDecrypted);
+        let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
 
-      // const personObject = {
-      //   address: '0x0',
-      //   name: 'Bezos',
-      //   salary: '1000000',
-      //   salaryCurrency: 'USDC',
-      //   department: 'Marketing',
-      // };
-
-      // peopleDecrypted.push(personObject);
-
-      // const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
-      //   JSON.stringify(peopleDecrypted),
-      //   KEY
-      // );
-
-      // let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
-
-      // let newUpdatedEmployees = await parcelWalletContract.addFile(
-      //   '2',
-      //   newPersonHash.string
-      // );
+        await parcelWalletContract.addFile('2', newPersonHash.string);
+      }
     } else {
       // updateEmployee(selectedUser);
 
@@ -152,11 +143,9 @@ export default function Sidebar({
 
       let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
 
-      console.log('peopleDecrypted:', JSON.parse(peopleDecrypted));
-
       let parsed = JSON.parse(peopleDecrypted);
 
-      parsed[1].salary = '2';
+      parsed[index] = selectedUser;
 
       const encryptedUpdate = parcel.cryptoUtils.encryptData(
         JSON.stringify(parsed),
@@ -165,10 +154,10 @@ export default function Sidebar({
 
       let personHash = await parcel.ipfs.addData(encryptedUpdate);
 
-      let result = await parcelWalletContract.addFile('2', personHash.string);
+      await parcelWalletContract.addFile('2', personHash.string);
     }
 
-    // handleSidebar(false, true);
+    handleSidebar(false, true);
   };
 
   return (
@@ -193,9 +182,11 @@ export default function Sidebar({
                 {addNew ? (
                   <Input
                     type="text"
-                    value={name}
+                    value={newUser.name}
                     placeholder="John Smith"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, name: e.target.value })
+                    }
                     id="data-name"
                   />
                 ) : (
@@ -212,24 +203,26 @@ export default function Sidebar({
             </Col>
             <Col sm="12">
               <FormGroup>
-                <Label htmlFor="addressOrEns">Address / ENS</Label>
+                <Label htmlFor="address">Address / ENS</Label>
                 {addNew ? (
                   <Input
                     type="text"
-                    value={addressOrEns}
-                    id="addressOrEns"
+                    value={newUser.address}
+                    id="address"
                     placeholder="0x1d9999be880e7e516dEefdA00a3919BdDE9C1707"
-                    onChange={(e) => setAddressOrEns(e.target.value)}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, address: e.target.value })
+                    }
                   />
                 ) : (
                   <Input
                     type="text"
-                    value={selectedUser.addressOrEns}
-                    id="addressOrEns"
+                    value={selectedUser.address}
+                    id="address"
                     onChange={(e) =>
                       setSeletedUser({
                         ...selectedUser,
-                        addressOrEns: e.target.value,
+                        address: e.target.value,
                       })
                     }
                   />
@@ -243,13 +236,20 @@ export default function Sidebar({
                   <Input
                     type="select"
                     id="department"
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
+                    required
+                    value={newUser.department}
+                    aria-label="Select a department"
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, department: e.target.value })
+                    }
                   >
-                    <option>Engineering</option>
-                    <option>Finance</option>
-                    <option>Marketing</option>
-                    <option>HR</option>
+                    <option disabled value="">
+                      -
+                    </option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="HR">HR</option>
                   </Input>
                 ) : (
                   <Input
@@ -271,42 +271,7 @@ export default function Sidebar({
                 )}
               </FormGroup>
             </Col>
-            <Col sm="12">
-              <FormGroup>
-                <Label htmlFor="currency">Currency</Label>
 
-                {addNew ? (
-                  <Input
-                    type="select"
-                    id="currency"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                  >
-                    <option>ETH</option>
-                    <option>DAI</option>
-                    <option>USDC</option>
-                    <option>USDT</option>
-                  </Input>
-                ) : (
-                  <Input
-                    type="select"
-                    id="currency"
-                    value={selectedUser.currency}
-                    onChange={(e) =>
-                      setSeletedUser({
-                        ...selectedUser,
-                        currency: e.target.value,
-                      })
-                    }
-                  >
-                    <option>ETH</option>
-                    <option>DAI</option>
-                    <option>USDC</option>
-                    <option>USDT</option>
-                  </Input>
-                )}
-              </FormGroup>
-            </Col>
             <Col sm="12">
               <FormGroup>
                 <Label htmlFor="salary">Salary</Label>
@@ -315,8 +280,12 @@ export default function Sidebar({
                   <Input
                     type="text"
                     id="salary"
-                    value={salary}
-                    onChange={(e: any) => setSalary(e.target.value)}
+                    required
+                    placeholder="100,000"
+                    value={newUser.salary}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, salary: e.target.value })
+                    }
                   />
                 ) : (
                   <Input
@@ -330,6 +299,49 @@ export default function Sidebar({
                       })
                     }
                   />
+                )}
+              </FormGroup>
+            </Col>
+            <Col sm="12">
+              <FormGroup>
+                <Label htmlFor="currency">Currency</Label>
+
+                {addNew ? (
+                  <Input
+                    type="select"
+                    id="currency"
+                    placeholder="ETH"
+                    value={newUser.salaryCurrency}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, salaryCurrency: e.target.value })
+                    }
+                  >
+                    <option disabled value="">
+                      -
+                    </option>
+                    <option value="ETH">ETH</option>
+                    <option value="DAI">DAI</option>
+                    <option value="USDC">USDC</option>
+                    <option value="USDT">USDT</option>
+                  </Input>
+                ) : (
+                  <Input
+                    type="select"
+                    id="currency"
+                    placeholder="ETH"
+                    value={selectedUser.currency}
+                    onChange={(e) =>
+                      setSeletedUser({
+                        ...selectedUser,
+                        currency: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="ETH">ETH</option>
+                    <option value="DAI">DAI</option>
+                    <option value="USDC">USDC</option>
+                    <option value="USDT">USDT</option>
+                  </Input>
                 )}
               </FormGroup>
             </Col>
@@ -374,7 +386,8 @@ export default function Sidebar({
               </Button>
               <Button
                 className="ml-1"
-                color="danger"
+                outline
+                color="primary"
                 onClick={() => handleSidebar(false, true)}
               >
                 Cancel

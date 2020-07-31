@@ -35,9 +35,9 @@
         "type": "uint8"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "hash",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "name": "addFile",
@@ -87,9 +87,9 @@
     "name": "files",
     "outputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
