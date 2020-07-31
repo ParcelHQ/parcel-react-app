@@ -1,10 +1,4 @@
-import React, {
-  useMemo,
-  useCallback,
-  useState,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import parcel from 'parcel-sdk';
 import DataTable from 'react-data-table-component';
 import {
@@ -217,8 +211,6 @@ export default function PayrollList() {
           subHeader
           responsive
           pointerOnHover
-          pagination
-          paginationServer
           fixedHeader
           sortIcon={<ArrowDown />}
           subHeaderComponent={

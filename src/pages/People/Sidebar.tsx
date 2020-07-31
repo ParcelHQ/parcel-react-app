@@ -256,6 +256,7 @@ export default function Sidebar({
                 )}
               </FormGroup>
             </Col>
+
             <Col sm="12">
               <FormGroup>
                 <Label for="department">Department</Label>

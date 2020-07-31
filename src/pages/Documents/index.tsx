@@ -25,6 +25,7 @@ import ReactTable from 'react-table';
 import ParcelWalletContract from '../../abis/ParcelWallet.json';
 import { useDropzone } from 'react-dropzone';
 import styled from '@emotion/styled';
+import { Plus } from 'react-feather';
 
 const Container = styled.div`
   flex: 1;
@@ -48,13 +49,7 @@ export default function Documents() {
     true
   );
 
-  const [documentsData, setDocumentsData] = useState([
-    {
-      name: 'Tarun',
-      owner: 'hi',
-      size: 2885,
-    },
-  ]);
+  const [documentsData, setDocumentsData] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [buffer, setBuffer] = useState('');
   const [modal, setModal] = useState(false);
@@ -64,28 +59,20 @@ export default function Documents() {
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        console.log('parcelWalletContract:', parcelWalletContract);
         try {
           let documentsFromContractHash = await parcelWalletContract!.files(
             '3'
           );
 
-          console.log('documentsFromContractHash ', documentsFromContractHash);
-
           let documentsFromIpfs = await parcel.ipfs.getData(
             documentsFromContractHash
           );
-
-          console.log('documentsFromIpfs ', documentsFromIpfs);
 
           let decryptedData = parcel.cryptoUtils.decryptData(
             documentsFromIpfs,
             'signature'
           );
 
-          console.log('decryptedData:', decryptedData);
-
-          // console.log('JSON.parse(decryptedData):', JSON.parse(decryptedData));
           setDocumentsData(JSON.parse(decryptedData));
         } catch (error) {}
       }
@@ -98,12 +85,9 @@ export default function Documents() {
 
     if (library && account) {
       try {
+        let documentsFromContractHash = await parcelWalletContract!.files('3');
 
-        let documentsFromContractHash = await parcelWalletContract!.files(
-          '3'
-        );
-
-        if (documentsFromContractHash != ''){
+        if (documentsFromContractHash !== '') {
           let getEncryptedDocumentsData = await parcel.ipfs.getData(
             documentsFromContractHash
           );
@@ -203,7 +187,8 @@ export default function Documents() {
               color="primary"
               onClick={() => setModal(!modal)}
             >
-              Add Document
+              <Plus size={15} />{' '}
+              <span className="align-middle">Add Document</span>
             </Button>
           </CardTitle>
         </CardHeader>
@@ -221,7 +206,7 @@ export default function Documents() {
                 accessor: 'owner',
               },
               {
-                Header: 'File Size',
+                Header: 'File Size (bytes)',
                 accessor: 'size',
               },
             ]}
