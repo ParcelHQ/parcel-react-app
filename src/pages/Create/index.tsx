@@ -36,6 +36,7 @@ export default function Create() {
     ParcelFactoryContract,
     true
   );
+  console.log(parcelFactoryContract)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const PARCEL_ID_HASH = namehash.hash('parcelid.eth');
   const [open, setOpen] = useState(false);
@@ -72,6 +73,8 @@ export default function Create() {
             nameHash,
             ensFullDomainHash
           );
+
+          console.log(parcelFactoryContract);
 
           toast.info('Transaction Submitted');
           await tx.wait();

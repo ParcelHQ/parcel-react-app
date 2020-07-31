@@ -50,7 +50,7 @@ export default {
     },
   },
   [RINKEBY_ID]: {
-    parcelFactory: '0xbF2BC5F244C382EF02D0E323245579C2961eF94B',
+    parcelFactory: '0x9401938AB4c3415704E4bDd711268FCD0C70d59f',
     parcelWallet:  getParcelWalletAddress() || '0xc2daeC47fbE026550c4F3f6C35d300C37b8aF361', //TODO: change this to global address when created
     massPayouts: '0x9244fB7C104c09de4D5B7D41ce151ad29c837Ce4',
     tokens: {
