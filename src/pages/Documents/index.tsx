@@ -70,18 +70,22 @@ export default function Documents() {
             '3'
           );
 
+          console.log('documentsFromContractHash ', documentsFromContractHash);
+
           let documentsFromIpfs = await parcel.ipfs.getData(
             documentsFromContractHash
           );
 
-          let decryptedData = parcel.cryptoUtils.decryptedData(
+          console.log('documentsFromIpfs ', documentsFromIpfs);
+
+          let decryptedData = parcel.cryptoUtils.decryptData(
             documentsFromIpfs,
             'signature'
           );
 
           console.log('decryptedData:', decryptedData);
 
-          console.log('JSON.parse(decryptedData):', JSON.parse(decryptedData));
+          // console.log('JSON.parse(decryptedData):', JSON.parse(decryptedData));
           setDocumentsData(JSON.parse(decryptedData));
         } catch (error) {}
       }
@@ -97,7 +101,7 @@ export default function Documents() {
         let documentsData = [];
         let file = acceptedFiles[0];
         documentsData.push({
-          name: name,
+          name,
           size: file.size,
           content: buffer,
           owner: account,
@@ -118,6 +122,7 @@ export default function Documents() {
           '3',
           encryptedDocumentDataHash.string
         );
+
         await result.wait();
       } catch (error) {
         console.error(error);
