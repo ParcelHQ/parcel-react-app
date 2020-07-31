@@ -98,9 +98,12 @@ export default function Documents() {
 
     if (library && account) {
       try {
-        let documentsFromContractHash = await parcelWalletContract!.files('3');
 
-        if (documentsFromContractHash !== '') {
+        let documentsFromContractHash = await parcelWalletContract!.files(
+          '3'
+        );
+
+        if (documentsFromContractHash != ''){
           let getEncryptedDocumentsData = await parcel.ipfs.getData(
             documentsFromContractHash
           );
