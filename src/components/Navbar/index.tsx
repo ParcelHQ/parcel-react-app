@@ -61,7 +61,7 @@ export default function ThemeNavbar({
               <NavbarUser
                 handleAppOverlay={handleAppOverlay}
                 changeCurrentLang={changeCurrentLang}
-                userName="John Doe"
+                userName="Brennan Fife"
                 userImg={userImg}
               />
             </div>

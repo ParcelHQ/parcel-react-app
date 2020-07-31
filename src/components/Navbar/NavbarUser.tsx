@@ -44,7 +44,7 @@ export default function NavbarUser({ userImg, userName }: any) {
             <span className="user-status">Available</span>
           </div> */}
           <span data-tour="user">
-            <Avatar color="primary" content="JD" status="online" />
+            <Avatar color="primary" content="BF" status="online" />
           </span>
         </DropdownToggle>
         <DropdownMenu right>
