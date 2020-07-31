@@ -85,6 +85,7 @@ export default function Create() {
 
           console.log("parcelOrgAddress: ",parcelOrgAddress);
           localStorage.setItem('PARCEL_WALLET_ADDRESS',parcelOrgAddress);
+          addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;
 
           createParcelWallet(parcelOrgAddress);
 
