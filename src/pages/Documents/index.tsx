@@ -97,32 +97,77 @@ export default function Documents() {
     setIsSubmitting(true);
     if (library && account) {
       try {
-        let documentsData = [];
-        let file = acceptedFiles[0];
-        documentsData.push({
-          name,
-          size: file.size,
-          content: buffer,
-          owner: account,
-        });
 
-        let encryptedDocumentData = parcel.cryptoUtils.encryptData(
-          JSON.stringify(documentsData),
-          'signature'
+        let documentsFromContractHash = await parcelWalletContract!.files(
+          '3'
         );
 
-        let encryptedDocumentDataHash = await parcel.ipfs.addData(
-          encryptedDocumentData
-        );
+        if (documentsFromContractHash != ''){
+          let getEncryptedDocumentsData = await parcel.ipfs.getData(
+            documentsFromContractHash
+          );
 
-        await parcel.ipfs.getData(encryptedDocumentDataHash.string);
+          let decryptedDocumentsData = parcel.cryptoUtils.decryptData(
+            getEncryptedDocumentsData,
+            'signature'
+          );
 
-        let result = await parcelWalletContract!.addFile(
-          '3',
-          encryptedDocumentDataHash.string
-        );
+          decryptedDocumentsData = JSON.parse(decryptedDocumentsData);
 
-        await result.wait();
+          let file = acceptedFiles[0];
+
+          decryptedDocumentsData.push({
+            name,
+            size: file.size,
+            content: buffer,
+            owner: account,
+          });
+
+          let encryptedDocumentData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(decryptedDocumentsData),
+            'signature'
+          );
+
+          let encryptedDocumentDataHash = await parcel.ipfs.addData(
+            encryptedDocumentData
+          );
+
+          await parcel.ipfs.getData(encryptedDocumentDataHash.string);
+
+          let result = await parcelWalletContract!.addFile(
+            '3',
+            encryptedDocumentDataHash.string
+          );
+
+          await result.wait();
+        } else {
+          let documentsData = [];
+          let file = acceptedFiles[0];
+          documentsData.push({
+            name,
+            size: file.size,
+            content: buffer,
+            owner: account,
+          });
+
+          let encryptedDocumentData = parcel.cryptoUtils.encryptData(
+            JSON.stringify(documentsData),
+            'signature'
+          );
+
+          let encryptedDocumentDataHash = await parcel.ipfs.addData(
+            encryptedDocumentData
+          );
+
+          await parcel.ipfs.getData(encryptedDocumentDataHash.string);
+
+          let result = await parcelWalletContract!.addFile(
+            '3',
+            encryptedDocumentDataHash.string
+          );
+
+          await result.wait();
+        }
       } catch (error) {
         console.error(error);
         setIsSubmitting(false);
