@@ -6,6 +6,7 @@ const navigationConfig = [
     title: 'Home',
     type: 'item',
     icon: <Icon.Home size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/home',
   },
   {
@@ -13,6 +14,7 @@ const navigationConfig = [
     title: 'Accounting',
     type: 'item',
     icon: <Icon.Edit size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/accounting',
   },
   {
@@ -20,6 +22,7 @@ const navigationConfig = [
     title: 'Payroll',
     type: 'item',
     icon: <Icon.DollarSign size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/payroll',
   },
 
@@ -28,6 +31,7 @@ const navigationConfig = [
     title: 'People',
     type: 'item',
     icon: <Icon.Users size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/people',
   },
   {
@@ -35,6 +39,7 @@ const navigationConfig = [
     title: 'Documents',
     type: 'item',
     icon: <Icon.File size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/documents',
   },
 
@@ -51,6 +56,7 @@ const navigationConfig = [
     title: 'Settings',
     type: 'item',
     icon: <Icon.Settings size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/settings',
   },
   {
@@ -58,6 +64,7 @@ const navigationConfig = [
     title: 'About',
     type: 'item',
     icon: <Icon.Heart size={20} />,
+    permissions: ['admin', 'editor'],
     navLink: '/about',
   },
 ];

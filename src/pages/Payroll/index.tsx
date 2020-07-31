@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumbs from '../../components/BreadCrumbs';
 import { Row, Col } from 'reactstrap';
 import TabsTable from './TabsTable';
@@ -9,6 +9,7 @@ import parcel from 'parcel-sdk';
 
 export default function Payroll() {
   const KEY = '12345';
+  const [departments, setDepartments] = useState('');
 
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,
@@ -31,9 +32,11 @@ export default function Payroll() {
             KEY
           );
 
-          if (typeof filesDecrypted !== 'string')
+          if (filesDecrypted) {
             filesDecrypted = JSON.parse(filesDecrypted);
-          console.log('filesDecrypted:', filesDecrypted);
+            console.log('filesDecrypted:', filesDecrypted);
+            setDepartments(filesDecrypted);
+          }
         } catch (error) {
           console.error(error);
         }
@@ -47,7 +50,7 @@ export default function Payroll() {
       <Breadcrumbs breadCrumbTitle="Payroll" breadCrumbActive="Payroll" />
       <Row>
         <Col sm="12">
-          <TabsTable />
+          {departments ? <TabsTable departments={departments} /> : null}
         </Col>
       </Row>
     </>

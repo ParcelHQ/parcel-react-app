@@ -1,14 +1,22 @@
 import React from 'react';
-import { Card, CardBody } from 'reactstrap';
+import { Card, CardBody, Button } from 'reactstrap';
 import ReactTable from 'react-table';
+import styled from '@emotion/styled';
 
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import ParcelWalletContract from '../../abis/ParcelWallet.json';
 import { useContract } from '../../hooks';
 
-export default function Table({ data }: any) {
-  console.log('data:', data);
+const FlexWrap = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
+const FlexButton = styled(Button)`
+  margin: 0 5px;
+`;
+
+export default function Table({ data }: any) {
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,
     ParcelWalletContract,
@@ -38,8 +46,6 @@ export default function Table({ data }: any) {
     }
   }
 
-  // 0x88cc63Cd8ac62D9a2DB44eBb0888224DD81a8651
-
   return (
     <>
       <Card>
@@ -66,7 +72,15 @@ export default function Table({ data }: any) {
           />
         </CardBody>
       </Card>
-      <button onClick={() => massPayout()}>Mass Payout</button>
+      <FlexWrap>
+        <FlexButton color="primary" disabled={true}>
+          Stream
+        </FlexButton>
+
+        <FlexButton color="primary" outline onClick={() => massPayout()}>
+          Pay
+        </FlexButton>
+      </FlexWrap>
     </>
   );
 }

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { OrganizationContext } from '../../state/organization/Context';
 import StatisticsCard from './StatisticsCard';
 import CurrentStreams from './CurrentStreams';
 import { Row, Col } from 'reactstrap';
@@ -8,6 +9,8 @@ import 'react-table/react-table.css';
 import '../../assets/scss/plugins/extensions/react-tables.scss';
 
 export default function Home() {
+  const { organization } = useContext(OrganizationContext);
+  console.log('organization:', organization);
   return (
     <>
       <StatisticsCard />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, CardBody, Row, Col } from 'reactstrap';
 import { keccak256 } from '@ethersproject/keccak256';
 import { toUtf8Bytes } from '@ethersproject/strings';
@@ -10,6 +10,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import namehash from 'eth-ens-namehash';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { OrganizationContext } from '../../state/organization/Context';
 
 import {
   Button,
@@ -26,6 +27,8 @@ import { Redirect } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 export default function Create() {
+  const { organization, createParcelWallet } = useContext(OrganizationContext);
+
   const { library, account } = useWeb3React<Web3Provider>();
   const [ensName, setEnsName] = useState('');
   const parcelFactoryContract = useContract(
@@ -37,7 +40,6 @@ export default function Create() {
   const PARCEL_ID_HASH = namehash.hash('parcelid.eth');
   const [open, setOpen] = useState(false);
   const [invalidState, setInvalidState] = useState(false);
-
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
@@ -73,19 +75,20 @@ export default function Create() {
 
           toast.info('Transaction Submitted');
           await tx.wait();
-          if (!!parcelFactoryContract) {
-            let parcelOrgAddress = await parcelFactoryContract.registered(
-              account
-            );
-            console.log('parcelOrgAddress:', parcelOrgAddress);
-          }
-          setSubmitted(true);
+
+          let parcelOrgAddress = await parcelFactoryContract.registered(
+            account
+          );
+
+          createParcelWallet(parcelOrgAddress);
+
+          // setSubmitted(true);
         } catch (error) {
           toast.error('Transaction Failed');
+
+          setIsSubmitting(false);
         }
     }
-
-    setIsSubmitting(false);
   }
 
   return (
@@ -117,16 +120,28 @@ export default function Create() {
                     <InputGroupAddon addonType="append">
                       <InputGroupText>@parcelid.eth</InputGroupText>
                     </InputGroupAddon>
-                    <FormFeedback>{error}</FormFeedback>
+                    <FormFeedback
+                      style={{ position: 'absolute', marginTop: '3rem' }}
+                    >
+                      {error}
+                    </FormFeedback>
                   </InputGroup>
                 </FormGroup>
+
                 <Button
                   className="my-1"
                   type="submit"
                   color="primary"
                   disabled={isSubmitting}
+                  style={{
+                    padding: '12px 16px',
+                  }}
                 >
-                  {isSubmitting ? <Spinner color="light" /> : 'Submit'}
+                  {isSubmitting ? (
+                    <Spinner color="light" size="sm" />
+                  ) : (
+                    'Submit'
+                  )}
                 </Button>
               </form>
             </CardBody>
@@ -137,7 +152,7 @@ export default function Create() {
       <ToastContainer
         position="bottom-center"
         autoClose={3000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}
