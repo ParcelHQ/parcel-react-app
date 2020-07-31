@@ -6,6 +6,7 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import parcel from 'parcel-sdk';
+import NewTable from './NewTable';
 import {
   Card,
   CardHeader,
@@ -154,7 +155,8 @@ export default function Payroll() {
             </CardHeader>
             <CardBody>
               {departments ? (
-                <TabsTable departments={departments} />
+                // <TabsTable departments={departments} />
+                <NewTable departments={departments} />
               ) : (
                 <h1>No departments</h1>
               )}
