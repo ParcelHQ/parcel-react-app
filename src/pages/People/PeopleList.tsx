@@ -1,6 +1,17 @@
 import React, { useMemo, useState, useEffect, useContext } from 'react';
+import parcel from 'parcel-sdk';
 import DataTable from 'react-data-table-component';
-import { Button, Modal, ModalHeader, ModalFooter, Input } from 'reactstrap';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  Input,
+  FormGroup,
+  ModalBody,
+  Label,
+  Spinner,
+} from 'reactstrap';
 import classnames from 'classnames';
 import { Edit, Trash, Plus, ArrowDown } from 'react-feather';
 
@@ -10,13 +21,28 @@ import Sidebar from './Sidebar';
 import '../../assets/scss/plugins/extensions/react-paginate.scss';
 import '../../assets/scss/pages/data-list.scss';
 
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelWallet from '../../abis/ParcelWallet.json';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function PayrollList() {
-  const { employees, deleteEmployee } = useContext(EmployeeContext);
+  const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
   const [sidebar, setSidebar] = useState<any>(false);
   const [selectedRow, setSelectedRow] = useState<any>();
   const [addNew, setAddNew] = useState<any>(false);
-  const [modal, setModal] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const KEY = '12345';
+
+  const parcelWalletContract = useContract(
+    addresses[RINKEBY_ID].parcelWallet,
+    ParcelWallet,
+    true
+  );
 
   useEffect(() => {
     setData(employees);
@@ -29,6 +55,31 @@ export default function PayrollList() {
     if (addNew === true) setAddNew(true);
   };
 
+  useEffect(() => {
+    (async () => {
+      if (parcelWalletContract) {
+        try {
+          let people = await parcelWalletContract.files('2');
+
+          if (people !== '') {
+            let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+            let peopleDecrypted = parcel.cryptoUtils.decryptData(
+              peopleFromIpfs,
+              KEY
+            );
+
+            peopleDecrypted = JSON.parse(peopleDecrypted);
+            console.log(peopleDecrypted);
+            setData(peopleDecrypted);
+          } else {
+            console.log(`Zero Employees registered yet!`);
+          }
+        } catch (error) {}
+      }
+    })();
+  }, [parcelWalletContract]);
+
   const CustomHeader = ({ handleSidebar, handleFilter }: any) => {
     return (
       <div className="data-list-header d-flex justify-content-between flex-wrap">
@@ -37,11 +88,12 @@ export default function PayrollList() {
             className="add-new-btn"
             color="primary"
             onClick={() => handleSidebar(true, true)}
-            outline
+            style={{ marginRight: '1rem' }}
           >
-            <Plus size={15} />
+            <Plus size={15} /> Add Employee
           </Button>
         </div>
+
         <div className="actions-right d-flex flex-wrap mt-sm-0 mt-2">
           <div className="filter-section">
             <Input
@@ -72,7 +124,7 @@ export default function PayrollList() {
           size={20}
           onClick={() => {
             setSelectedRow(row);
-            setModal(!modal);
+            setConfirmationModal(!confirmationModal);
           }}
         />
       </div>
@@ -94,12 +146,12 @@ export default function PayrollList() {
       },
       {
         name: 'Address / ENS',
-        selector: 'addressOrEns',
+        selector: 'address',
         sortable: true,
       },
       {
         name: 'Currency',
-        selector: 'currency',
+        selector: 'salaryCurrency',
         sortable: true,
       },
       {
@@ -115,6 +167,31 @@ export default function PayrollList() {
     []
   );
 
+  async function deleteEmployee() {
+    setIsDeleting(true);
+    if (parcelWalletContract) {
+      let people = await parcelWalletContract.files('2');
+      let peopleFromIpfs = await parcel.ipfs.getData(people);
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
+      let parsed = JSON.parse(peopleDecrypted);
+
+      const newUpdate = parsed.filter(
+        (employee: any) => employee.address !== selectedRow.address
+      );
+
+      const encryptedUpdate = parcel.cryptoUtils.encryptData(
+        JSON.stringify(newUpdate),
+        KEY
+      );
+      let personHash = await parcel.ipfs.addData(encryptedUpdate);
+      let res = await parcelWalletContract.addFile('2', personHash.string);
+      await res.wait();
+    }
+
+    setIsDeleting(false);
+    setConfirmationModal(!confirmationModal);
+  }
+
   return (
     <>
       <div className={'data-list list-view'}>
@@ -126,9 +203,6 @@ export default function PayrollList() {
           subHeader
           responsive
           pointerOnHover
-          selectableRowsHighlight
-          pagination
-          paginationServer
           fixedHeader
           sortIcon={<ArrowDown />}
           subHeaderComponent={
@@ -153,14 +227,6 @@ export default function PayrollList() {
                 borderRadius: '25px',
                 outline: '1px solid #FFFFFF',
               },
-              // selectedHighlighStyle: {
-              //   backgroundColor: 'rgba(115,103,240,.05)',
-              //   color: '#7367F0 !important',
-              //   boxShadow: '0 0 1px 0 #7367F0 !important',
-              //   '&:hover': {
-              //     transform: 'translateY(0px) !important',
-              //   },
-              // },
             },
 
             pagination: {
@@ -175,6 +241,7 @@ export default function PayrollList() {
           handleSidebar={handleSidebar}
           addNew={addNew}
           selectedRow={selectedRow}
+          data={data}
         />
         <div
           className={classnames('data-list-overlay', {
@@ -184,8 +251,12 @@ export default function PayrollList() {
         />
       </div>
 
-      <Modal isOpen={modal} toggle={() => setModal(!modal)} centered>
-        <ModalHeader toggle={() => setModal(!modal)}>
+      <Modal
+        isOpen={confirmationModal}
+        toggle={() => setConfirmationModal(!confirmationModal)}
+        centered
+      >
+        <ModalHeader toggle={() => setConfirmationModal(!confirmationModal)}>
           Confirm Delete?
         </ModalHeader>
 
@@ -193,17 +264,31 @@ export default function PayrollList() {
           <Button
             color="primary"
             onClick={() => {
-              deleteEmployee(selectedRow.id);
-              setModal(!modal);
+              deleteEmployee();
             }}
           >
             Delete
           </Button>{' '}
-          <Button color="secondary" onClick={() => setModal(!modal)}>
+          <Button
+            color="secondary"
+            onClick={() => setConfirmationModal(!confirmationModal)}
+          >
             Cancel
           </Button>
         </ModalFooter>
       </Modal>
+
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }

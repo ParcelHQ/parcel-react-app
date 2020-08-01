@@ -7,7 +7,7 @@ const navigationConfig = [
     type: 'item',
     icon: <Icon.Home size={20} />,
     permissions: ['admin', 'editor'],
-    navLink: '/',
+    navLink: '/home',
   },
   {
     id: 'accounting',

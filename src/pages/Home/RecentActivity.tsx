@@ -22,15 +22,15 @@ export default function RecentActivity() {
         <tbody>
           <tr>
             <td>28/07/2018</td>
-            <td>Brennan.eth</td>
-            <td>Paid Contractor Brennan Fife $545 for 'animation platfrom'</td>
             <td>$2500</td>
+            <td>Brennan.eth</td>
+            <td>Paid Contractor Brennan Fife $545</td>
           </tr>
           <tr>
             <td>28/07/2018</td>
-            <td>John.eth</td>
-            <td>John Smith is requesting $324 for 'marketing campaign'</td>
             <td>$2500</td>
+            <td>BrennanFife.eth</td>
+            <td>Brennan Fife is requesting $324</td>
           </tr>
         </tbody>
       </Table>

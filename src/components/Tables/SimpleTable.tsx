@@ -3,7 +3,6 @@ import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
 import ReactTable from 'react-table';
 
 export default function SimpleTable({ headers, data, title }: any) {
-  console.log('headers:', headers);
   return (
     <Card>
       <CardHeader>

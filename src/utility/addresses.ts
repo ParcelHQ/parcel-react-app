@@ -1,6 +1,16 @@
 export const MAINNET_ID = 1;
 export const RINKEBY_ID = 3;
 
+export const getParcelWalletAddress = () => {
+  let address = localStorage.getItem('PARCEL_WALLET_ADDRESS');
+  if (address) {
+    address = address.replace(/'/g, '');
+    address = address.replace(/'/g, '"');
+    return address;
+  }
+  return address;
+};
+
 export default {
   [MAINNET_ID]: {
     parcelFactory: '',
@@ -39,8 +49,9 @@ export default {
     },
   },
   [RINKEBY_ID]: {
-    parcelFactory: '0x1C48cA86248C6B60545BCBb412341D638F62AdE0',
-    parcelWallet: '0xB7ffEF4d23247B67d63da5Bd95b13a67FD938ef2',
+    parcelFactory: '0x9401938AB4c3415704E4bDd711268FCD0C70d59f',
+    parcelWallet:
+      getParcelWalletAddress() || '0xc2daeC47fbE026550c4F3f6C35d300C37b8aF361', //TODO: change this to global address when created
     massPayouts: '0x9244fB7C104c09de4D5B7D41ce151ad29c837Ce4',
     tokens: {
       DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',

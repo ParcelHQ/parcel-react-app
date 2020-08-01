@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, CardBody, Row, Col } from 'reactstrap';
 import { keccak256 } from '@ethersproject/keccak256';
 import { toUtf8Bytes } from '@ethersproject/strings';
@@ -10,6 +10,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import namehash from 'eth-ens-namehash';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { OrganizationContext } from '../../state/organization/Context';
 
 import {
   Button,
@@ -26,18 +27,19 @@ import { Redirect } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 export default function Create() {
-  const { library } = useWeb3React<Web3Provider>();
+  const { organization, createParcelWallet } = useContext(OrganizationContext);
+
+  const { library, account } = useWeb3React<Web3Provider>();
   const [ensName, setEnsName] = useState('');
   const parcelFactoryContract = useContract(
     addresses[RINKEBY_ID].parcelFactory,
-    ParcelFactoryContract.abi,
+    ParcelFactoryContract,
     true
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const PARCEL_ID_HASH = namehash.hash('parcelid.eth');
   const [open, setOpen] = useState(false);
   const [invalidState, setInvalidState] = useState(false);
-
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
@@ -70,15 +72,29 @@ export default function Create() {
             nameHash,
             ensFullDomainHash
           );
+
           toast.info('Transaction Submitted');
-          const result = await tx.wait();
-          toast.success(`Transaction ${result.blockHash} Confirmed`);
+          await tx.wait();
+
+          toast.success('Waiting for the confirmation');
+          let parcelOrgAddress = await parcelFactoryContract.registered(
+            account
+          );
+
+          toast.success('Transaction Confirmed');
+
+          localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
+          addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;
+
+          // createParcelWallet(parcelOrgAddress);
+
           setSubmitted(true);
         } catch (error) {
           toast.error('Transaction Failed');
+
+          setIsSubmitting(false);
         }
     }
-    setIsSubmitting(false);
   }
 
   return (
@@ -110,16 +126,28 @@ export default function Create() {
                     <InputGroupAddon addonType="append">
                       <InputGroupText>@parcelid.eth</InputGroupText>
                     </InputGroupAddon>
-                    <FormFeedback>{error}</FormFeedback>
+                    <FormFeedback
+                      style={{ position: 'absolute', marginTop: '3rem' }}
+                    >
+                      {error}
+                    </FormFeedback>
                   </InputGroup>
                 </FormGroup>
+
                 <Button
                   className="my-1"
                   type="submit"
                   color="primary"
                   disabled={isSubmitting}
+                  style={{
+                    padding: '12px 16px',
+                  }}
                 >
-                  {isSubmitting ? <Spinner color="light" /> : 'Submit'}
+                  {isSubmitting ? (
+                    <Spinner color="light" size="sm" />
+                  ) : (
+                    'Submit'
+                  )}
                 </Button>
               </form>
             </CardBody>
@@ -130,7 +158,7 @@ export default function Create() {
       <ToastContainer
         position="bottom-center"
         autoClose={3000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}

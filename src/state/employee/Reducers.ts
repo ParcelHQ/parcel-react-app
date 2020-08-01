@@ -28,9 +28,8 @@ export default function EmployeeReducer(state: any, action: any) {
         return employee;
       });
 
-      console.log('updatedEmployees:', updatedEmployees);
-
-      return [...state, updatedEmployees];
+      //!FIX UPDATE TO STATE DIRECTLY
+      return [...updatedEmployees];
 
     default:
       return state;
