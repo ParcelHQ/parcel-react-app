@@ -33,7 +33,6 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
           );
 
           peopleDecrypted = JSON.parse(peopleDecrypted);
-          console.log('peopleDecrypted:', peopleDecrypted);
           initState.push(peopleDecrypted);
         } catch (error) {}
       }
