@@ -20,9 +20,9 @@ import {
 import { Plus } from 'react-feather';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getSignature } from '../../utility';
 
 export default function Payroll() {
-  const KEY = '12345';
   const [options, setOptions] = useState<any>([]);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [newDepartment, setNewDepartment] = useState('');
@@ -45,7 +45,7 @@ export default function Payroll() {
 
           let filesDecrypted = parcel.cryptoUtils.decryptData(
             filesFromIpfs,
-            KEY
+            getSignature()
           );
 
           if (filesDecrypted) {
@@ -74,7 +74,7 @@ export default function Payroll() {
 
           let departmentsDecrypted = parcel.cryptoUtils.decryptData(
             departmentsFromIpfs,
-            KEY
+            getSignature()
           );
 
           departmentsDecrypted = JSON.parse(departmentsDecrypted);
@@ -83,7 +83,7 @@ export default function Payroll() {
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
             JSON.stringify(departmentsDecrypted),
-            KEY
+            getSignature()
           );
 
           let departmentHash = await parcel.ipfs.addData(
@@ -104,7 +104,7 @@ export default function Payroll() {
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
             JSON.stringify(departments),
-            KEY
+            getSignature()
           );
 
           let departmentHash = await parcel.ipfs.addData(

@@ -7,6 +7,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useContract } from '../../hooks';
 import parcel from 'parcel-sdk';
+import { getSignature } from '../../utility';
 import {
   Card,
   Spinner,
@@ -70,7 +71,7 @@ export default function Documents() {
 
           let decryptedData = parcel.cryptoUtils.decryptData(
             documentsFromIpfs,
-            'signature'
+            getSignature()
           );
 
           setDocumentsData(JSON.parse(decryptedData));
@@ -94,7 +95,7 @@ export default function Documents() {
 
           let decryptedDocumentsData = parcel.cryptoUtils.decryptData(
             getEncryptedDocumentsData,
-            'signature'
+            getSignature()
           );
 
           decryptedDocumentsData = JSON.parse(decryptedDocumentsData);
@@ -110,7 +111,7 @@ export default function Documents() {
 
           let encryptedDocumentData = parcel.cryptoUtils.encryptData(
             JSON.stringify(decryptedDocumentsData),
-            'signature'
+            getSignature()
           );
 
           let encryptedDocumentDataHash = await parcel.ipfs.addData(
@@ -137,7 +138,7 @@ export default function Documents() {
 
           let encryptedDocumentData = parcel.cryptoUtils.encryptData(
             JSON.stringify(documentsData),
-            'signature'
+            getSignature()
           );
 
           let encryptedDocumentDataHash = await parcel.ipfs.addData(

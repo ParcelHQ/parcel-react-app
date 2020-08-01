@@ -13,6 +13,7 @@ import '../../assets/scss/pages/data-list.scss';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
+import { getSignature } from './../../utility';
 
 import styled from '@emotion/styled';
 
@@ -29,8 +30,6 @@ export default function PayrollTable({ selectedDepartment }: any) {
   const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
   const [selectedRow, setSelectedRow] = useState<any>();
-
-  const KEY = '12345';
 
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,
@@ -55,7 +54,7 @@ export default function PayrollTable({ selectedDepartment }: any) {
 
             let peopleDecrypted = parcel.cryptoUtils.decryptData(
               peopleFromIpfs,
-              KEY
+              getSignature()
             );
 
             peopleDecrypted = JSON.parse(peopleDecrypted);

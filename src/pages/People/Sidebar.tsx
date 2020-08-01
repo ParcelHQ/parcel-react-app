@@ -10,6 +10,7 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import parcel from 'parcel-sdk';
+import { getSignature } from '../../utility';
 
 import 'flatpickr/dist/themes/light.css';
 import '../../assets/scss/plugins/forms/flatpickr/flatpickr.scss';
@@ -35,7 +36,6 @@ export default function Sidebar({
     EmployeeContext
   );
   const [areTherePeople, setAreTherePeople] = useState(false);
-  const KEY = '12345';
   const [startDate, setStartDate] = useState<any>(new Date());
   const [endDate, setEndDate] = useState<any>(new Date());
   const [index, setIndex] = useState(0);
@@ -112,7 +112,7 @@ export default function Sidebar({
 
           const encryptedPersonData = parcel.cryptoUtils.encryptData(
             JSON.stringify(PERSON),
-            KEY
+            getSignature()
           );
           console.log('encryptedPersonData ', encryptedPersonData);
 
@@ -130,7 +130,7 @@ export default function Sidebar({
 
           let peopleDecrypted = parcel.cryptoUtils.decryptData(
             peopleFromIpfs,
-            KEY
+            getSignature()
           );
           peopleDecrypted = JSON.parse(peopleDecrypted);
 
@@ -138,7 +138,7 @@ export default function Sidebar({
 
           const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
             JSON.stringify(peopleDecrypted),
-            KEY
+            getSignature()
           );
 
           let newPersonHash = await parcel.ipfs.addData(newEncryptedPersonData);
@@ -159,7 +159,7 @@ export default function Sidebar({
 
         let peopleDecrypted = parcel.cryptoUtils.decryptData(
           peopleFromIpfs,
-          KEY
+          getSignature()
         );
 
         let parsed = JSON.parse(peopleDecrypted);
@@ -168,7 +168,7 @@ export default function Sidebar({
 
         const encryptedUpdate = parcel.cryptoUtils.encryptData(
           JSON.stringify(parsed),
-          KEY
+          getSignature()
         );
 
         let personHash = await parcel.ipfs.addData(encryptedUpdate);

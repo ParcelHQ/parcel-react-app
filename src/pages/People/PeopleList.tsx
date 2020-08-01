@@ -14,6 +14,7 @@ import {
 } from 'reactstrap';
 import classnames from 'classnames';
 import { Edit, Trash, Plus, ArrowDown } from 'react-feather';
+import { getSignature } from '../../utility';
 
 import { EmployeeContext } from '../../state/employee/Context';
 import Sidebar from './Sidebar';
@@ -35,8 +36,6 @@ export default function PayrollList() {
   const [addNew, setAddNew] = useState<any>(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const KEY = '12345';
 
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,
@@ -66,7 +65,7 @@ export default function PayrollList() {
 
             let peopleDecrypted = parcel.cryptoUtils.decryptData(
               peopleFromIpfs,
-              KEY
+              getSignature()
             );
 
             peopleDecrypted = JSON.parse(peopleDecrypted);
@@ -172,7 +171,10 @@ export default function PayrollList() {
     if (parcelWalletContract) {
       let people = await parcelWalletContract.files('2');
       let peopleFromIpfs = await parcel.ipfs.getData(people);
-      let peopleDecrypted = parcel.cryptoUtils.decryptData(peopleFromIpfs, KEY);
+      let peopleDecrypted = parcel.cryptoUtils.decryptData(
+        peopleFromIpfs,
+        getSignature()
+      );
       let parsed = JSON.parse(peopleDecrypted);
 
       const newUpdate = parsed.filter(
@@ -181,7 +183,7 @@ export default function PayrollList() {
 
       const encryptedUpdate = parcel.cryptoUtils.encryptData(
         JSON.stringify(newUpdate),
-        KEY
+        getSignature()
       );
       let personHash = await parcel.ipfs.addData(encryptedUpdate);
       let res = await parcelWalletContract.addFile('2', personHash.string);
