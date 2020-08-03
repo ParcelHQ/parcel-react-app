@@ -18,7 +18,6 @@ import styled from '@emotion/styled';
 import parcel from 'parcel-sdk';
 import Flatpickr from 'react-flatpickr';
 import { X } from 'react-feather';
-import classnames from 'classnames';
 import { getSignature } from '../../utility';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
@@ -40,7 +39,7 @@ const Wrapper = styled.div`
 `;
 
 export default function Add() {
-  const [areTherePeople, setAreTherePeople] = useState(false);
+  const areThereEmployees = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const parcelWalletContract: any = useContract(
     addresses[RINKEBY_ID].parcelWallet,
@@ -50,45 +49,38 @@ export default function Add() {
 
   const [inputFields, setInputFields] = useState([
     {
-      name: '',
-      address: '',
-      department: '',
-      salary: '',
-      salaryCurrency: '',
+      name: 'Brennan',
+      address: '0x1d9999be880e7e516dEefdA00a3919BdDE9C1707',
+      department: 'Engineering',
+      salary: '1',
+      salaryCurrency: 'DAI',
+      date: null,
+    },
+    {
+      name: 'Brennan',
+      address: '0x496Fa0F5F5DAF6e25F481EF2055CDAF218efF75f',
+      department: 'Engineering',
+      salary: '1',
+      salaryCurrency: 'DAI',
       date: null,
     },
   ]);
 
-  useEffect(() => {
-    (async () => {
-      if (parcelWalletContract) {
-        let areTherePeople = await parcelWalletContract.files('2');
-        setAreTherePeople(!!areTherePeople);
-      }
-    })();
-  }, [parcelWalletContract]);
-
   const handleSubmit = async (e: any) => {
-    console.log('handleSubmit:', handleSubmit);
     e.preventDefault();
 
     try {
       setIsSubmitting(true);
-      if (!areTherePeople) {
-        console.log('areTherePeople: no');
-        let PERSON: any[] = [];
-        PERSON.push(inputFields[0]);
-        console.log('inputFields[0]:', inputFields[0]);
-
+      if (areThereEmployees) {
         const encryptedPersonData = parcel.cryptoUtils.encryptData(
-          JSON.stringify(PERSON),
+          JSON.stringify(inputFields),
           getSignature()
         );
 
         let personHash = await parcel.ipfs.addData(encryptedPersonData);
 
         let result = await parcelWalletContract.addFile('2', personHash.string);
-        console.log('result:', result);
+
         await result.wait();
       } else {
         let people = await parcelWalletContract.files('2');
@@ -99,9 +91,7 @@ export default function Add() {
           getSignature()
         );
         peopleDecrypted = JSON.parse(peopleDecrypted);
-
-        peopleDecrypted.push([...inputFields]);
-
+        peopleDecrypted = peopleDecrypted.concat(inputFields);
         const newEncryptedPersonData = parcel.cryptoUtils.encryptData(
           JSON.stringify(peopleDecrypted),
           getSignature()
@@ -166,14 +156,12 @@ export default function Add() {
       <Row
         style={{
           marginBottom: '2rem',
-          overflowY: 'auto',
-          height: '175px',
           width: '100%',
         }}
       >
         {isSubmitting ? (
           <Wrapper>
-            <Spinner color="primary" size="lg" />
+            <Spinner type="grow" color="primary" size="lg" />
           </Wrapper>
         ) : (
           <>

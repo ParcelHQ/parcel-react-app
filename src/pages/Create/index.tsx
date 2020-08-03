@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Card, CardBody, Row, Col } from 'reactstrap';
+import { Card, CardBody, Row, Col, Form } from 'reactstrap';
 import { keccak256 } from '@ethersproject/keccak256';
 import { toUtf8Bytes } from '@ethersproject/strings';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
@@ -80,15 +80,15 @@ export default function Create() {
             ensFullDomainHash
           );
 
-          toast.info('Transaction Submitted');
+          // toast.info('Transaction Submitted');
           await tx.wait();
 
-          toast.success('Waiting for the confirmation');
+          // toast.success('Waiting for the confirmation');
           let parcelOrgAddress = await parcelFactoryContract.registered(
             account
           );
 
-          toast.success('Transaction Confirmed');
+          // toast.success('Transaction Confirmed');
 
           localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
           addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;
@@ -110,58 +110,65 @@ export default function Create() {
           <Card className="auth-card bg-transparent shadow-none rounded-0 mb-0 w-100">
             <CardBody className="text-center">
               <h1 className="font-large-3 my-1">Register a Name</h1>
-              <h1 className="font-large-1 my-1">Create a Parcel ID</h1>
-              <form onSubmit={handleSubmit}>
-                <FormGroup
-                  className="my-1"
-                  style={{ width: '50%', margin: 'auto' }}
-                >
-                  <Label aria-labelledby="ensName" />
-                  <InputGroup>
-                    <Input
-                      type="text"
-                      placeholder="ETHGlobal"
-                      id="validState"
-                      name="validState"
-                      value={ensName}
-                      onChange={(e: any) => setEnsName(e.target.value)}
-                      invalid={invalidState}
-                      required
-                    />
-                    <InputGroupAddon addonType="append">
-                      <InputGroupText>@parcelid.eth</InputGroupText>
-                    </InputGroupAddon>
-                    <FormFeedback
-                      style={{ position: 'absolute', marginTop: '3rem' }}
-                    >
-                      {error}
-                    </FormFeedback>
-                  </InputGroup>
-                </FormGroup>
+              <h1 className="font-large-1 mt-1 mb-2">Create a Parcel ID</h1>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '6rem',
+                }}
+              >
+                {isSubmitting ? (
+                  <Spinner type="grow" color="primary" size="lg" />
+                ) : (
+                  <Form onSubmit={handleSubmit}>
+                    <FormGroup>
+                      <Label aria-labelledby="ensName" />
+                      <InputGroup>
+                        <Input
+                          type="text"
+                          placeholder="ETHGlobal"
+                          id="validState"
+                          name="validState"
+                          value={ensName}
+                          onChange={(e: any) => setEnsName(e.target.value)}
+                          invalid={invalidState}
+                          required
+                        />
+                        <InputGroupAddon addonType="append">
+                          <InputGroupText>@parcelid.eth</InputGroupText>
+                        </InputGroupAddon>
+                        <FormFeedback
+                          style={{ position: 'absolute', marginTop: '3rem' }}
+                        >
+                          {error}
+                        </FormFeedback>
+                      </InputGroup>
+                    </FormGroup>
 
-                <Button
-                  className="my-1"
-                  type="submit"
-                  color="primary"
-                  disabled={isSubmitting}
-                  style={{
-                    padding: '12px 16px',
-                  }}
-                >
-                  {isSubmitting ? (
-                    <Spinner color="light" size="sm" />
-                  ) : (
-                    'Submit'
-                  )}
-                </Button>
-              </form>
+                    <Button
+                      className="my-1"
+                      type="submit"
+                      color="primary"
+                      disabled={isSubmitting}
+                      style={{
+                        padding: '12px 16px',
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </Form>
+                )}
+              </div>
             </CardBody>
           </Card>
         </Col>
       </Row>
 
       <ToastContainer
-        position="bottom-center"
+        position="top-right"
         autoClose={3000}
         hideProgressBar={true}
         newestOnTop={false}

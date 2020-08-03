@@ -11,10 +11,10 @@ import {
   Button,
   Modal,
   ModalHeader,
+  ModalBody,
   ModalFooter,
   Input,
   FormGroup,
-  ModalBody,
   Label,
   Spinner,
 } from 'reactstrap';
@@ -31,18 +31,18 @@ const DepartmentOptions = styled(FormGroup)`
 `;
 
 export default function Payroll() {
+  const parcelWalletContract = useContract(
+    addresses[RINKEBY_ID].parcelWallet,
+    ParcelWallet,
+    true
+  );
   // const [options, setOptions] = useState<any>([]);
   const [options, setOptions] = useState<any>(['']);
   const [selectedDepartment, setSelectedDepartment] = useState('');
   const [newDepartment, setNewDepartment] = useState('');
   const [addDepartmentModal, setAddDepartmentModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const parcelWalletContract = useContract(
-    addresses[RINKEBY_ID].parcelWallet,
-    ParcelWallet,
-    true
-  );
+  const [departments, setDepartments] = useState([{ title: '' }]);
 
   useEffect(() => {
     (async () => {
@@ -51,7 +51,6 @@ export default function Payroll() {
           let files = await parcelWalletContract.files('1');
 
           let filesFromIpfs = await parcel.ipfs.getData(files);
-
           let filesDecrypted = parcel.cryptoUtils.decryptData(
             filesFromIpfs,
             getSignature()
@@ -73,7 +72,7 @@ export default function Payroll() {
     })();
   }, [parcelWalletContract]);
 
-  async function createDepartment() {
+  async function createDepartments() {
     setLoading(true);
     if (parcelWalletContract) {
       try {
@@ -85,13 +84,18 @@ export default function Payroll() {
             departmentsFromIpfs,
             getSignature()
           );
-
           departmentsDecrypted = JSON.parse(departmentsDecrypted);
 
-          departmentsDecrypted.push(newDepartment);
+          let newDepartments: any[] = [];
+          departments.forEach((department: any) => {
+            newDepartments.push(department.title);
+          });
+
+          departmentsDecrypted = departmentsDecrypted.concat(newDepartments);
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
             JSON.stringify(departmentsDecrypted),
+
             getSignature()
           );
 
@@ -104,11 +108,12 @@ export default function Payroll() {
             departmentHash.string
           );
 
-          // toast.info('Transaction Submitted');
           await result.wait();
-          toast.success('Transaction Confirmed');
         } else {
+          //!MULTIPLE DEPT BELOW
           let departments = [];
+
+          //!MULTIPLE DEPT ABOVE
           departments.push(newDepartment);
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
@@ -125,10 +130,9 @@ export default function Payroll() {
             departmentHash.string
           );
 
-          toast.info('Transaction Submitted');
           await result.wait();
-          toast.success('Transaction Confirmed');
         }
+        setDepartments([{ title: '' }]);
       } catch (error) {
         console.error(error);
       }
@@ -137,16 +141,22 @@ export default function Payroll() {
     setAddDepartmentModal(false);
   }
 
-  const removeOption = (index: any) => () =>
-    setOptions(options.filter((s: any, sidx: any) => index !== sidx));
+  const handleAddFields = () => {
+    const values = [...departments];
+    values.push({ title: '' });
+    setDepartments(values);
+  };
 
-  const handleOptionChange = (idx: any) => (evt: any) => {
-    const newOptions = options.map((option: any, sidx: any) => {
-      if (idx !== sidx) return option;
-      return evt.target.value;
-    });
+  const handleRemoveFields = (index: any) => {
+    const values = [...departments];
+    values.splice(index, 1);
+    setDepartments(values);
+  };
 
-    setOptions(newOptions);
+  const handleInputChange = (index: any, event: any) => {
+    const values = [...departments];
+    values[index].title = event.target.value;
+    setDepartments(values);
   };
 
   return (
@@ -199,12 +209,12 @@ export default function Payroll() {
         <ModalBody>
           {loading ? (
             <div style={{ width: '100%', textAlign: 'center' }}>
-              <Spinner size="lg" color="primary" />
+              <Spinner type="grow" size="lg" color="primary" />
             </div>
           ) : (
             <>
-              {options.map((option: any, i: any) => (
-                <DepartmentOptions key={uuidv4()}>
+              {departments.map((department, index) => (
+                <DepartmentOptions key={`${department}~${index}`}>
                   <Label for="department">Department</Label>
                   <div
                     style={{
@@ -217,29 +227,38 @@ export default function Payroll() {
                       type="text"
                       id="department"
                       name="department"
-                      value={option}
-                      onChange={handleOptionChange(i)}
                       required
                       placeholder={'i.e. Marketing'}
+                      value={department.title}
+                      onChange={(event) => handleInputChange(index, event)}
                     />
-                    <Button
-                      type="button"
-                      onClick={removeOption(i)}
-                      disabled={options.length === 1}
-                      style={{ padding: '0.5rem', marginLeft: '0.5rem' }}
-                    >
-                      <X size={15} />
-                    </Button>
 
-                    {options.length < 4 && options.length - 1 === i && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
                       <Button
                         type="button"
-                        onClick={() => setOptions(options.concat(['']))}
+                        onClick={() => handleRemoveFields(index)}
+                        disabled={departments.length === 1}
                         style={{ padding: '0.5rem', marginLeft: '0.5rem' }}
                       >
-                        <Plus size={15} />
+                        <X size={15} />
                       </Button>
-                    )}
+
+                      {departments.length < 4 && (
+                        <Button
+                          type="button"
+                          onClick={() => handleAddFields()}
+                          style={{ padding: '0.5rem', marginLeft: '0.5rem' }}
+                        >
+                          <Plus size={15} />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </DepartmentOptions>
               ))}
@@ -251,10 +270,10 @@ export default function Payroll() {
           <Button
             disabled={loading}
             color="primary"
-            onClick={() => createDepartment()}
+            onClick={() => createDepartments()}
           >
             Add
-          </Button>{' '}
+          </Button>
           <Button
             color="secondary"
             onClick={() => setAddDepartmentModal(!addDepartmentModal)}

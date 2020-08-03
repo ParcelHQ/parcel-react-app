@@ -3,7 +3,7 @@ import { Row, Col } from 'reactstrap';
 import Breadcrumbs from '../../components/BreadCrumbs';
 import 'react-table/react-table.css';
 import '../../assets/scss/plugins/extensions/react-tables.scss';
-import NewPeopleList from './NewPeopleList';
+import PeopleList from './PeopleList';
 
 export default function People() {
   return (
@@ -11,7 +11,7 @@ export default function People() {
       <Breadcrumbs breadCrumbTitle="People" breadCrumbActive="People" />
       <Row>
         <Col sm="12">
-          <NewPeopleList />
+          <PeopleList />
         </Col>
       </Row>
     </>

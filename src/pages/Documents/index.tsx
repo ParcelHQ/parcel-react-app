@@ -229,7 +229,7 @@ export default function Documents() {
           }}
         >
           {isSubmitting ? (
-            <Spinner color="primary" size="lg" />
+            <Spinner type="grow" color="primary" size="lg" />
           ) : (
             <form
               onSubmit={onSubmit}
