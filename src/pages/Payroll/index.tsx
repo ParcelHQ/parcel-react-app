@@ -5,7 +5,7 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import parcel from 'parcel-sdk';
-import PayrollTable from './PayrollTable';
+import Table from './Table';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
@@ -191,7 +191,7 @@ export default function Payroll() {
 
         <Col sm="12">
           {options ? (
-            <PayrollTable selectedDepartment={selectedDepartment} />
+            <Table selectedDepartment={selectedDepartment} />
           ) : (
             <h1>No departments</h1>
           )}

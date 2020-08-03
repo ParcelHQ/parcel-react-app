@@ -97,7 +97,7 @@ export default function StatisticsCards() {
           iconRight
           iconBg="primary"
           icon={<USDTLogo />}
-          stat={usdtBalance}
+          stat="0.00"
           statTitle="USDT"
         />
       </Col>
