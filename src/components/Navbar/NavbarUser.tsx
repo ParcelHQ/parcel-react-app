@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   UncontrolledDropdown,
   DropdownMenu,
@@ -16,12 +16,31 @@ import Avatar from '../Avatar';
 
 export default function NavbarUser({ userImg, userName }: any) {
   const { layout, dispatch } = useContext(LayoutContext);
-  const { deactivate } = useWeb3React<Web3Provider>();
+  const { deactivate, library, chainId, account } = useWeb3React<
+    Web3Provider
+  >();
+  const [ENSName, setENSName] = useState<string>('');
 
   function signOut() {
     deactivate();
     history.push('/landing');
   }
+
+  useEffect(() => {
+    if (library && account) {
+      let stale = false;
+      library
+        .lookupAddress(account)
+        .then((name) => {
+          if (!stale && typeof name === 'string') setENSName(name);
+        })
+        .catch(() => {}); // eslint-disable-line @typescript-eslint/no-empty-function
+      return (): void => {
+        stale = true;
+        setENSName('');
+      };
+    }
+  }, [library, account, chainId]);
 
   return (
     <ul className="nav navbar-nav navbar-nav-user float-right">
@@ -44,7 +63,11 @@ export default function NavbarUser({ userImg, userName }: any) {
             <span className="user-status">Available</span>
           </div> */}
           <span data-tour="user">
-            <Avatar color="primary" content="BF" status="online" />
+            <Avatar
+              color="primary"
+              content={ENSName.charAt(0).toUpperCase() || `-`}
+              status="online"
+            />
           </span>
         </DropdownToggle>
         <DropdownMenu right>

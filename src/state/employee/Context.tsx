@@ -5,8 +5,7 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import parcel from 'parcel-sdk';
-
-const KEY = '12345';
+import { getSignature } from '../../utility';
 
 export const EmployeeContext = createContext<any>({ employees: [] });
 
@@ -29,7 +28,7 @@ export const EmployeeProvider = ({ children }: { children: ReactNode }) => {
 
           let peopleDecrypted = parcel.cryptoUtils.decryptData(
             peopleFromIpfs,
-            KEY
+            getSignature()
           );
 
           peopleDecrypted = JSON.parse(peopleDecrypted);

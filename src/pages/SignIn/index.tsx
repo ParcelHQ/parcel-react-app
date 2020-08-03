@@ -9,7 +9,6 @@ import { useContract } from '../../hooks';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import ParcelFactoryContract from '../../abis/ParcelFactory.json';
 import { ZERO_ADDRESS } from '../../utility/constants';
-
 import Logo from '../../assets/img/logo/logoPng.png';
 
 const Box = styled.div`

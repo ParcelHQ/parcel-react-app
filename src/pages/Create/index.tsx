@@ -62,11 +62,18 @@ export default function Create() {
     const nameHash = keccak256(toUtf8Bytes(ensName));
     const ensFullDomainHash = namehash.hash(ensName + '.parcelid.eth');
 
-    if (!!library) {
+    if (!!library && !!account) {
       const doesItExist = await library.resolveName(ensName + '.parcelid.eth');
       if (doesItExist) setOpen(true);
       else if (!!parcelFactoryContract)
         try {
+          library
+            .getSigner(account)
+            .signMessage(`sign your ${account} to create encryption key`)
+            .then((signature: any) =>
+              localStorage.setItem('SIGNATURE', signature)
+            );
+
           const tx = await parcelFactoryContract.register(
             PARCEL_ID_HASH,
             nameHash,
@@ -85,8 +92,6 @@ export default function Create() {
 
           localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
           addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;
-
-          // createParcelWallet(parcelOrgAddress);
 
           setSubmitted(true);
         } catch (error) {

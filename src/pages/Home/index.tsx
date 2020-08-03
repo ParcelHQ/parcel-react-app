@@ -5,6 +5,7 @@ import CurrentStreams from './CurrentStreams';
 import { Row, Col } from 'reactstrap';
 import RecentActivity from './RecentActivity';
 import ActivityTimeline from './ActivityTimeline';
+import RadialBar from './RadialBar';
 import 'react-table/react-table.css';
 import '../../assets/scss/plugins/extensions/react-tables.scss';
 
@@ -15,13 +16,17 @@ export default function Home() {
     <>
       <StatisticsCard />
       <CurrentStreams />
+
       <Row>
         <Col lg="6">
+          <RadialBar />
+        </Col>
+        {/* <Col lg="6">
           <RecentActivity />
         </Col>
         <Col lg="6">
           <ActivityTimeline />
-        </Col>
+        </Col> */}
       </Row>
     </>
   );

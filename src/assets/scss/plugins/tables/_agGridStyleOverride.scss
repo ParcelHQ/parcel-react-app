@@ -1,15 +1,15 @@
 // Core variables and mixins
-@import "~bootstrap/scss/_functions.scss";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/_functions.scss';
+@import '~bootstrap/scss/mixins';
 
 // Core variables and mixins overrides
-@import "../../core/variables/variables";
-@import "~bootstrap/scss/_variables.scss";
+@import '../../core/variables/variables';
+@import '~bootstrap/scss/_variables.scss';
 
 // Overrides user variable
-@import "../../core/variables/components-variables";
+@import '../../core/variables/components-variables';
 
-$icons-path: "~ag-grid-community/src/styles/ag-theme-material/icons/" !default;
+$icons-path: '~ag-grid-community/src/styles/ag-theme-material/icons/' !default;
 
 $font-family: inherit;
 $font-size: inherit;
@@ -18,8 +18,8 @@ $secondary-font-family: inherit;
 $secondary-font-size: inherit;
 $secondary-font-weight: 600;
 
-@import "~ag-grid-community/src/styles/ag-grid.scss";
-@import "~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material.scss";
+@import '~ag-grid-community/src/styles/ag-grid.scss';
+@import '~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material.scss';
 
 .ag-grid-table {
   height: calc(100vh - 30rem);
@@ -133,8 +133,8 @@ $secondary-font-weight: 600;
       margin-left: 0;
       margin-top: 12px;
 
-      [ref="lbCurrent"],
-      [ref="lbTotal"] {
+      [ref='lbCurrent'],
+      [ref='lbTotal'] {
         color: $white;
         padding: 0.7rem 0.95rem;
         border-radius: 0.5rem;
@@ -154,10 +154,10 @@ $secondary-font-weight: 600;
         opacity: 0.5 !important;
       }
     }
-    span[ref="lbCurrent"] {
+    span[ref='lbCurrent'] {
       background-color: $primary;
     }
-    span[ref="lbTotal"] {
+    span[ref='lbTotal'] {
       background-color: $gray-300;
       color: $body-color !important;
     }
@@ -187,8 +187,8 @@ $secondary-font-weight: 600;
   }
   .ag-grid-table {
     .ag-paging-panel {
-      [ref="btFirst"],
-      [ref="btLast"] {
+      [ref='btFirst'],
+      [ref='btLast'] {
         display: none;
       }
     }
@@ -201,8 +201,8 @@ $secondary-font-weight: 600;
     }
   }
   .ag-paging-panel {
-    [ref="lbCurrent"],
-    [ref="lbTotal"] {
+    [ref='lbCurrent'],
+    [ref='lbTotal'] {
       margin: 0 5px !important;
     }
     .ag-paging-button {
