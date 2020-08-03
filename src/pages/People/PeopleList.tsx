@@ -247,7 +247,7 @@ export default function PayrollList() {
         />
         <div
           className={classnames('data-list-overlay', {
-            show: sidebar,
+            show: true,
           })}
           onClick={() => handleSidebar(false, true)}
         />

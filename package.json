@@ -18,6 +18,8 @@
     "@web3-react/portis-connector": "^6.1.1",
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
+    "ag-grid-community": "^22.1.1",
+    "ag-grid-react": "^22.1.1",
     "apexcharts": "^3.19.3",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",

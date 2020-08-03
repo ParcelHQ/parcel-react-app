@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 export default function Organizations() {
   let history = useHistory();
-  const colorOptions = [
+  const organizationOptions = [
     { value: 'ocean', label: 'Ocean' },
     { value: 'blue', label: 'Blue' },
     { value: 'purple', label: 'Purple' },
@@ -23,16 +23,19 @@ export default function Organizations() {
         <Card className="auth-card bg-transparent shadow-none rounded-0 mb-0 w-100">
           <CardBody className="text-center">
             <h1 className="font-large-3 my-1">Your Organizations</h1>
-            <FormGroup>
-              <Label for="organizations">Organizations</Label>
+            <h1 className="font-large-1 my-1">
+              Search through your currently existing orgs
+            </h1>
+            <FormGroup style={{ width: '50%', margin: 'auto' }}>
+              <Label for="organizations" aria-labelledby="organizations" />
 
               <Select
                 id="organizations"
                 className="React"
                 classNamePrefix="select"
-                defaultValue={colorOptions[0]}
-                name="color"
-                options={colorOptions}
+                defaultValue={organizationOptions[0]}
+                name="organizations"
+                options={organizationOptions}
                 isClearable={true}
               />
             </FormGroup>

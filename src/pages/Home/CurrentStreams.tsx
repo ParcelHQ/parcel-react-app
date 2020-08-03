@@ -15,22 +15,26 @@ import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Row, Col } from 'reactstrap';
 
 let primary = '#7367F0';
+let primaryLight = '#9c8cfc';
+let brown = '#8D6E63';
+let brownLight = '#DBAE8E';
 let warning = '#FF9F43';
 let danger = '#EA5455';
-let primaryLight = '#9c8cfc';
 let warningLight = '#FFC085';
 let dangerLight = '#f29292';
+let gray = '#808080';
+let grayLighten = '#D3D3D3';
 
 export default function ProductOrders() {
   const [options] = useState({
-    colors: [primary, warning, danger],
+    colors: [primary, brown, gray],
     fill: {
       type: 'gradient',
       gradient: {
         shade: 'dark',
         type: 'vertical',
         shadeIntensity: 0.5,
-        gradientToColors: [primaryLight, warningLight, dangerLight],
+        gradientToColors: [primaryLight, brownLight, grayLighten],
         inverseColors: false,
         opacityFrom: 1,
         opacityTo: 1,

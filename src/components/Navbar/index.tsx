@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from 'reactstrap';
 import classnames from 'classnames';
 import NavbarUser from './NavbarUser';
-import { NavItem, NavLink } from 'reactstrap';
+import { NavItem, NavLink, Badge } from 'reactstrap';
 import * as Icon from 'react-feather';
-import userImg from '../../assets/img/portrait/small/avatar-s-11.jpg';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import styled from '@emotion/styled';
+
+const IDWrapper = styled.div`
+  display: block;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 
 export default function ThemeNavbar({
-  changeCurrentLang,
   handleAppOverlay,
   sidebarVisibility,
   horizontal,
@@ -17,6 +25,27 @@ export default function ThemeNavbar({
   const navbarColor = 'default';
   const colorsArr = ['primary', 'danger', 'success', 'info', 'warning', 'dark'];
   const navbarTypes = ['floating', 'static', 'sticky', 'hidden'];
+
+  const { library, chainId, account } = useWeb3React<Web3Provider>();
+
+  const [ENSName, setENSName] = useState<string>('');
+
+  useEffect(() => {
+    if (library && account) {
+      let stale = false;
+      library
+        .lookupAddress(account)
+        .then((name) => {
+          if (!stale && typeof name === 'string') setENSName(name);
+        })
+        .catch(() => {});
+      return (): void => {
+        stale = true;
+        setENSName('');
+      };
+    }
+  }, [library, account, chainId]);
+
   return (
     <>
       <div className="content-overlay" />
@@ -52,6 +81,20 @@ export default function ThemeNavbar({
                         onClick={sidebarVisibility}
                       >
                         <Icon.Menu className="ficon" />
+                      </NavLink>
+                    </NavItem>
+                    <NavItem className="mobile-menu mr-auto">
+                      <NavLink
+                        className="nav-menu-main menu-toggle hidden-xs is-active"
+                        onClick={sidebarVisibility}
+                      >
+                        <IDWrapper>
+                          {ENSName && (
+                            <Badge className="badge-md" color="primary">
+                              <span>{`Hello ${ENSName}!`}</span>
+                            </Badge>
+                          )}
+                        </IDWrapper>
                       </NavLink>
                     </NavItem>
                   </ul>

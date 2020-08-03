@@ -22,6 +22,7 @@ const Landing = lazy(() => import('./pages/SignIn'));
 const Create = lazy(() => import('./pages/Create'));
 const Organizations = lazy(() => import('./pages/Organizations'));
 const Employer = lazy(() => import('./pages/Employer'));
+const Error404 = lazy(() => import('./pages/Error404'));
 
 const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
   <Route
@@ -94,6 +95,7 @@ export default function AppRouter() {
         <AppRoute path="/people" component={People} />
         <AppRoute path="/payroll" component={Payroll} />
         <AppRoute path="/settings" component={Settings} />
+        <AppRoute component={Error404} fullLayout />
       </Switch>
     </Router>
   );
