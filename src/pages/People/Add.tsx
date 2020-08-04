@@ -90,6 +90,7 @@ export default function Add({ areThereEmployees }: any) {
           newPersonHash.string
         );
         await result.wait();
+        window.location.href = '';
       }
 
       setIsSubmitting(false);
