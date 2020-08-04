@@ -13,6 +13,10 @@ import { LayoutContext } from '../../state/layout/Context';
 import { CHANGE_MODE } from '../../state/layout/Constants';
 import Notification from './Notification';
 import Avatar from '../Avatar';
+import addresses, {
+  RINKEBY_ID,
+  getParcelWalletAddress,
+} from '../../utility/addresses';
 
 export default function NavbarUser({ userImg, userName }: any) {
   const { layout, dispatch } = useContext(LayoutContext);
@@ -23,7 +27,7 @@ export default function NavbarUser({ userImg, userName }: any) {
 
   function signOut() {
     deactivate();
-    history.push('/landing');
+    history.push('/');
   }
 
   useEffect(() => {
@@ -32,15 +36,37 @@ export default function NavbarUser({ userImg, userName }: any) {
       library
         .lookupAddress(account)
         .then((name) => {
+          console.log('name:', name);
           if (!stale && typeof name === 'string') setENSName(name);
         })
-        .catch(() => {}); // eslint-disable-line @typescript-eslint/no-empty-function
+        .catch(() => {});
+
       return (): void => {
         stale = true;
         setENSName('');
       };
     }
   }, [library, account, chainId]);
+
+  const parcelWalletAddress = getParcelWalletAddress();
+  console.log('parcelWalletAddress:', parcelWalletAddress);
+  useEffect(() => {
+    if (library && account && parcelWalletAddress) {
+      let stale = false;
+      library
+        .lookupAddress('0xE1E2799D40f62d68D829469E59415aA1ba75F56E')
+        .then((name) => {
+          console.log('name:', name);
+          if (!stale && typeof name === 'string') {
+            console.log('name:', name);
+          }
+        })
+        .catch(() => {});
+      return (): void => {
+        stale = true;
+      };
+    }
+  }, [library, account, parcelWalletAddress]);
 
   return (
     <ul className="nav navbar-nav navbar-nav-user float-right">

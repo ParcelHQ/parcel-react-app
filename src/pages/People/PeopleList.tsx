@@ -97,6 +97,7 @@ export default function PeopleList() {
 
             console.log('peopleDecrypted:', peopleDecrypted);
             setRowData(peopleDecrypted);
+            setCurrentEmployees(peopleDecrypted);
           } else {
             console.log(`Zero Employees registered yet!`);
           }
@@ -588,12 +589,7 @@ export default function PeopleList() {
             </div>
           ) : (
             <>
-              <Button
-                color="primary"
-                onClick={() => {
-                  deleteEmployee();
-                }}
-              >
+              <Button color="primary" onClick={() => deleteEmployee()}>
                 Delete
               </Button>
 

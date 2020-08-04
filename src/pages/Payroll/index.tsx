@@ -75,6 +75,7 @@ export default function Payroll() {
   async function createDepartments() {
     setLoading(true);
     if (parcelWalletContract) {
+      toast('Department(s) Submitted');
       try {
         let getDepartments = await parcelWalletContract!.files('1');
         if (getDepartments !== '') {
@@ -110,10 +111,8 @@ export default function Payroll() {
 
           await result.wait();
         } else {
-          //!MULTIPLE DEPT BELOW
           let departments = [];
 
-          //!MULTIPLE DEPT ABOVE
           departments.push(newDepartment);
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
@@ -272,7 +271,7 @@ export default function Payroll() {
             color="primary"
             onClick={() => createDepartments()}
           >
-            Add
+            Create
           </Button>
           <Button
             color="secondary"
@@ -283,7 +282,7 @@ export default function Payroll() {
         </ModalFooter>
       </Modal>
       <ToastContainer
-        position="bottom-center"
+        position="top-right"
         autoClose={3000}
         hideProgressBar={true}
         newestOnTop={false}

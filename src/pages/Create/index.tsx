@@ -8,10 +8,7 @@ import ParcelFactoryContract from '../../abis/ParcelFactory.json';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import namehash from 'eth-ens-namehash';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { OrganizationContext } from '../../state/organization/Context';
-
 import {
   Button,
   FormGroup,
@@ -25,6 +22,9 @@ import {
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import 'react-toastify/dist/ReactToastify.min.css';
+
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function Create() {
   const { organization, createParcelWallet } = useContext(OrganizationContext);
@@ -80,15 +80,12 @@ export default function Create() {
             ensFullDomainHash
           );
 
-          // toast.info('Transaction Submitted');
+          toast('ID Submitted');
           await tx.wait();
 
-          // toast.success('Waiting for the confirmation');
           let parcelOrgAddress = await parcelFactoryContract.registered(
             account
           );
-
-          // toast.success('Transaction Confirmed');
 
           localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
           addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;

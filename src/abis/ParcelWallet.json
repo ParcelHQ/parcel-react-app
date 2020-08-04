@@ -150,6 +150,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "sablierAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -164,6 +177,40 @@
     ],
     "name": "setAddr",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "recipients",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "values",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "tokensToStream",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "stopTime",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "streamMoney",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },

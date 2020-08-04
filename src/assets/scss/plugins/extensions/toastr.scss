@@ -1,13 +1,13 @@
 // Core variables and mixins
-@import "~bootstrap/scss/_functions.scss";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/_functions.scss';
+@import '~bootstrap/scss/mixins';
 
 // Core variables and mixins overrides
-@import "../../core/variables/variables";
-@import "~bootstrap/scss/_variables.scss";
+@import '../../core/variables/variables';
+@import '~bootstrap/scss/_variables.scss';
 
 // Overrides user variable
-@import "../../core/variables/components-variables";
+@import '../../core/variables/components-variables';
 
 // toast container opacity
 

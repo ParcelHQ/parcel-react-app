@@ -15,24 +15,20 @@ export default function ActivityTimeline() {
               <Plus size={16} />
             </div>
             <div className="timeline-info">
-              <p className="font-weight-bold mb-0">Client Meeting</p>
-              <span className="font-small-3">
-                Bonbon macaroon jelly beans gummi bears jelly lollipop apple
-              </span>
+              <p className="font-weight-bold mb-0">Payment Requested</p>
+              <span className="font-small-3">Lorem Ipsum</span>
             </div>
-            <small className="text-muted">3 Hours</small>
+            <small className="text-muted">In 3 Hours</small>
           </li>
           <li>
             <div className="timeline-icon bg-primary">
               <AlertCircle size={16} />
             </div>
             <div className="timeline-info">
-              <p className="font-weight-bold mb-0">Email Newsletter</p>
-              <span className="font-small-3">
-                Cupcake gummi bears soufflé caramels candy
-              </span>
+              <p className="font-weight-bold mb-0">Payment Requested</p>
+              <span className="font-small-3">Lorem Ipsum</span>
             </div>
-            <small className="text-muted">15 days ago</small>
+            <small className="text-muted">In 15 days</small>
           </li>
         </ul>
       </CardBody>

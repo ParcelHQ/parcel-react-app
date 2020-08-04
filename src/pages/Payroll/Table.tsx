@@ -1,8 +1,19 @@
 import React, { useMemo, useState, useEffect, useContext } from 'react';
 import parcel from 'parcel-sdk';
 import DataTable from 'react-data-table-component';
-import { Button, Col } from 'reactstrap';
+import {
+  Button,
+  Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  FormGroup,
+  Label,
+  Input,
+} from 'reactstrap';
 import { ArrowDown } from 'react-feather';
+import { BigNumber } from '@ethersproject/bignumber';
 import Checkbox from '../../components/CheckBoxes';
 
 import { EmployeeContext } from '../../state/employee/Context';
@@ -29,7 +40,12 @@ const FlexButton = styled(Button)`
 export default function Table({ selectedDepartment }: any) {
   const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
-  const [selectedRow, setSelectedRow] = useState<any>();
+  const [selectedRow, setSelectedRow] = useState<any>([]);
+  const [streamModal, setStreamModal] = useState(false);
+  const [lengthOfStream, setLengthOfStream] = useState<number>(0);
+  const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+  const DAI_ADDRESS = '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735';
+  const USDC_ADDRESS = '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b';
 
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,
@@ -105,9 +121,6 @@ export default function Table({ selectedDepartment }: any) {
     }
     if (parcelWalletContract) {
       //! CURRENCY TO SEND WITH
-      const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-      const DAI_ADDRESS = '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735';
-      const USDC_ADDRESS = '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b';
 
       //! TOKENS_REQUESTED
       let TOKENS_REQUESTED: any[] = [];
@@ -161,6 +174,70 @@ export default function Table({ selectedDepartment }: any) {
     }
   }
 
+  async function stream() {
+    if (!selectedRow) {
+      return;
+    }
+
+    if (parcelWalletContract) {
+      let RECEIPIENTS: any[] = [];
+      selectedRow.forEach((employee: any) => {
+        RECEIPIENTS.push(employee.address);
+      });
+      let TOKENS_TO_STREAM: any[] = [];
+      selectedRow.forEach((employee: any) => {
+        switch (employee.salaryCurrency) {
+          case 'DAI':
+            TOKENS_TO_STREAM.push(DAI_ADDRESS);
+            break;
+          case 'USDC':
+            TOKENS_TO_STREAM.push(USDC_ADDRESS);
+            break;
+
+          default:
+            return;
+        }
+      });
+
+      let VALUES: any[] = [];
+      selectedRow.forEach((employee: any) => {
+        switch (employee.salaryCurrency) {
+          case 'DAI':
+            VALUES.push('1000000000000000000');
+            break;
+          case 'USDC':
+            VALUES.push('1000000');
+            break;
+
+          default:
+            return;
+        }
+      });
+
+      let STOP_TIME: any[] = [];
+      const STREAM_LENGTH_IN_SECONDS = lengthOfStream * 3600;
+
+      let a = BigNumber.from(42);
+      let b = BigNumber.from('91');
+
+      let ONE_DAI = 1000000000000000000;
+      // const ONE_DAI = BigInt(1000000000000000000);
+
+      const SOME_DAI = 9000000000000000; //0.009 DAI
+      let value = SOME_DAI - (SOME_DAI % STREAM_LENGTH_IN_SECONDS);
+
+      // let res = await parcelWalletContract.streamMoney(
+      //   RECEIPIENTS,
+      //   VALUES,
+      //   TOKENS_TO_STREAM,
+      //   STOP_TIME // ['3600', '3600']
+      // );
+      // res.wait();
+
+      // console.log('res:', res);
+    }
+  }
+
   return (
     <>
       <div className={'data-list list-view'}>
@@ -208,15 +285,60 @@ export default function Table({ selectedDepartment }: any) {
       </div>
       <Col sm="12">
         <FlexWrap>
-          <FlexButton color="primary" disabled={true}>
+          <FlexButton
+            color="primary"
+            disabled={!selectedRow.length}
+            onClick={() => setStreamModal(!streamModal)}
+          >
             Stream
           </FlexButton>
 
-          <FlexButton color="primary" outline onClick={() => massPayout()}>
+          <FlexButton
+            color="primary"
+            disabled={!selectedRow.length}
+            outline
+            onClick={() => massPayout()}
+          >
             Pay
           </FlexButton>
         </FlexWrap>
       </Col>
+
+      <Modal
+        isOpen={streamModal}
+        toggle={() => setStreamModal(!streamModal)}
+        className="modal-dialog-centered"
+      >
+        <ModalHeader toggle={() => setStreamModal(!streamModal)}>
+          Begin Stream
+        </ModalHeader>
+        <ModalBody>
+          <FormGroup>
+            <Label for="stream">Hours to Stream</Label>
+            <Input
+              min={0}
+              max={100}
+              id="stream"
+              placeholder={'5'}
+              type="number"
+              value={lengthOfStream}
+              onChange={(e: any) => setLengthOfStream(e.target.value)}
+            />
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="primary"
+            outline
+            onClick={() => setStreamModal(!streamModal)}
+          >
+            Canel
+          </Button>
+          <Button color="primary" onClick={() => stream()}>
+            Stream
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 }

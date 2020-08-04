@@ -56,14 +56,6 @@ export default function Add() {
       salaryCurrency: 'DAI',
       date: null,
     },
-    {
-      name: 'Brennan',
-      address: '0x496Fa0F5F5DAF6e25F481EF2055CDAF218efF75f',
-      department: 'Engineering',
-      salary: '1',
-      salaryCurrency: 'DAI',
-      date: null,
-    },
   ]);
 
   const handleSubmit = async (e: any) => {
@@ -283,25 +275,27 @@ export default function Add() {
           </>
         )}
       </Row>
-      <Row>
-        <Col sm="12">
-          <FormGroup className="form-label-group">
-            <Button
-              color="primary"
-              outline
-              className="mr-1 mb-1"
-              type="button"
-              disabled={inputFields.length === 5}
-              onClick={() => handleAddFields()}
-            >
-              Add Another
-            </Button>
-            <Button color="primary" type="submit" className="mb-1">
-              Submit
-            </Button>
-          </FormGroup>
-        </Col>
-      </Row>
+      {!isSubmitting && (
+        <Row>
+          <Col sm="12">
+            <FormGroup className="form-label-group">
+              <Button
+                color="primary"
+                outline
+                className="mr-1 mb-1"
+                type="button"
+                disabled={inputFields.length === 5}
+                onClick={() => handleAddFields()}
+              >
+                Add Another
+              </Button>
+              <Button color="primary" type="submit" className="mb-1">
+                Submit
+              </Button>
+            </FormGroup>
+          </Col>
+        </Row>
+      )}
     </Form>
   );
 }
