@@ -52,6 +52,7 @@ export default function PeopleList() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentEmployees, setCurrentEmployees] = useState<any>();
   const [editModal, setEditModal] = useState(false);
+  const [areTherePeople, setAreTherePeople] = useState(false);
 
   const [selectedUser, setSeletedUser] = useState<any>({
     id: null,
@@ -84,6 +85,7 @@ export default function PeopleList() {
       if (parcelWalletContract) {
         try {
           let people = await parcelWalletContract.files('2');
+          setAreTherePeople(!!people);
 
           if (people !== '') {
             let peopleFromIpfs = await parcel.ipfs.getData(people);
@@ -95,7 +97,6 @@ export default function PeopleList() {
 
             peopleDecrypted = JSON.parse(peopleDecrypted);
 
-            console.log('peopleDecrypted:', peopleDecrypted);
             setRowData(peopleDecrypted);
             setCurrentEmployees(peopleDecrypted);
           } else {
@@ -313,7 +314,7 @@ export default function PeopleList() {
             >
               <CardBody>
                 {add ? (
-                  <Add />
+                  <Add areThereEmployees={areTherePeople} />
                 ) : (
                   <Row>
                     <Col lg="3" md="6" sm="12">

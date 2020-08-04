@@ -32,8 +32,7 @@ const Wrapper = styled.div`
   margin: auto;
 `;
 
-export default function Add() {
-  const areThereEmployees = true;
+export default function Add({ areThereEmployees }: any) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const parcelWalletContract: any = useContract(
     addresses[RINKEBY_ID].parcelWallet,
@@ -57,7 +56,8 @@ export default function Add() {
 
     try {
       setIsSubmitting(true);
-      if (areThereEmployees) {
+
+      if (!areThereEmployees) {
         const encryptedPersonData = parcel.cryptoUtils.encryptData(
           JSON.stringify(inputFields),
           getSignature()

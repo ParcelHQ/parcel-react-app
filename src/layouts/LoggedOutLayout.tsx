@@ -13,7 +13,6 @@ const StyledLogo = styled.img`
 
 export default function LoggedOutLayout({ children }: any) {
   const location = useLocation();
-  console.log('location:', location.pathname);
 
   return (
     <div className={classnames('full-layout wrapper blank-page dark-layout')}>

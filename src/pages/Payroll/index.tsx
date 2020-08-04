@@ -36,10 +36,8 @@ export default function Payroll() {
     ParcelWallet,
     true
   );
-  // const [options, setOptions] = useState<any>([]);
   const [options, setOptions] = useState<any>(['']);
   const [selectedDepartment, setSelectedDepartment] = useState('');
-  const [newDepartment, setNewDepartment] = useState('');
   const [addDepartmentModal, setAddDepartmentModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [departments, setDepartments] = useState([{ title: '' }]);
@@ -63,6 +61,7 @@ export default function Payroll() {
             for (let i = 0; i < filesDecrypted.length; i++) {
               newOutcomes.push(filesDecrypted[i]);
             }
+            console.log('newOutcomes:', newOutcomes);
             setOptions(newOutcomes);
           }
         } catch (error) {
@@ -78,6 +77,7 @@ export default function Payroll() {
       toast('Department(s) Submitted');
       try {
         let getDepartments = await parcelWalletContract!.files('1');
+
         if (getDepartments !== '') {
           let departmentsFromIpfs = await parcel.ipfs.getData(getDepartments);
 
@@ -111,12 +111,14 @@ export default function Payroll() {
 
           await result.wait();
         } else {
-          let departments = [];
+          let newDepartments = [];
 
-          departments.push(newDepartment);
+          for (let i = 0; i < departments.length; i++) {
+            newDepartments.push(departments[i].title);
+          }
 
           let encryptedDepartmentData = parcel.cryptoUtils.encryptData(
-            JSON.stringify(departments),
+            JSON.stringify(newDepartments),
             getSignature()
           );
 
@@ -267,17 +269,17 @@ export default function Payroll() {
 
         <ModalFooter>
           <Button
+            color="secondary"
+            onClick={() => setAddDepartmentModal(!addDepartmentModal)}
+          >
+            Cancel
+          </Button>
+          <Button
             disabled={loading}
             color="primary"
             onClick={() => createDepartments()}
           >
             Create
-          </Button>
-          <Button
-            color="secondary"
-            onClick={() => setAddDepartmentModal(!addDepartmentModal)}
-          >
-            Cancel
           </Button>
         </ModalFooter>
       </Modal>

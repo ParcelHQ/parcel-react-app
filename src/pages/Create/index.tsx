@@ -1,14 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Card, CardBody, Row, Col, Form } from 'reactstrap';
 import { keccak256 } from '@ethersproject/keccak256';
 import { toUtf8Bytes } from '@ethersproject/strings';
-import addresses, { RINKEBY_ID } from '../../utility/addresses';
-import { useContract } from '../../hooks';
-import ParcelFactoryContract from '../../abis/ParcelFactory.json';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import namehash from 'eth-ens-namehash';
-import { OrganizationContext } from '../../state/organization/Context';
 import {
   Button,
   FormGroup,
@@ -23,12 +19,13 @@ import {
 import { Redirect } from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import 'react-toastify/dist/ReactToastify.min.css';
-
 import { toast, ToastContainer } from 'react-toastify';
 
-export default function Create() {
-  const { organization, createParcelWallet } = useContext(OrganizationContext);
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelFactoryContract from '../../abis/ParcelFactory.json';
 
+export default function Create() {
   const { library, account } = useWeb3React<Web3Provider>();
   const [ensName, setEnsName] = useState('');
   const parcelFactoryContract = useContract(
@@ -40,7 +37,7 @@ export default function Create() {
   const PARCEL_ID_HASH = namehash.hash('parcelid.eth');
   const [open, setOpen] = useState(false);
   const [invalidState, setInvalidState] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [isNowRegistered, setIsNowRegistered] = useState(false);
   const [error, setError] = useState('');
 
   async function handleSubmit(e: any) {
@@ -61,13 +58,16 @@ export default function Create() {
 
     const nameHash = keccak256(toUtf8Bytes(ensName));
     const ensFullDomainHash = namehash.hash(ensName + '.parcelid.eth');
+    console.log('ensFullDomainHash:', ensFullDomainHash);
 
-    if (!!library && !!account) {
+    if (!!library && !!account && !!parcelFactoryContract) {
+      console.log('account:', account);
       const doesItExist = await library.resolveName(ensName + '.parcelid.eth');
       if (doesItExist) setOpen(true);
-      else if (!!parcelFactoryContract)
+      else {
         try {
-          library
+          console.log('parcelFactoryContract:', parcelFactoryContract);
+          await library
             .getSigner(account)
             .signMessage(`sign your ${account} to create encryption key`)
             .then((signature: any) =>
@@ -80,6 +80,8 @@ export default function Create() {
             ensFullDomainHash
           );
 
+          console.log('tx:', tx);
+
           toast('ID Submitted');
           await tx.wait();
 
@@ -90,18 +92,18 @@ export default function Create() {
           localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
           addresses[RINKEBY_ID].parcelWallet = parcelOrgAddress;
 
-          setSubmitted(true);
+          setIsNowRegistered(true);
         } catch (error) {
           toast.error('Transaction Failed');
-
-          setIsSubmitting(false);
         }
+      }
+      setIsSubmitting(false);
     }
   }
 
   return (
     <>
-      {submitted && <Redirect to="/home" />}
+      {isNowRegistered && <Redirect to="/home" />}
       <Row className="m-0">
         <Col sm="12">
           <Card className="auth-card bg-transparent shadow-none rounded-0 mb-0 w-100">
