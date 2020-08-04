@@ -190,13 +190,7 @@ export default function Payroll() {
           </CustomInput>
         </Col>
 
-        <Col sm="12">
-          {options ? (
-            <Table selectedDepartment={selectedDepartment} />
-          ) : (
-            <h1>No departments</h1>
-          )}
-        </Col>
+        <Col sm="12">{options ? <Table /> : <h1>No departments</h1>}</Col>
       </Row>
       <Modal
         isOpen={addDepartmentModal}

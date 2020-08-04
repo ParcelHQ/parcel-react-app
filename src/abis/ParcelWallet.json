@@ -151,6 +151,19 @@
   },
   {
     "inputs": [],
+    "name": "reverseRegistrar",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "sablierAddress",
     "outputs": [
       {
@@ -173,9 +186,14 @@
         "internalType": "address",
         "name": "addr",
         "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
       }
     ],
-    "name": "setAddr",
+    "name": "setEns",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -183,32 +201,37 @@
   {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "recipients",
-        "type": "address[]"
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       },
       {
-        "internalType": "uint256[]",
-        "name": "values",
-        "type": "uint256[]"
+        "internalType": "uint256",
+        "name": "deposit",
+        "type": "uint256"
       },
       {
-        "internalType": "address[]",
-        "name": "tokensToStream",
-        "type": "address[]"
+        "internalType": "address",
+        "name": "tokenToStream",
+        "type": "address"
       },
       {
-        "internalType": "uint256[]",
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "stopTime",
-        "type": "uint256[]"
+        "type": "uint256"
       }
     ],
     "name": "streamMoney",
     "outputs": [
       {
-        "internalType": "uint256[]",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint256[]"
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",

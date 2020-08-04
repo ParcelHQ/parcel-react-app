@@ -14,22 +14,19 @@ import {
   Spinner,
 } from 'reactstrap';
 import { ArrowDown } from 'react-feather';
-import { BigNumber } from '@ethersproject/bignumber';
+import BigNumber from 'big-number';
+import styled from '@emotion/styled';
+import 'react-toastify/dist/ReactToastify.min.css';
+import { toast, ToastContainer } from 'react-toastify';
+
 import Checkbox from '../../components/CheckBoxes';
-
 import { EmployeeContext } from '../../state/employee/Context';
-
 import '../../assets/scss/plugins/extensions/react-paginate.scss';
 import '../../assets/scss/pages/data-list.scss';
-
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import { getSignature } from '../../utility';
-import styled from '@emotion/styled';
-import 'react-toastify/dist/ReactToastify.min.css';
-
-import { toast, ToastContainer } from 'react-toastify';
 
 const FlexWrap = styled.div`
   display: flex;
@@ -48,7 +45,7 @@ const Wrapper = styled.div`
   margin: auto;
 `;
 
-export default function Table({ selectedDepartment }: any) {
+export default function Table() {
   const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
   const [selectedRow, setSelectedRow] = useState<any>([]);
@@ -175,7 +172,7 @@ export default function Table({ selectedDepartment }: any) {
         }
       });
 
-      let res = await parcelWalletContract.massPayout(
+      await parcelWalletContract.massPayout(
         DAI_ADDRESS,
         TOKENS_REQUESTED,
         EMPLOYEE_ADDRESSES,
@@ -196,11 +193,13 @@ export default function Table({ selectedDepartment }: any) {
         setIsLoading(true);
         toast('Stream Initiated');
 
-        let RECEIPIENTS: any[] = [];
+        let STREAM_LENGTH_IN_SECONDS = lengthOfStream * 3600;
+
+        let RECEIPIENTS: string[] = [];
         selectedRow.forEach((employee: any) => {
           RECEIPIENTS.push(employee.address);
         });
-        let TOKENS_TO_STREAM: any[] = [];
+        let TOKENS_TO_STREAM: string[] = [];
         selectedRow.forEach((employee: any) => {
           switch (employee.salaryCurrency) {
             case 'DAI':
@@ -215,26 +214,27 @@ export default function Table({ selectedDepartment }: any) {
           }
         });
 
-        let STREAM_LENGTH_IN_SECONDS = lengthOfStream * 3600;
-        let VALUES: any[] = [];
+        let VALUES: string[] = [];
         selectedRow.forEach((employee: any) => {
+          const AMOUNT = employee.salary;
           switch (employee.salaryCurrency) {
             case 'DAI':
-              let AMOUNT = '1000000000000000000';
-              // let value = AMOUNT - (AMOUNT % STREAM_LENGTH_IN_SECONDS);
-              VALUES.push();
-
-              // const salaryAsBigInt = BigInt(salary);
-              // console.log('salaryAsBigInt:', salaryAsBigInt);
-              // const amountToStream =
-              //   salaryAsBigInt * BigInt(1000000000000000000);
-
+              const SALARY_DAI = AMOUNT * 1e18;
+              const MOD_DAI = BigNumber(SALARY_DAI).mod(
+                STREAM_LENGTH_IN_SECONDS
+              );
+              const VALUE_DAI = BigNumber(SALARY_DAI).minus(MOD_DAI);
+              VALUES.push(VALUE_DAI.toString());
               break;
-            case 'USDC':
-              VALUES.push('1000000');
 
-              // const amountToStream = salary * 1000000;
-              // VALUES_TO_SEND.push('1000000');
+            case 'USDC':
+              const SALARARY_USDC = AMOUNT * 1e6;
+              const MOD_USDC = BigNumber(SALARARY_USDC).mod(
+                STREAM_LENGTH_IN_SECONDS
+              );
+              const VALUE_USDC = BigNumber(SALARARY_USDC).minus(MOD_USDC);
+              VALUES.push(VALUE_USDC.toString());
+
               break;
 
             default:
@@ -242,23 +242,22 @@ export default function Table({ selectedDepartment }: any) {
           }
         });
 
-        let STOP_TIME: any[] = [];
+        let STOP_TIME: string[] = [];
         for (let i = 0; i < selectedRow.length; i++) {
           STOP_TIME.push(STREAM_LENGTH_IN_SECONDS.toString());
         }
 
-        // let res = await parcelWalletContract.streamMoney(
-        //   RECEIPIENTS,
-        //   VALUES,
-        //   TOKENS_TO_STREAM,
-        //   STOP_TIME // ['3600', '3600']
-        // );
-        // res.wait();
-        setIsLoading(false);
+        const res = await parcelWalletContract.streamMoney(
+          RECEIPIENTS,
+          VALUES,
+          TOKENS_TO_STREAM,
+          STOP_TIME
+        );
+        res.wait();
       } catch (error) {
         console.error(error);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     }
   }
 

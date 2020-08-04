@@ -27,12 +27,13 @@ import ParcelFactoryContract from '../../abis/ParcelFactory.json';
 
 export default function Create() {
   const { library, account } = useWeb3React<Web3Provider>();
-  const [ensName, setEnsName] = useState('');
   const parcelFactoryContract = useContract(
     addresses[RINKEBY_ID].parcelFactory,
     ParcelFactoryContract,
     true
   );
+
+  const [ensName, setEnsName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const PARCEL_ID_HASH = namehash.hash('parcelid.eth');
   const [open, setOpen] = useState(false);
@@ -58,15 +59,12 @@ export default function Create() {
 
     const nameHash = keccak256(toUtf8Bytes(ensName));
     const ensFullDomainHash = namehash.hash(ensName + '.parcelid.eth');
-    console.log('ensFullDomainHash:', ensFullDomainHash);
 
     if (!!library && !!account && !!parcelFactoryContract) {
-      console.log('account:', account);
       const doesItExist = await library.resolveName(ensName + '.parcelid.eth');
       if (doesItExist) setOpen(true);
       else {
         try {
-          console.log('parcelFactoryContract:', parcelFactoryContract);
           await library
             .getSigner(account)
             .signMessage(`sign your ${account} to create encryption key`)
@@ -77,10 +75,9 @@ export default function Create() {
           const tx = await parcelFactoryContract.register(
             PARCEL_ID_HASH,
             nameHash,
-            ensFullDomainHash
+            ensFullDomainHash,
+            ensName + '.parcelid.eth'
           );
-
-          console.log('tx:', tx);
 
           toast('ID Submitted');
           await tx.wait();

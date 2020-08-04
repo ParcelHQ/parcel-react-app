@@ -8,6 +8,8 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import styled from '@emotion/styled';
 
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+
 const IDWrapper = styled.div`
   display: block;
   @media (max-width: 768px) {
@@ -30,12 +32,15 @@ export default function ThemeNavbar({
 
   const [ENSName, setENSName] = useState<string>('');
 
+  const parcelWalletAddress = addresses[RINKEBY_ID].parcelWallet;
+
   useEffect(() => {
-    if (library && account) {
+    if (library && account && parcelWalletAddress) {
       let stale = false;
       library
-        .lookupAddress(account)
+        .lookupAddress(parcelWalletAddress)
         .then((name) => {
+          console.log('name:', name);
           if (!stale && typeof name === 'string') setENSName(name);
         })
         .catch(() => {});
@@ -91,7 +96,7 @@ export default function ThemeNavbar({
                         <IDWrapper>
                           {ENSName && (
                             <Badge className="badge-md" color="primary">
-                              <span>{`Hello ${ENSName}!`}</span>
+                              <span>{`Hello,  ${ENSName} !`}</span>
                             </Badge>
                           )}
                         </IDWrapper>
@@ -101,7 +106,10 @@ export default function ThemeNavbar({
                 </div>
               </div>
 
-              <NavbarUser handleAppOverlay={handleAppOverlay} />
+              <NavbarUser
+                handleAppOverlay={handleAppOverlay}
+                ENSName={ENSName}
+              />
             </div>
           </div>
         </div>

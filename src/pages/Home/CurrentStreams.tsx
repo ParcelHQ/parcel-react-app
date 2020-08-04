@@ -18,10 +18,6 @@ let primary = '#7367F0';
 let primaryLight = '#9c8cfc';
 let brown = '#8D6E63';
 let brownLight = '#DBAE8E';
-let warning = '#FF9F43';
-let danger = '#EA5455';
-let warningLight = '#FFC085';
-let dangerLight = '#f29292';
 let gray = '#808080';
 let grayLighten = '#D3D3D3';
 
@@ -80,7 +76,7 @@ export default function ProductOrders() {
     <Card>
       <CardHeader>
         <CardTitle>Current Streams</CardTitle>
-        <UncontrolledDropdown>
+        {/* <UncontrolledDropdown>
           <DropdownToggle tag="small" className="text-bold-500 cursor-pointer">
             All <ChevronDown size={10} />
           </DropdownToggle>
@@ -91,7 +87,7 @@ export default function ProductOrders() {
             <DropdownItem>Marketing</DropdownItem>
             <DropdownItem>HR</DropdownItem>
           </DropdownMenu>
-        </UncontrolledDropdown>
+        </UncontrolledDropdown> */}
       </CardHeader>
       <CardBody>
         <Row className="pb-50">
