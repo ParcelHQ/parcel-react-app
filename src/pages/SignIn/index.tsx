@@ -96,7 +96,6 @@ export default function Landing() {
           </StyledButton>
 
           <StyledButton
-            // disabled={!active}
             disabled={true}
             onClick={() => history.push('/organizations')}
           >

@@ -11,6 +11,7 @@ import {
   FormGroup,
   Label,
   Input,
+  Spinner,
 } from 'reactstrap';
 import { ArrowDown } from 'react-feather';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -25,8 +26,10 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
 import { getSignature } from '../../utility';
-
 import styled from '@emotion/styled';
+import 'react-toastify/dist/ReactToastify.min.css';
+
+import { toast, ToastContainer } from 'react-toastify';
 
 const FlexWrap = styled.div`
   display: flex;
@@ -37,12 +40,21 @@ const FlexButton = styled(Button)`
   margin: 0 5px;
 `;
 
+const Wrapper = styled.div`
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-evenly;
+  margin: auto;
+`;
+
 export default function Table({ selectedDepartment }: any) {
   const { employees } = useContext(EmployeeContext);
   const [data, setData] = useState(employees);
   const [selectedRow, setSelectedRow] = useState<any>([]);
   const [streamModal, setStreamModal] = useState(false);
-  const [lengthOfStream, setLengthOfStream] = useState<number>(0);
+  const [lengthOfStream, setLengthOfStream] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState(false);
   const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
   const DAI_ADDRESS = '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735';
   const USDC_ADDRESS = '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b';
@@ -179,62 +191,74 @@ export default function Table({ selectedDepartment }: any) {
       return;
     }
 
-    if (parcelWalletContract) {
-      let RECEIPIENTS: any[] = [];
-      selectedRow.forEach((employee: any) => {
-        RECEIPIENTS.push(employee.address);
-      });
-      let TOKENS_TO_STREAM: any[] = [];
-      selectedRow.forEach((employee: any) => {
-        switch (employee.salaryCurrency) {
-          case 'DAI':
-            TOKENS_TO_STREAM.push(DAI_ADDRESS);
-            break;
-          case 'USDC':
-            TOKENS_TO_STREAM.push(USDC_ADDRESS);
-            break;
+    if (parcelWalletContract && lengthOfStream) {
+      try {
+        setIsLoading(true);
+        toast('Stream Initiated');
 
-          default:
-            return;
+        let RECEIPIENTS: any[] = [];
+        selectedRow.forEach((employee: any) => {
+          RECEIPIENTS.push(employee.address);
+        });
+        let TOKENS_TO_STREAM: any[] = [];
+        selectedRow.forEach((employee: any) => {
+          switch (employee.salaryCurrency) {
+            case 'DAI':
+              TOKENS_TO_STREAM.push(DAI_ADDRESS);
+              break;
+            case 'USDC':
+              TOKENS_TO_STREAM.push(USDC_ADDRESS);
+              break;
+
+            default:
+              return;
+          }
+        });
+
+        let STREAM_LENGTH_IN_SECONDS = lengthOfStream * 3600;
+        let VALUES: any[] = [];
+        selectedRow.forEach((employee: any) => {
+          switch (employee.salaryCurrency) {
+            case 'DAI':
+              let AMOUNT = '1000000000000000000';
+              // let value = AMOUNT - (AMOUNT % STREAM_LENGTH_IN_SECONDS);
+              VALUES.push();
+
+              // const salaryAsBigInt = BigInt(salary);
+              // console.log('salaryAsBigInt:', salaryAsBigInt);
+              // const amountToStream =
+              //   salaryAsBigInt * BigInt(1000000000000000000);
+
+              break;
+            case 'USDC':
+              VALUES.push('1000000');
+
+              // const amountToStream = salary * 1000000;
+              // VALUES_TO_SEND.push('1000000');
+              break;
+
+            default:
+              return;
+          }
+        });
+
+        let STOP_TIME: any[] = [];
+        for (let i = 0; i < selectedRow.length; i++) {
+          STOP_TIME.push(STREAM_LENGTH_IN_SECONDS.toString());
         }
-      });
 
-      let VALUES: any[] = [];
-      selectedRow.forEach((employee: any) => {
-        switch (employee.salaryCurrency) {
-          case 'DAI':
-            VALUES.push('1000000000000000000');
-            break;
-          case 'USDC':
-            VALUES.push('1000000');
-            break;
-
-          default:
-            return;
-        }
-      });
-
-      let STOP_TIME: any[] = [];
-      const STREAM_LENGTH_IN_SECONDS = lengthOfStream * 3600;
-
-      let a = BigNumber.from(42);
-      let b = BigNumber.from('91');
-
-      let ONE_DAI = 1000000000000000000;
-      // const ONE_DAI = BigInt(1000000000000000000);
-
-      const SOME_DAI = 9000000000000000; //0.009 DAI
-      let value = SOME_DAI - (SOME_DAI % STREAM_LENGTH_IN_SECONDS);
-
-      // let res = await parcelWalletContract.streamMoney(
-      //   RECEIPIENTS,
-      //   VALUES,
-      //   TOKENS_TO_STREAM,
-      //   STOP_TIME // ['3600', '3600']
-      // );
-      // res.wait();
-
-      // console.log('res:', res);
+        // let res = await parcelWalletContract.streamMoney(
+        //   RECEIPIENTS,
+        //   VALUES,
+        //   TOKENS_TO_STREAM,
+        //   STOP_TIME // ['3600', '3600']
+        // );
+        // res.wait();
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
     }
   }
 
@@ -313,32 +337,51 @@ export default function Table({ selectedDepartment }: any) {
           Begin Stream
         </ModalHeader>
         <ModalBody>
-          <FormGroup>
-            <Label for="stream">Hours to Stream</Label>
-            <Input
-              min={0}
-              max={100}
-              id="stream"
-              placeholder={'5'}
-              type="number"
-              value={lengthOfStream}
-              onChange={(e: any) => setLengthOfStream(e.target.value)}
-            />
-          </FormGroup>
+          {isLoading ? (
+            <Wrapper>
+              <Spinner type="grow" color="primary" size="lg" />
+            </Wrapper>
+          ) : (
+            <FormGroup>
+              <Label for="stream">Hours to Stream</Label>
+              <Input
+                min={0}
+                max={100}
+                id="stream"
+                placeholder={'5'}
+                type="number"
+                value={lengthOfStream}
+                onChange={(e: any) => setLengthOfStream(e.target.value)}
+              />
+            </FormGroup>
+          )}
         </ModalBody>
-        <ModalFooter>
-          <Button
-            color="primary"
-            outline
-            onClick={() => setStreamModal(!streamModal)}
-          >
-            Canel
-          </Button>
-          <Button color="primary" onClick={() => stream()}>
-            Stream
-          </Button>
-        </ModalFooter>
+        {!isLoading && (
+          <ModalFooter>
+            <Button
+              color="primary"
+              outline
+              onClick={() => setStreamModal(!streamModal)}
+            >
+              Canel
+            </Button>
+            <Button color="primary" onClick={() => stream()}>
+              Stream
+            </Button>
+          </ModalFooter>
+        )}
       </Modal>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 }

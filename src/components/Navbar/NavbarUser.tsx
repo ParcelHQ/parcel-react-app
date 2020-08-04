@@ -17,6 +17,7 @@ import addresses, {
   RINKEBY_ID,
   getParcelWalletAddress,
 } from '../../utility/addresses';
+import namehash from 'eth-ens-namehash';
 
 export default function NavbarUser({ userImg, userName }: any) {
   const { layout, dispatch } = useContext(LayoutContext);
@@ -49,12 +50,17 @@ export default function NavbarUser({ userImg, userName }: any) {
   }, [library, account, chainId]);
 
   const parcelWalletAddress = getParcelWalletAddress();
-  console.log('parcelWalletAddress:', parcelWalletAddress);
+
+  const ensFullDomainHash = namehash.hash(
+    '0x277cc1637c6baabbfd92656c09564d9b61d5b3bc'
+  );
+  console.log('ensFullDomainHash:', ensFullDomainHash);
+
   useEffect(() => {
     if (library && account && parcelWalletAddress) {
       let stale = false;
       library
-        .lookupAddress('0xE1E2799D40f62d68D829469E59415aA1ba75F56E')
+        .lookupAddress(parcelWalletAddress)
         .then((name) => {
           console.log('name:', name);
           if (!stale && typeof name === 'string') {

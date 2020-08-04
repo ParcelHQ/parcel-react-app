@@ -1,20 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardBody, Button, Row, Label, Col, FormGroup } from 'reactstrap';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom';
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelFactoryContract from '../../abis/ParcelFactory.json';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 
 export default function Organizations() {
   let history = useHistory();
-  const organizationOptions = [
-    { value: 'ocean', label: 'Ocean' },
-    { value: 'blue', label: 'Blue' },
-    { value: 'purple', label: 'Purple' },
-    { value: 'red', label: 'Red' },
-    { value: 'orange', label: 'Orange' },
-  ];
+  const { account } = useWeb3React<Web3Provider>();
+  const parcelFactoryContract = useContract(
+    addresses[RINKEBY_ID].parcelFactory,
+    ParcelFactoryContract,
+    true
+  );
+  const [selectedOption, setSelectedOption] = useState([]);
+  const [organizationOptions, setOrganizationOptions] = useState<any>([]);
+
+  useEffect(() => {
+    (async () => {
+      if (parcelFactoryContract && account) {
+        let address = await parcelFactoryContract.registered(account);
+        console.log('address:', address);
+
+        let options = [
+          { value: 'ocean', label: 'Ocean' },
+          { value: 'blue', label: 'Blue' },
+        ];
+
+        setOrganizationOptions(options);
+      }
+    })();
+
+    return () => {};
+  }, [parcelFactoryContract, account]);
 
   function selected() {
-    history.push('/home');
+    try {
+      console.log('selectedOption:', selectedOption);
+      // history.push('/home');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -37,6 +66,9 @@ export default function Organizations() {
                 name="organizations"
                 options={organizationOptions}
                 isClearable={true}
+                onChange={(selectedOptions: any) =>
+                  setSelectedOption(selectedOptions)
+                }
               />
             </FormGroup>
             <Button

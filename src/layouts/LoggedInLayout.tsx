@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import Sidebar from '../components/Menu/Sidebar';
 import Navbar from '../components/Navbar';
 import { LayoutContext } from '../state/layout/Context';
+import { Redirect } from 'react-router-dom';
 
 export default function LoggedInLayout({ children, match }: any) {
   const { layout } = useContext(LayoutContext);
@@ -56,46 +57,52 @@ export default function LoggedInLayout({ children, match }: any) {
   }
 
   return (
-    <div
-      className={classnames(
-        'wrapper vertical-layout theme-primary navbar-floating',
-        {
-          'menu-collapsed': collapsedContent === true && width >= 1200,
-        }
+    <>
+      {!localStorage.getItem('PARCEL_WALLET_ADDRESS') && (
+        <Redirect to={{ pathname: '/' }} />
       )}
-    >
-      <Sidebar
-        activePath={match.path}
-        collapsed={collapsedContent}
-        deviceWidth={width}
-        sidebarState={sidebarState}
-        sidebarHover={(val: any) => setSidebarState(val)}
-        sidebarVisibility={handleSidebarVisibility}
-        toggle={toggleSidebarMenu}
-        visibilityState={sidebarHidden}
-      />
 
       <div
-        className={classnames('app-content content', {
-          'show-overlay': appOverlay === true,
-        })}
-        onClick={() => setAppOverlay(false)}
+        className={classnames(
+          'wrapper vertical-layout theme-primary navbar-floating',
+          {
+            'menu-collapsed': collapsedContent === true && width >= 1200,
+          }
+        )}
       >
-        <Navbar
-          toggleSidebarMenu={toggleSidebarMenu}
+        <Sidebar
+          activePath={match.path}
+          collapsed={collapsedContent}
+          deviceWidth={width}
           sidebarState={sidebarState}
+          sidebarHover={(val: any) => setSidebarState(val)}
           sidebarVisibility={handleSidebarVisibility}
-          handleAppOverlay={handleAppOverlay}
-          appOverlayState={appOverlay}
+          toggle={toggleSidebarMenu}
+          visibilityState={sidebarHidden}
         />
 
-        <div className="content-wrapper">{children}</div>
-      </div>
+        <div
+          className={classnames('app-content content', {
+            'show-overlay': appOverlay === true,
+          })}
+          onClick={() => setAppOverlay(false)}
+        >
+          <Navbar
+            toggleSidebarMenu={toggleSidebarMenu}
+            sidebarState={sidebarState}
+            sidebarVisibility={handleSidebarVisibility}
+            handleAppOverlay={handleAppOverlay}
+            appOverlayState={appOverlay}
+          />
 
-      <div
-        className="sidenav-overlay"
-        onClick={() => handleSidebarVisibility()}
-      />
-    </div>
+          <div className="content-wrapper">{children}</div>
+        </div>
+
+        <div
+          className="sidenav-overlay"
+          onClick={() => handleSidebarVisibility()}
+        />
+      </div>
+    </>
   );
 }

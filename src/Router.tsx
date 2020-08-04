@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useContract } from './hooks';
@@ -24,7 +24,12 @@ const Organizations = lazy(() => import('./pages/Organizations'));
 const Employer = lazy(() => import('./pages/Employer'));
 const Error404 = lazy(() => import('./pages/Error404'));
 
-const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
+const AppRoute = ({
+  component: Component,
+  fullLayout,
+  protect,
+  ...rest
+}: any) => (
   <Route
     {...rest}
     render={(props: any) => {
@@ -50,36 +55,6 @@ const AppRoute = ({ component: Component, fullLayout, ...rest }: any) => (
 export default function AppRouter() {
   const triedEager = useEagerConnect();
   useInactiveListener(!triedEager);
-
-  const { account } = useWeb3React<Web3Provider>();
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  const parcelFactoryContract = useContract(
-    addresses[RINKEBY_ID].parcelFactory,
-    ParcelFactoryContract,
-    true
-  );
-
-  useEffect(() => {
-    let isStale = false;
-    if (!isStale && parcelFactoryContract) {
-      (async () => {
-        let res = await parcelFactoryContract.registered(account);
-
-        //If they are not registed
-        if (res !== ZERO_ADDRESS) {
-          // console.log('ZERO_ADDRESS:', ZERO_ADDRESS);
-          setIsRegistered(true);
-        }
-        setLoaded(true);
-      })();
-    }
-
-    return () => {
-      isStale = true;
-    };
-  }, [parcelFactoryContract, account]);
 
   return (
     <Router history={history}>

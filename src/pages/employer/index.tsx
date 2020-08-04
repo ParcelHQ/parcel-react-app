@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardBody } from 'reactstrap';
 import Logo from '../../assets/img/logo/logoPng.png';
 import * as Icons from 'react-feather';
 import { Link } from 'react-router-dom';
-
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+import { useHistory } from 'react-router-dom';
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelFactoryContract from '../../abis/ParcelFactory.json';
+import { ZERO_ADDRESS } from '../../utility/constants';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 import styled from '@emotion/styled';
 
@@ -47,7 +52,44 @@ const StyledButton = styled.button`
 `;
 
 export default function Employer(): JSX.Element {
-  const { active } = useWeb3React<Web3Provider>();
+  const { active, account } = useWeb3React<Web3Provider>();
+
+  let history = useHistory();
+  const parcelFactoryContract = useContract(
+    addresses[RINKEBY_ID].parcelFactory,
+    ParcelFactoryContract,
+    true
+  );
+
+  const [accountAvailable, setAccountAvailable] = useState(false);
+  const [parcelOrgAddress, setParcelOrgAddress] = useState('');
+  const [noAccountAlert, setNoAccountAlert] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      if (parcelFactoryContract && account) {
+        let result = await parcelFactoryContract.registered(account);
+        if (result !== ZERO_ADDRESS) {
+          setAccountAvailable(true);
+          setParcelOrgAddress(result);
+        } else setAccountAvailable(false);
+      }
+    })();
+
+    return () => {};
+  }, [parcelFactoryContract, account]);
+
+  function login() {
+    try {
+      if (!accountAvailable) setNoAccountAlert(true);
+      else {
+        localStorage.setItem('PARCEL_WALLET_ADDRESS', parcelOrgAddress);
+        history.push('/home');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Box>
@@ -71,13 +113,18 @@ export default function Employer(): JSX.Element {
             </StyledButton>
           </Link>
 
-          <Link to="/organizations">
-            <StyledButton disabled={!active}>
-              <Icons.Search size={15} style={{ marginRight: '0.5rem' }} />
-              Open an Organization
-            </StyledButton>
-          </Link>
+          <StyledButton onClick={() => login()}>
+            <Icons.Search size={15} style={{ marginRight: '0.5rem' }} />
+            Open an Organization
+          </StyledButton>
         </ButtonWrapper>
+        <SweetAlert
+          title="No Available Account"
+          show={noAccountAlert}
+          onConfirm={() => setNoAccountAlert(false)}
+        >
+          <p className="sweet-alert-text">Have you registered a Parcel ID?</p>
+        </SweetAlert>
       </CardBody>
     </Box>
   );

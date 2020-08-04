@@ -1,10 +1,5 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import {
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
   Label,
   Input,
   FormGroup,
@@ -22,7 +17,6 @@ import { getSignature } from '../../utility';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
-
 import 'flatpickr/dist/themes/light.css';
 import '../../assets/scss/plugins/forms/flatpickr/flatpickr.scss';
 
