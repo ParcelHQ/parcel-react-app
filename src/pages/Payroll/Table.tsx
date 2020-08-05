@@ -18,6 +18,7 @@ import BigNumber from 'big-number';
 import styled from '@emotion/styled';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { toast, ToastContainer } from 'react-toastify';
+import { useTokens } from '../../utility/tokens';
 
 import Checkbox from '../../components/CheckBoxes';
 import { EmployeeContext } from '../../state/employee/Context';
@@ -52,9 +53,10 @@ export default function Table() {
   const [streamModal, setStreamModal] = useState(false);
   const [lengthOfStream, setLengthOfStream] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
+  const tokens = useTokens();
   const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-  const DAI_ADDRESS = '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735';
-  const USDC_ADDRESS = '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b';
+  const DAI_ADDRESS = tokens[0][5].address;
+  const USDC_ADDRESS = tokens[0][6].address;
 
   const parcelWalletContract = useContract(
     addresses[RINKEBY_ID].parcelWallet,

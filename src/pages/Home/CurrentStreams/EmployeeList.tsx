@@ -53,8 +53,6 @@ const Rate = styled.span`
 `;
 
 const EmployeeList = ({ employeeStreams }: any) => {
-  console.log('employeeStreams:', employeeStreams);
-
   return (
     <List>
       {employeeStreams.map((employee: any) => {

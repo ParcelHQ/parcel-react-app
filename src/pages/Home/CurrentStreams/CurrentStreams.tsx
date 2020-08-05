@@ -13,6 +13,7 @@ import {
   Col,
 } from 'reactstrap';
 import parcel from 'parcel-sdk';
+import BigNumber from 'big-number';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -41,64 +42,83 @@ export default function ProductOrders() {
   const [withdrawnAmount, setWithdrawnAmount] = useState(0);
   const [series, setSeries] = useState([50, 50]); //actual data points used in graph
 
+  // useEffect(() => {
+  //   (async () => {
+  //     if (parcelWalletContract) {
+  //       try {
+  //         let people = await parcelWalletContract.files('2');
+
+  //         if (people !== '') {
+  //           let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+  //           let peopleDecrypted = parcel.cryptoUtils.decryptData(
+  //             peopleFromIpfs,
+  //             getSignature()
+  //           );
+  //           peopleDecrypted = JSON.parse(peopleDecrypted);
+
+  //           peopleDecrypted.forEach((person: any) => {
+  //             //use ens / shorten address
+  //             if (library) {
+  //               library.lookupAddress(person.address).then((name) => {
+  //                 if (typeof name === 'string') person.address = name;
+  //               });
+  //             } else person.address = shortenAddress(person.address);
+  //           });
+
+  //           setEmployeeStreams(peopleDecrypted);
+  //         } else console.log(`Zero Employees registered yet!`);
+  //       } catch (error) {}
+  //     }
+  //   })();
+  // }, [parcelWalletContract, library]);
+
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        try {
-          let people = await parcelWalletContract.files('2');
+        let employeeStreams = [];
 
-          if (people !== '') {
-            let peopleFromIpfs = await parcel.ipfs.getData(people);
+        const streamIDs = await parcelWalletContract.getStreamIds();
 
-            let peopleDecrypted = parcel.cryptoUtils.decryptData(
-              peopleFromIpfs,
-              getSignature()
-            );
-            peopleDecrypted = JSON.parse(peopleDecrypted);
+        if (SablierContract) {
+          streamIDs.forEach(async (streamID: any) => {
+            let employeeStream = {
+              address: '',
+              percentage: '',
+              salary: '',
+              currencySalary: '',
+              rate: '',
+            };
+            let result = await SablierContract.getSalary(streamID);
 
-            peopleDecrypted.forEach((person: any) => {
-              //use ens / shorten address
-              if (library) {
-                library.lookupAddress(person.address).then((name) => {
-                  if (typeof name === 'string') person.address = name;
-                });
-              } else person.address = shortenAddress(person.address);
-            });
+            const startTime = Number(result.startTime);
+            const rate = BigNumber(Number(result.rate));
+            const salary = Number(result.salary);
+            console.log('salary:', salary.toString());
+            const currentTime = Date.now() / 1000;
 
-            console.log('peopleDecrypted:', peopleDecrypted);
-            setEmployeeStreams(peopleDecrypted);
-          } else console.log(`Zero Employees registered yet!`);
-        } catch (error) {}
+            let MINUS_RESULT = Math.ceil(currentTime) - startTime;
+            MINUS_RESULT = BigNumber(MINUS_RESULT);
+
+            let MULT_RESULT = BigNumber(MINUS_RESULT).mult(rate);
+            console.log('MULT_RESULT:', MULT_RESULT.toString());
+
+            MULT_RESULT = MULT_RESULT.toString();
+            MULT_RESULT = Number(MULT_RESULT);
+
+            let percentage = MULT_RESULT / salary;
+            // percentage = Number(percentage);
+            //@ts-ignore
+            percentage = percentage.toFixed(2);
+            percentage = percentage * 100;
+            console.log('percentage:', percentage);
+            /// add to array
+            employeeStreams.push(employeeStream);
+          });
+        }
       }
     })();
-  }, [parcelWalletContract, library]);
-
-  console.log('SablierContract:', SablierContract);
-
-  useEffect(() => {
-    (async () => {
-      if (SablierContract) {
-        const streamIDs = ['171'];
-        streamIDs.forEach(async (streamID: any) => {
-          // console.log('stream:', streamID);
-          let result = await SablierContract.getSalary(streamID);
-          console.log('result:', result);
-
-          console.log('employee:', result.employee);
-          const startTime = result.startTime.toString();
-          console.log('startTime:', startTime);
-          const rate = result.rate.toString();
-          console.log('rate:', rate);
-          const salary = result.salary.toString();
-          console.log('salary:', salary);
-          const percentage = (Date.now() - startTime * rate) / salary;
-          console.log('percentage:', percentage);
-        });
-      }
-    })();
-
-    return () => {};
-  }, [SablierContract]);
+  }, [parcelWalletContract, SablierContract]);
 
   useEffect(() => {
     if (SablierContract) {
@@ -106,8 +126,6 @@ export default function ProductOrders() {
       const WITHDRAWN = 50;
       setSeries([STREAMING, WITHDRAWN]);
     }
-
-    return () => {};
   }, [SablierContract]);
 
   return (

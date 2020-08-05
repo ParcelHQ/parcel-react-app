@@ -6,7 +6,7 @@ export const DEFAULT_TOKENS = [
 
   new Token(
     ChainId.RINKEBY,
-    '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+    '0xc3dbf84Abb494ce5199D5d4D815b10EC29529ff8',
     18,
     'DAI',
     'Dai Stablecoin'
