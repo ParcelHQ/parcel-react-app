@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardHeader,
@@ -13,24 +13,54 @@ import {
 import Chart from 'react-apexcharts';
 import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Row, Col } from 'reactstrap';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import Sablier from '../../abis/Sablier.json';
 
 let primary = '#7367F0';
 let primaryLight = '#9c8cfc';
 let brown = '#8D6E63';
 let brownLight = '#DBAE8E';
-let gray = '#808080';
-let grayLighten = '#D3D3D3';
 
 export default function ProductOrders() {
+  const { library, account } = useWeb3React<Web3Provider>();
+  const SablierContract = useContract(
+    addresses[RINKEBY_ID].sablier,
+    Sablier,
+    true
+  );
+
+  console.log('SablierContract:', SablierContract);
+
+  // Purple - Total cumulative stream of pepople
+  // Brown - Withdrawn amount
+
+  useEffect(() => {
+    (async () => {
+      if (SablierContract) {
+        // call getSalary for each employee
+        // percentage = (NOW (unix) - start time * rate) / salary
+        // if 100% turn graph color to green and stop running logic
+        let result = await SablierContract.getSalary('171');
+        console.log('result:', result);
+      }
+    })();
+
+    return () => {};
+  }, [SablierContract]);
+
   const [options] = useState({
-    colors: [primary, brown, gray],
+    colors: [primary, brown],
     fill: {
       type: 'gradient',
       gradient: {
         shade: 'dark',
         type: 'vertical',
         shadeIntensity: 0.5,
-        gradientToColors: [primaryLight, brownLight, grayLighten],
+        gradientToColors: [primaryLight, brownLight],
         inverseColors: false,
         opacityFrom: 1,
         opacityTo: 1,
@@ -57,20 +87,20 @@ export default function ProductOrders() {
           value: {
             fontSize: '16px',
           },
-          total: {
-            show: true,
-            label: 'Total',
+          // total: {
+          //   show: true,
+          //   label: 'Total',
 
-            formatter: () => {
-              return 42459;
-            },
-          },
+          //   formatter: () => {
+          //     return 42459;
+          //   },
+          // },
         },
       },
     },
-    labels: ['Finished', 'Pending', 'Rejected'],
+    labels: ['Finished', 'Pending'],
   });
-  const [series] = useState([70, 52, 26]);
+  const [series] = useState([70, 52]);
 
   return (
     <Card>
