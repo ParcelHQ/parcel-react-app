@@ -53,14 +53,22 @@ const Rate = styled.span`
 `;
 
 const EmployeeList = ({ employeeStreams }: any) => {
-  return (
+  console.log('employeeStreams:', employeeStreams);
+  // console.log('employeeStreams:', employeeStreams);
+  // const [employeeStreams, setemployeeStreams] = useState();
+
+  // useEffect(() => {
+
+  // }, [employeeStreams]);
+
+  return employeeStreams ? null : (
     <List>
       {employeeStreams.map((employee: any) => {
+        console.log('employeekj:', employee);
         const totalAmountToStream = employee.salary;
         const currency = employee.salaryCurrency;
-
-        console.log('address:', employee.address);
         const address = employee.address;
+        console.log('address:', address);
         const streamRate = employee.streamRate;
 
         return (

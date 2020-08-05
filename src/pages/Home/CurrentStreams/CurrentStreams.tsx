@@ -76,7 +76,7 @@ export default function ProductOrders() {
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        let employeeStreams = [];
+        let employeeStreams: any[] = [];
 
         const streamIDs = await parcelWalletContract.getStreamIds();
 
@@ -85,37 +85,36 @@ export default function ProductOrders() {
             let employeeStream = {
               address: '',
               percentage: '',
-              salary: '',
+              salary: 0,
               currencySalary: '',
-              rate: '',
+              rate: 0,
             };
-            let result = await SablierContract.getSalary(streamID);
+            const result = await SablierContract.getSalary(streamID);
+            employeeStream.address = result.employee;
+            employeeStream.currencySalary = result.tokenAddress;
 
-            const startTime = Number(result.startTime);
             const rate = BigNumber(Number(result.rate));
-            const salary = Number(result.salary);
-            console.log('salary:', salary.toString());
+            employeeStream.rate = Number(rate) / 1e18;
+
+            const salary = Number(result.salary) / 1e18;
+            employeeStream.salary = Math.ceil(salary);
+
             const currentTime = Date.now() / 1000;
-
-            let MINUS_RESULT = Math.ceil(currentTime) - startTime;
-            MINUS_RESULT = BigNumber(MINUS_RESULT);
-
+            let MINUS_RESULT =
+              Math.ceil(currentTime) - Number(result.startTime);
             let MULT_RESULT = BigNumber(MINUS_RESULT).mult(rate);
-            console.log('MULT_RESULT:', MULT_RESULT.toString());
-
-            MULT_RESULT = MULT_RESULT.toString();
-            MULT_RESULT = Number(MULT_RESULT);
-
-            let percentage = MULT_RESULT / salary;
-            // percentage = Number(percentage);
+            let percentage = Number(MULT_RESULT.toString()) / salary;
             //@ts-ignore
             percentage = percentage.toFixed(2);
             percentage = percentage * 100;
-            console.log('percentage:', percentage);
+            if (percentage >= 100) percentage = 100;
+            employeeStream.percentage = percentage.toString();
             /// add to array
             employeeStreams.push(employeeStream);
           });
         }
+
+        setEmployeeStreams(employeeStreams);
       }
     })();
   }, [parcelWalletContract, SablierContract]);
