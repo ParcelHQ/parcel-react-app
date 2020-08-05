@@ -1,7 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-export default function CurrentChart({ series }: any) {
+export default function RadialChart({ series }: any) {
   let primary = '#7367F0';
   let primaryLight = '#9c8cfc';
   let brown = '#8D6E63';
@@ -54,7 +54,7 @@ export default function CurrentChart({ series }: any) {
         },
       },
     },
-    labels: ['Finished', 'Pending'],
+    labels: ['Streaming', 'Withdrawn'],
   };
 
   return (

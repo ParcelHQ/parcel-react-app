@@ -18,13 +18,12 @@ import { Web3Provider } from '@ethersproject/providers';
 
 import EmployeeList from './EmployeeList';
 import { getSignature } from '../../utility';
-import NewChart from './NewChart';
 import { shortenAddress } from '../../utility';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import Sablier from '../../abis/Sablier.json';
 import ParcelWallet from '../../abis/ParcelWallet.json';
-import CurrentChart from './CurrentChart';
+import RadialChart from './RadialChart';
 
 export default function ProductOrders() {
   const { library } = useWeb3React<Web3Provider>();
@@ -76,10 +75,6 @@ export default function ProductOrders() {
 
   console.log('SablierContract:', SablierContract);
 
-  // make a call to factory contract to get all ID's, then call getSalary
-  // Purple - Total cumulative stream of pepople
-  // Brown - Withdrawn amount
-
   useEffect(() => {
     (async () => {
       if (SablierContract) {
@@ -108,6 +103,16 @@ export default function ProductOrders() {
     return () => {};
   }, [SablierContract]);
 
+  useEffect(() => {
+    if (SablierContract) {
+      const STREAMING = 50;
+      const WITHDRAWN = 50;
+      setSeries([STREAMING, WITHDRAWN]);
+    }
+
+    return () => {};
+  }, [SablierContract]);
+
   return (
     <Card>
       <CardHeader>
@@ -132,8 +137,7 @@ export default function ProductOrders() {
             xs="12"
             className="d-flex justify-content-between flex-column mt-lg-0 mt-2"
           >
-            <CurrentChart series={series} />
-            {/* <NewChart /> */}
+            <RadialChart series={series} />
           </Col>
           <Col
             lg="6"

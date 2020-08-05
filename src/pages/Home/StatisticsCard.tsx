@@ -3,11 +3,11 @@ import { Row, Col } from 'reactstrap';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { formatEther } from '@ethersproject/units';
-import { useTokens } from '../../utility/tokens';
 import IERC20 from '@uniswap/v2-core/build/IERC20.json';
+
 import useContract from '../../hooks/useContract';
 import { getParcelWalletAddress } from '../../utility/addresses';
-
+import { useTokens } from '../../utility/tokens';
 import StatisticsCard from '../../components/StatisticsCard';
 import { ReactComponent as ETHLogo } from '../../assets/currency/eth.svg';
 import { ReactComponent as DAILogo } from '../../assets/currency/dai.svg';
@@ -21,11 +21,11 @@ export default function StatisticsCards() {
 
   const parcelWalletAddress = getParcelWalletAddress();
 
-  const { account, library, chainId } = useWeb3React<Web3Provider>();
+  const { account, library } = useWeb3React<Web3Provider>();
   const [ethBalance, setEthBalance] = useState<any>(0);
   const [daiBalance, setDaiBalance] = useState<any>(0);
   const [usdcBalance, setUsdcBalance] = useState<any>(0);
-  const [usdtBalance, setUsdtBalance] = useState<any>(0);
+  // const [usdtBalance, setUsdtBalance] = useState<any>(0);
 
   useEffect(() => {
     let isStale = false;
@@ -57,7 +57,7 @@ export default function StatisticsCards() {
     return () => {
       isStale = true;
     };
-  }, [account, library, chainId, daiContract, usdcContract]);
+  }, [account, library, parcelWalletAddress, daiContract, usdcContract]);
 
   return (
     <Row>
