@@ -37,95 +37,69 @@ export default function ProductOrders() {
     addresses[RINKEBY_ID].parcelWallet,
     ParcelWallet
   );
-  const [employeeStreams, setEmployeeStreams] = useState<any>([]);
+  const [employeeStreams, setEmployeeStreams] = useState<any>();
+  const [streamIds, setStreamIds] = useState<any>();
   const [totalCumulativeStream, setTotalCumulativeStream] = useState(0);
   const [withdrawnAmount, setWithdrawnAmount] = useState(0);
   const [series, setSeries] = useState([50, 50]); //actual data points used in graph
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (parcelWalletContract) {
-  //       try {
-  //         let people = await parcelWalletContract.files('2');
-
-  //         if (people !== '') {
-  //           let peopleFromIpfs = await parcel.ipfs.getData(people);
-
-  //           let peopleDecrypted = parcel.cryptoUtils.decryptData(
-  //             peopleFromIpfs,
-  //             getSignature()
-  //           );
-  //           peopleDecrypted = JSON.parse(peopleDecrypted);
-
-  //           peopleDecrypted.forEach((person: any) => {
-  //             //use ens / shorten address
-  //             if (library) {
-  //               library.lookupAddress(person.address).then((name) => {
-  //                 if (typeof name === 'string') person.address = name;
-  //               });
-  //             } else person.address = shortenAddress(person.address);
-  //           });
-
-  //           setEmployeeStreams(peopleDecrypted);
-  //         } else console.log(`Zero Employees registered yet!`);
-  //       } catch (error) {}
-  //     }
-  //   })();
-  // }, [parcelWalletContract, library]);
-
   useEffect(() => {
     (async () => {
       if (parcelWalletContract) {
-        let employeeStreams: any[] = [];
-
-        const streamIDs = await parcelWalletContract.getStreamIds();
-
-        if (SablierContract) {
-          streamIDs.forEach(async (streamID: any) => {
-            let employeeStream = {
-              address: '',
-              percentage: '',
-              salary: 0,
-              currencySalary: '',
-              rate: 0,
-            };
-            const result = await SablierContract.getSalary(streamID);
-            employeeStream.address = result.employee;
-            employeeStream.currencySalary = result.tokenAddress;
-
-            const rate = BigNumber(Number(result.rate));
-            employeeStream.rate = Number(rate) / 1e18;
-
-            const salary = Number(result.salary) / 1e18;
-            employeeStream.salary = Math.ceil(salary);
-
-            const currentTime = Date.now() / 1000;
-            let MINUS_RESULT =
-              Math.ceil(currentTime) - Number(result.startTime);
-            let MULT_RESULT = BigNumber(MINUS_RESULT).mult(rate);
-            let percentage = Number(MULT_RESULT.toString()) / salary;
-            //@ts-ignore
-            percentage = percentage.toFixed(2);
-            percentage = percentage * 100;
-            if (percentage >= 100) percentage = 100;
-            employeeStream.percentage = percentage.toString();
-            /// add to array
-            employeeStreams.push(employeeStream);
-          });
-        }
-
-        setEmployeeStreams(employeeStreams);
+        const streamIds = await parcelWalletContract.getStreamIds();
+        setStreamIds(streamIds);
       }
     })();
-  }, [parcelWalletContract, SablierContract]);
+  }, [parcelWalletContract]);
+
+  function getStreamingObject(result: any) {
+    let StreamObject = {
+      address: '',
+      percentage: '',
+      salary: 0,
+      currencySalary: '',
+      rate: 0,
+    };
+    StreamObject.address = result.employee;
+    StreamObject.currencySalary = result.tokenAddress;
+    const rate = BigNumber(Number(result.rate));
+    StreamObject.rate = Number(rate) / 1e18;
+    const salary = Number(result.salary) / 1e18;
+    StreamObject.salary = Math.ceil(salary);
+
+    let MULT_RESULT = BigNumber(
+      Math.ceil(Date.now() / 1000) - Number(result.startTime)
+    ).mult(rate);
+    let percentage = Number(MULT_RESULT.toString()) / salary;
+    //@ts-ignore
+    percentage = percentage.toFixed(2);
+    percentage = percentage * 100;
+    if (percentage >= 100) percentage = 100;
+    StreamObject.percentage = percentage.toString();
+    return StreamObject;
+  }
 
   useEffect(() => {
-    if (SablierContract) {
-      const STREAMING = 50;
-      const WITHDRAWN = 50;
-      setSeries([STREAMING, WITHDRAWN]);
+    if (SablierContract && streamIds) {
+      let TEMP_ARRAY: any[] = [];
+
+      streamIds.forEach(async (streamID: any) => {
+        const result = await SablierContract.getSalary(streamID);
+
+        const StreamObject = getStreamingObject(result);
+        TEMP_ARRAY.push(StreamObject);
+      });
+
+      setEmployeeStreams(TEMP_ARRAY);
     }
-  }, [SablierContract]);
+  }, [streamIds]);
+  // useEffect(() => {
+  //   if (SablierContract) {
+  //     const STREAMING = 50;
+  //     const WITHDRAWN = 50;
+  //     setSeries([STREAMING, WITHDRAWN]);
+  //   }
+  // }, [SablierContract]);
 
   return (
     <Card>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Progress } from 'reactstrap';
 import styled from '@emotion/styled';
@@ -53,58 +53,52 @@ const Rate = styled.span`
 `;
 
 const EmployeeList = ({ employeeStreams }: any) => {
-  console.log('employeeStreams:', employeeStreams);
-  // console.log('employeeStreams:', employeeStreams);
-  // const [employeeStreams, setemployeeStreams] = useState();
+  if (employeeStreams) console.log('employeeStreams:', employeeStreams);
 
-  // useEffect(() => {
-
-  // }, [employeeStreams]);
-
-  return employeeStreams ? null : (
+  return (
     <List>
-      {employeeStreams.map((employee: any) => {
-        console.log('employeekj:', employee);
-        const totalAmountToStream = employee.salary;
-        const currency = employee.salaryCurrency;
-        const address = employee.address;
-        console.log('address:', address);
-        const streamRate = employee.streamRate;
+      {employeeStreams &&
+        employeeStreams.map((employee: any) => {
+          console.log('employee:', employee);
+          const totalAmountToStream = employee.salary;
+          const currency = employee.salaryCurrency;
+          const address = employee.address;
+          const streamRate = employee.streamRate;
 
-        return (
-          <ListElement key={uuid()}>
-            <NumericData>
-              <LeftDiv>
-                <Address>{address ? address : '-'}</Address>
-                <Percentage>73%</Percentage>
-              </LeftDiv>
-              <RightDiv>
-                <AmountAndCurrency>
-                  <Amount>
-                    {totalAmountToStream ? totalAmountToStream : '-'}
-                  </Amount>
-                  {currency === 'DAI' ? (
-                    <DAILogo
-                      style={{
-                        height: '1.5rem',
-                        marginBottom: '0.1rem',
-                      }}
-                    />
-                  ) : currency === 'USDC' ? (
-                    <USDCLogo
-                      style={{ height: '1.5rem', marginBottom: '0.1rem' }}
-                    />
-                  ) : (
-                    '-'
-                  )}
-                </AmountAndCurrency>
-                <Rate>{streamRate ? streamRate : '-'}</Rate>
-              </RightDiv>
-            </NumericData>
-            <Progress className="mb-2" value="73" />
-          </ListElement>
-        );
-      })}
+          return (
+            <ListElement key={uuid()}>
+              <NumericData>
+                <LeftDiv>
+                  <Address>{address ? address : '-'}</Address>
+                  <Percentage>73%</Percentage>
+                </LeftDiv>
+                <RightDiv>
+                  <AmountAndCurrency>
+                    <Amount>
+                      {totalAmountToStream ? totalAmountToStream : '-'}
+                    </Amount>
+                    {currency === 'DAI' ? (
+                      <DAILogo
+                        style={{
+                          height: '1.5rem',
+                          marginBottom: '0.1rem',
+                        }}
+                      />
+                    ) : currency === 'USDC' ? (
+                      <USDCLogo
+                        style={{ height: '1.5rem', marginBottom: '0.1rem' }}
+                      />
+                    ) : (
+                      '-'
+                    )}
+                  </AmountAndCurrency>
+                  <Rate>{streamRate ? streamRate : '-'}</Rate>
+                </RightDiv>
+              </NumericData>
+              <Progress className="mb-2" value="73" />
+            </ListElement>
+          );
+        })}
     </List>
   );
 };
