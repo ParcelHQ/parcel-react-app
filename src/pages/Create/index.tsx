@@ -33,6 +33,8 @@ export default function Create() {
     true
   );
 
+  console.log('parcelFactoryContract:', parcelFactoryContract);
+
   const [ensName, setEnsName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const PARCEL_ID_HASH = namehash.hash('parcelid.eth');

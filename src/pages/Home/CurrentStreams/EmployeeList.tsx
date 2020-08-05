@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Progress } from 'reactstrap';
 import styled from '@emotion/styled';
 import { v4 as uuid } from 'uuid';
 
-import { ReactComponent as DAILogo } from '../../assets/currency/dai.svg';
-import { ReactComponent as USDCLogo } from '../../assets/currency/usdc.svg';
+import { ReactComponent as DAILogo } from '../../../assets/currency/dai.svg';
+import { ReactComponent as USDCLogo } from '../../../assets/currency/usdc.svg';
 
 const List = styled.ul`
   padding: 0;
@@ -54,6 +54,7 @@ const Rate = styled.span`
 
 const EmployeeList = ({ employeeStreams }: any) => {
   console.log('employeeStreams:', employeeStreams);
+
   return (
     <List>
       {employeeStreams.map((employee: any) => {

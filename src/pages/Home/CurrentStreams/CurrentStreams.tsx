@@ -17,12 +17,12 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
 import EmployeeList from './EmployeeList';
-import { getSignature } from '../../utility';
-import { shortenAddress } from '../../utility';
-import addresses, { RINKEBY_ID } from '../../utility/addresses';
-import { useContract } from '../../hooks';
-import Sablier from '../../abis/Sablier.json';
-import ParcelWallet from '../../abis/ParcelWallet.json';
+import { getSignature } from '../../../utility';
+import { shortenAddress } from '../../../utility';
+import addresses, { RINKEBY_ID } from '../../../utility/addresses';
+import { useContract } from '../../../hooks';
+import Sablier from '../../../abis/Sablier.json';
+import ParcelWallet from '../../../abis/ParcelWallet.json';
 import RadialChart from './RadialChart';
 
 export default function ProductOrders() {
@@ -78,9 +78,6 @@ export default function ProductOrders() {
   useEffect(() => {
     (async () => {
       if (SablierContract) {
-        // call getSalary for each employee
-        // percentage = (NOW (unix) - start time * rate) / salary
-        // if 100% turn graph color to green and stop running logic
         const streamIDs = ['171'];
         streamIDs.forEach(async (streamID: any) => {
           // console.log('stream:', streamID);
@@ -137,7 +134,7 @@ export default function ProductOrders() {
             xs="12"
             className="d-flex justify-content-between flex-column mt-lg-0 mt-2"
           >
-            <RadialChart series={series} />
+            {/* <RadialChart series={series} /> */}
           </Col>
           <Col
             lg="6"
