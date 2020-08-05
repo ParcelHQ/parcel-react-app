@@ -40,8 +40,9 @@ export default function ThemeNavbar({
       library
         .lookupAddress(parcelWalletAddress)
         .then((name) => {
-          console.log('name:', name);
-          if (!stale && typeof name === 'string') setENSName(name);
+          if (!stale && typeof name === 'string') {
+            setENSName(name.slice(0, -13));
+          }
         })
         .catch(() => {});
       return (): void => {
@@ -85,7 +86,10 @@ export default function ThemeNavbar({
                         className="nav-menu-main menu-toggle hidden-xs is-active"
                         onClick={sidebarVisibility}
                       >
-                        <Icon.Menu className="ficon" />
+                        <Icon.Menu
+                          className="ficon"
+                          style={{ marginTop: '0.2rem' }}
+                        />
                       </NavLink>
                     </NavItem>
                     <NavItem className="mobile-menu mr-auto">
@@ -95,8 +99,8 @@ export default function ThemeNavbar({
                       >
                         <IDWrapper>
                           {ENSName && (
-                            <Badge className="badge-md" color="primary">
-                              <span>{`Hello,  ${ENSName} !`}</span>
+                            <Badge className="badge-lg" color="primary">
+                              <span>{`Welcome back,  ${ENSName}!`}</span>
                             </Badge>
                           )}
                         </IDWrapper>

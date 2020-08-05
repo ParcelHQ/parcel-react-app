@@ -254,7 +254,6 @@ export default function Table() {
           STOP_TIME
         );
         res.wait();
-        /// res returns an array of numbers with ID's corresponding to each person you paid
       } catch (error) {
         console.error(error);
       }

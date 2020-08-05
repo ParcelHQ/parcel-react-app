@@ -35,6 +35,7 @@ export default function ProductOrders() {
 
   console.log('SablierContract:', SablierContract);
 
+  //make a call to factory contract to get all ID's, then call getSalary
   // Purple - Total cumulative stream of pepople
   // Brown - Withdrawn amount
 
