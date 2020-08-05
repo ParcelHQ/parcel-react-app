@@ -45,6 +45,7 @@ const AmountAndCurrency = styled.div`
 
 const Amount = styled.span`
   vertical-align: top;
+  margin-right: 1rem;
 `;
 
 const Rate = styled.span`
@@ -77,7 +78,10 @@ const EmployeeList = ({ employeeStreams }: any) => {
                   </Amount>
                   {currency === 'DAI' ? (
                     <DAILogo
-                      style={{ height: '1.5rem', marginBottom: '0.1rem' }}
+                      style={{
+                        height: '1.5rem',
+                        marginBottom: '0.1rem',
+                      }}
                     />
                   ) : currency === 'USDC' ? (
                     <USDCLogo

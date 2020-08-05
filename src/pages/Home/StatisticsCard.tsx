@@ -76,7 +76,7 @@ export default function StatisticsCards() {
           hideChart
           iconRight
           iconBg="primary"
-          icon={<DAILogo />}
+          icon={<DAILogo style={{ height: '2.5rem', width: '2.5rem' }} />}
           stat={daiBalance}
           statTitle="DAI"
         />
