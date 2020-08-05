@@ -80,18 +80,19 @@ export default function ProductOrders() {
   }
 
   useEffect(() => {
-    if (SablierContract && streamIds) {
-      let TEMP_ARRAY: any[] = [];
+    (async () => {
+      if (SablierContract && streamIds) {
+        let TEMP_ARRAY: any[] = [];
 
-      streamIds.forEach(async (streamID: any) => {
-        const result = await SablierContract.getSalary(streamID);
+        for await (const streamId of streamIds) {
+          const result = await SablierContract.getSalary(streamId);
+          const StreamObject = getStreamingObject(result);
+          TEMP_ARRAY.push(StreamObject);
+        }
 
-        const StreamObject = getStreamingObject(result);
-        TEMP_ARRAY.push(StreamObject);
-      });
-
-      setEmployeeStreams(TEMP_ARRAY);
-    }
+        setEmployeeStreams(TEMP_ARRAY);
+      }
+    })();
   }, [streamIds]);
   // useEffect(() => {
   //   if (SablierContract) {

@@ -3,6 +3,7 @@ import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Progress } from 'reactstrap';
 import styled from '@emotion/styled';
 import { v4 as uuid } from 'uuid';
+import { shortenAddress } from '../../../utility';
 
 import { ReactComponent as DAILogo } from '../../../assets/currency/dai.svg';
 import { ReactComponent as USDCLogo } from '../../../assets/currency/usdc.svg';
@@ -53,31 +54,35 @@ const Rate = styled.span`
 `;
 
 const EmployeeList = ({ employeeStreams }: any) => {
-  if (employeeStreams) console.log('employeeStreams:', employeeStreams);
-
   return (
     <List>
       {employeeStreams &&
         employeeStreams.map((employee: any) => {
           console.log('employee:', employee);
           const totalAmountToStream = employee.salary;
-          const currency = employee.salaryCurrency;
+          const currency = employee.currencySalary;
           const address = employee.address;
-          const streamRate = employee.streamRate;
+          const streamRate = employee.rate;
+          console.log('streamRate:', streamRate);
+          const percentage = employee.percentage;
 
           return (
             <ListElement key={uuid()}>
               <NumericData>
                 <LeftDiv>
-                  <Address>{address ? address : '-'}</Address>
-                  <Percentage>73%</Percentage>
+                  <Address>{address ? shortenAddress(address) : '-'}</Address>
+                  <Percentage>
+                    {percentage ? `${percentage} %` : '-'}
+                  </Percentage>
                 </LeftDiv>
                 <RightDiv>
                   <AmountAndCurrency>
                     <Amount>
                       {totalAmountToStream ? totalAmountToStream : '-'}
                     </Amount>
-                    {currency === 'DAI' ? (
+                    {currency &&
+                    currency ===
+                      '0xc3dbf84Abb494ce5199D5d4D815b10EC29529ff8' ? (
                       <DAILogo
                         style={{
                           height: '1.5rem',
@@ -92,10 +97,12 @@ const EmployeeList = ({ employeeStreams }: any) => {
                       '-'
                     )}
                   </AmountAndCurrency>
-                  <Rate>{streamRate ? streamRate : '-'}</Rate>
+                  <Rate>
+                    {streamRate ? `${streamRate.toFixed(5)} / SEC` : '-'}
+                  </Rate>
                 </RightDiv>
               </NumericData>
-              <Progress className="mb-2" value="73" />
+              <Progress className="mb-2" value={percentage} />
             </ListElement>
           );
         })}
