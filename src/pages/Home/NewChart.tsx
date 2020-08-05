@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
+import { Card, CardHeader, CardTitle, CardBody, Col, Row } from 'reactstrap';
 import {
   RadialBarChart,
   RadialBar,
@@ -8,7 +8,7 @@ import {
   Legend,
 } from 'recharts';
 
-export default function RadiaBarExample() {
+export default function NewChart() {
   let primary = '#7367F0';
   let primaryLight = '#9c8cfc';
   let brown = '#8D6E63';
@@ -81,14 +81,16 @@ export default function RadiaBarExample() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>RadiaBar Chart</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <div className="recharts-wrapper">
-          <ResponsiveContainer>
-            {/* <RadialBarChart
+    // <Card>
+    //   <CardHeader>
+    //     <CardTitle>RadiaBar Chart</CardTitle>
+    //   </CardHeader>
+    //   <CardBody>
+    <Row>
+      <Col sm="12">
+        {/* <div className="recharts-wrapper"> */}
+        <ResponsiveContainer>
+          {/* <RadialBarChart
               width={500}
               height={300}
               innerRadius={20}
@@ -99,36 +101,38 @@ export default function RadiaBarExample() {
               <RadialBar minAngle={15} background clockWise dataKey="uv" />
               <Tooltip />
             </RadialBarChart> */}
-            <RadialBarChart
-              width={500}
-              height={300}
-              cx={150}
-              cy={150}
-              innerRadius={20}
-              outerRadius={140}
-              barSize={10}
-              data={data}
-            >
-              <RadialBar
-                //@ts-ignore
-                minAngle={15}
-                label={{ position: 'insideStart', fill: '#fff' }}
-                background
-                clockWise
-                dataKey="uv"
-              />
-              <Legend
-                iconSize={10}
-                width={120}
-                height={140}
-                layout="vertical"
-                verticalAlign="middle"
-                wrapperStyle={style}
-              />
-            </RadialBarChart>
-          </ResponsiveContainer>
-        </div>
-      </CardBody>
-    </Card>
+          <RadialBarChart
+            width={500}
+            height={300}
+            cx={150}
+            cy={150}
+            innerRadius={20}
+            outerRadius={140}
+            barSize={10}
+            data={data}
+          >
+            <RadialBar
+              //@ts-ignore
+              minAngle={15}
+              label={{ position: 'insideStart', fill: '#fff' }}
+              background
+              clockWise
+              dataKey="uv"
+            />
+            <Legend
+              iconSize={10}
+              width={120}
+              height={140}
+              layout="vertical"
+              verticalAlign="middle"
+              wrapperStyle={style}
+            />
+          </RadialBarChart>
+        </ResponsiveContainer>
+        {/* </div> */}
+      </Col>
+    </Row>
+    //   </CardBody>
+    // </Card>
   );
 }

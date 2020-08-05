@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { OrganizationContext } from '../../state/organization/Context';
+import React from 'react';
 import StatisticsCard from './StatisticsCard';
 import CurrentStreams from './CurrentStreams';
 import { Row, Col } from 'reactstrap';
@@ -12,6 +11,7 @@ export default function Home() {
   return (
     <>
       <StatisticsCard />
+
       <CurrentStreams />
       <Row>
         <Col lg="6">

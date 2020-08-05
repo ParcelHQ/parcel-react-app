@@ -13,7 +13,6 @@ import {
   Col,
 } from 'reactstrap';
 import parcel from 'parcel-sdk';
-import Chart from 'react-apexcharts';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -25,11 +24,7 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import Sablier from '../../abis/Sablier.json';
 import ParcelWallet from '../../abis/ParcelWallet.json';
-
-let primary = '#7367F0';
-let primaryLight = '#9c8cfc';
-let brown = '#8D6E63';
-let brownLight = '#DBAE8E';
+import CurrentChart from './CurrentChart';
 
 export default function ProductOrders() {
   const { library } = useWeb3React<Web3Provider>();
@@ -113,55 +108,6 @@ export default function ProductOrders() {
     return () => {};
   }, [SablierContract]);
 
-  const [options] = useState({
-    colors: [primary, brown],
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        type: 'vertical',
-        shadeIntensity: 0.5,
-        gradientToColors: [primaryLight, brownLight],
-        inverseColors: false,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100],
-      },
-    },
-    stroke: {
-      lineCap: 'round',
-    },
-    plotOptions: {
-      radialBar: {
-        size: 150,
-        hollow: {
-          size: '20%',
-        },
-        track: {
-          strokeWidth: '100%',
-          margin: 15,
-        },
-        dataLabels: {
-          name: {
-            fontSize: '18px',
-          },
-          value: {
-            fontSize: '16px',
-          },
-          // total: {
-          //   show: true,
-          //   label: 'Total',
-
-          //   formatter: () => {
-          //     return 42459;
-          //   },
-          // },
-        },
-      },
-    },
-    labels: ['Finished', 'Pending'],
-  });
-
   return (
     <Card>
       <CardHeader>
@@ -186,12 +132,7 @@ export default function ProductOrders() {
             xs="12"
             className="d-flex justify-content-between flex-column mt-lg-0 mt-2"
           >
-            <Chart
-              options={options}
-              series={series}
-              type="radialBar"
-              height={350}
-            />
+            <CurrentChart series={series} />
             {/* <NewChart /> */}
           </Col>
           <Col
