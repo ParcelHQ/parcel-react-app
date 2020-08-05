@@ -9,16 +9,22 @@ import {
   DropdownItem,
   DropdownToggle,
   Progress,
+  Row,
+  Col,
 } from 'reactstrap';
+import parcel from 'parcel-sdk';
 import Chart from 'react-apexcharts';
-import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
-import { Row, Col } from 'reactstrap';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
+import EmployeeList from './EmployeeList';
+import { getSignature } from '../../utility';
+import NewChart from './NewChart';
+import { shortenAddress } from '../../utility';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import Sablier from '../../abis/Sablier.json';
+import ParcelWallet from '../../abis/ParcelWallet.json';
 
 let primary = '#7367F0';
 let primaryLight = '#9c8cfc';
@@ -26,16 +32,56 @@ let brown = '#8D6E63';
 let brownLight = '#DBAE8E';
 
 export default function ProductOrders() {
-  const { library, account } = useWeb3React<Web3Provider>();
+  const { library } = useWeb3React<Web3Provider>();
   const SablierContract = useContract(
     addresses[RINKEBY_ID].sablier,
     Sablier,
     true
   );
+  const parcelWalletContract = useContract(
+    addresses[RINKEBY_ID].parcelWallet,
+    ParcelWallet
+  );
+  const [employeeStreams, setEmployeeStreams] = useState<any>([]);
+  const [totalCumulativeStream, setTotalCumulativeStream] = useState(0);
+  const [withdrawnAmount, setWithdrawnAmount] = useState(0);
+  const [series, setSeries] = useState([50, 50]); //actual data points used in graph
+
+  useEffect(() => {
+    (async () => {
+      if (parcelWalletContract) {
+        try {
+          let people = await parcelWalletContract.files('2');
+
+          if (people !== '') {
+            let peopleFromIpfs = await parcel.ipfs.getData(people);
+
+            let peopleDecrypted = parcel.cryptoUtils.decryptData(
+              peopleFromIpfs,
+              getSignature()
+            );
+            peopleDecrypted = JSON.parse(peopleDecrypted);
+
+            peopleDecrypted.forEach((person: any) => {
+              //use ens / shorten address
+              if (library) {
+                library.lookupAddress(person.address).then((name) => {
+                  if (typeof name === 'string') person.address = name;
+                });
+              } else person.address = shortenAddress(person.address);
+            });
+
+            console.log('peopleDecrypted:', peopleDecrypted);
+            setEmployeeStreams(peopleDecrypted);
+          } else console.log(`Zero Employees registered yet!`);
+        } catch (error) {}
+      }
+    })();
+  }, [parcelWalletContract, library]);
 
   console.log('SablierContract:', SablierContract);
 
-  //make a call to factory contract to get all ID's, then call getSalary
+  // make a call to factory contract to get all ID's, then call getSalary
   // Purple - Total cumulative stream of pepople
   // Brown - Withdrawn amount
 
@@ -45,8 +91,22 @@ export default function ProductOrders() {
         // call getSalary for each employee
         // percentage = (NOW (unix) - start time * rate) / salary
         // if 100% turn graph color to green and stop running logic
-        let result = await SablierContract.getSalary('171');
-        console.log('result:', result);
+        const streamIDs = ['171'];
+        streamIDs.forEach(async (streamID: any) => {
+          // console.log('stream:', streamID);
+          let result = await SablierContract.getSalary(streamID);
+          console.log('result:', result);
+
+          console.log('employee:', result.employee);
+          const startTime = result.startTime.toString();
+          console.log('startTime:', startTime);
+          const rate = result.rate.toString();
+          console.log('rate:', rate);
+          const salary = result.salary.toString();
+          console.log('salary:', salary);
+          const percentage = (Date.now() - startTime * rate) / salary;
+          console.log('percentage:', percentage);
+        });
       }
     })();
 
@@ -101,7 +161,6 @@ export default function ProductOrders() {
     },
     labels: ['Finished', 'Pending'],
   });
-  const [series] = useState([70, 52]);
 
   return (
     <Card>
@@ -133,52 +192,14 @@ export default function ProductOrders() {
               type="radialBar"
               height={350}
             />
+            {/* <NewChart /> */}
           </Col>
           <Col
             lg="6"
             xs="12"
             className="d-flex justify-content-between flex-column text-right"
           >
-            <div className="d-flex justify-content-between mb-25">
-              <div className="browser-info">
-                <p className="mb-25">Tarun.eth</p>
-                <h4>73%</h4>
-              </div>
-              <div className="stastics-info text-right">
-                <span>
-                  800 <ArrowUp size={15} className="text-success" />
-                </span>
-                <span className="text-muted d-block">13:16</span>
-              </div>
-            </div>
-            <Progress className="mb-2" value="73" />
-            <div className="d-flex justify-content-between mb-25">
-              <div className="browser-info">
-                <p className="mb-25">Anubhav.eth</p>
-                <h4>8%</h4>
-              </div>
-              <div className="stastics-info text-right">
-                <span>
-                  -200 <ArrowDown size={15} className="text-danger" />
-                </span>
-                <span className="text-muted d-block">13:16</span>
-              </div>
-            </div>
-            <Progress className="mb-2" value="8" />
-
-            <div className="d-flex justify-content-between mb-25">
-              <div className="browser-info">
-                <p className="mb-25">Brennan.eth</p>
-                <h4>19%</h4>
-              </div>
-              <div className="stastics-info text-right">
-                <span>
-                  100 <ArrowUp size={15} className="text-success" />
-                </span>
-                <span className="text-muted d-block">13:16</span>
-              </div>
-            </div>
-            <Progress className="mb-2" value="19" />
+            <EmployeeList employeeStreams={employeeStreams} />
           </Col>
         </Row>
       </CardBody>
