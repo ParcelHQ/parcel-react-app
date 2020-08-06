@@ -68,6 +68,7 @@ export default function Add({ areThereEmployees }: any) {
         let result = await parcelWalletContract.addFile('2', personHash.string);
 
         await result.wait();
+        window.location.href = "";
       } else {
         let people = await parcelWalletContract.files('2');
         let peopleFromIpfs = await parcel.ipfs.getData(people);

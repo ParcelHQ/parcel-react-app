@@ -182,6 +182,8 @@ export default function Table() {
       );
       TOKENS_REQUESTED = [];
       EMPLOYEE_ADDRESSES = [];
+
+
     }
   }
 
@@ -255,7 +257,8 @@ export default function Table() {
           TOKENS_TO_STREAM,
           STOP_TIME
         );
-        res.wait();
+        await res.wait();
+        window.location.href = "/home";
       } catch (error) {
         console.error(error);
       }
