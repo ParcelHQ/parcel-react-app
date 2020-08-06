@@ -111,7 +111,7 @@ export default function ProductOrders() {
         let finalStreamedPercentage = streamedPercentage.toFixed(2);
         setSeries([Number(finalStreamedPercentage), 40]);
         setTotalCumulativeStream(totalStreamed);
-        setEmployeeStreams(TEMP_ARRAY);
+        setEmployeeStreams(TEMP_ARRAY.reverse());
       }
     })();
   }, [streamIds]);
@@ -151,7 +151,7 @@ export default function ProductOrders() {
             xs="12"
             className="d-flex justify-content-between flex-column mt-lg-0 mt-2"
           >
-            <RadialChart series={series} totalStreamValue={totalCumulativeStream}/>
+            <RadialChart series={series} totalStreamValue={50}/>
           </Col>
           <Col
             lg="6"
