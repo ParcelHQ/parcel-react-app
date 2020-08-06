@@ -7,9 +7,6 @@ const brown = '#8D6E63';
 const brownLight = '#DBAE8E';
 
 export default function RadialChart({ series, totalStreamValue }: any) {
-  console.log('series:', series[0]);
-  console.log('totalStreamValue:', totalStreamValue);
-
   if (isNaN(series[0])) series[0] = 50;
 
   const options = {

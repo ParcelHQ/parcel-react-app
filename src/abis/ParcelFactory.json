@@ -1,44 +1,25 @@
 [
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_node", "type": "bytes32" },
-      { "internalType": "address", "name": "_newOwner", "type": "address" }
+      {
+        "internalType": "address payable",
+        "name": "_newAdmin",
+        "type": "address"
+      }
     ],
-    "name": "changeENSOwner",
-    "outputs": [],
+    "name": "changeAdmin",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "defaultResolver",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getParcelWallets",
-    "outputs": [
-      { "internalType": "address[]", "name": "", "type": "address[]" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "address", "name": "_address", "type": "address" }
+      { "internalType": "bytes32", "name": "_node", "type": "bytes32" },
+      { "internalType": "address", "name": "_newOwner", "type": "address" }
     ],
-    "name": "lookUpEns",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "publicResolverAddr",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
+    "name": "changeENSOwner",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -53,6 +34,40 @@
     "stateMutability": "payable",
     "type": "function"
   },
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [],
+    "name": "withdrawTestEth",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  { "stateMutability": "payable", "type": "receive" },
+  {
+    "inputs": [],
+    "name": "admin",
+    "outputs": [
+      { "internalType": "address payable", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getParcelWallets",
+    "outputs": [
+      { "internalType": "address[]", "name": "", "type": "address[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "publicResolverAddr",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "registered",
@@ -63,13 +78,6 @@
   {
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "registeredWallets",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "reverseRegistrar",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"

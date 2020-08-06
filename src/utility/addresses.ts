@@ -13,7 +13,7 @@ export const getParcelWalletAddress = () => {
 
 export default {
   [RINKEBY_ID]: {
-    parcelFactory: '0xACe91BC66AB909CDc1eb9124D06112E5fb7f2504',
+    parcelFactory: '0x0A8E7756Fd504761e59C7180Ae70daDD0C1ef1Cd',
     parcelWallet:
       getParcelWalletAddress() || '0xc2daeC47fbE026550c4F3f6C35d300C37b8aF361', //TODO: change this to global address when created
     massPayouts: '0x9244fB7C104c09de4D5B7D41ce151ad29c837Ce4',

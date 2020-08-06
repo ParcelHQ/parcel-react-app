@@ -105,13 +105,12 @@ export default function ProductOrders() {
           TEMP_ARRAY.push(StreamObject);
         }
 
-        console.log('totalPendingStreams ', totalPendingStreams);
-        console.log('totalPendingStreams ', Math.ceil(totalPendingStreams));
-        console.log('totalStreamed ', totalStreamed);
+        // console.log('totalPendingStreams ', totalPendingStreams);
+        // console.log('totalPendingStreams ', Math.ceil(totalPendingStreams));
+        // console.log('totalStreamed ', totalStreamed);
         let streamedPercentage = (totalPendingStreams / totalStreamed) * 100;
-        console.log(typeof streamedPercentage);
         let finalStreamedPercentage = streamedPercentage.toFixed(2);
-        console.log('finalStreamedPercentage:', finalStreamedPercentage);
+        // console.log('finalStreamedPercentage:', finalStreamedPercentage);
         setSeries([Number(finalStreamedPercentage), 50]);
         setTotalCumulativeStream(totalStreamed);
         setEmployeeStreams(TEMP_ARRAY.reverse());

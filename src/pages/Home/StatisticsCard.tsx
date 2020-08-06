@@ -46,9 +46,9 @@ export default function StatisticsCards() {
         }
 
         if (usdcContract) {
-          const balance = formatEther(
-            await usdcContract.balanceOf(parcelWalletAddress)
-          );
+          let balance = await usdcContract.balanceOf(parcelWalletAddress);
+          balance = balance / 1e6;
+          balance = balance.toString();
           setUsdcBalance(parseFloat(balance).toFixed(2));
         }
       }
