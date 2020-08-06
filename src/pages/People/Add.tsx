@@ -44,10 +44,10 @@ export default function Add({ areThereEmployees }: any) {
 
   const [inputFields, setInputFields] = useState([
     {
-      name: 'Brennan',
-      address: '0x1d9999be880e7e516dEefdA00a3919BdDE9C1707',
+      name: 'John Doe',
+      address: '0x079B8FEee69fC6828e41dC10165e155757b6E7Ce',
       department: 'Engineering',
-      salary: '1',
+      salary: '10',
       salaryCurrency: 'DAI',
       date: null,
     },
@@ -68,8 +68,9 @@ export default function Add({ areThereEmployees }: any) {
         let personHash = await parcel.ipfs.addData(encryptedPersonData);
 
         let result = await parcelWalletContract.addFile('2', personHash.string);
-        window.location.href = '';
+
         await result.wait();
+        window.location.href = '';
       } else {
         let people = await parcelWalletContract.files('2');
         let peopleFromIpfs = await parcel.ipfs.getData(people);

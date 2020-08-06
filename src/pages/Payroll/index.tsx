@@ -111,6 +111,7 @@ export default function Payroll() {
           );
 
           await result.wait();
+          window.location.href = '';
         } else {
           let newDepartments = [];
 
