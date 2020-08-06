@@ -50,7 +50,7 @@ export default function ThemeNavbar({
         setENSName('');
       };
     }
-  }, [library, account, chainId]);
+  }, [library, account, chainId, parcelWalletAddress]);
 
   return (
     <>

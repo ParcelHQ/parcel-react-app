@@ -99,7 +99,7 @@ export default function ProductOrders() {
         setEmployeeStreams(TEMP_ARRAY);
       }
     })();
-  }, [streamIds]);
+  }, [streamIds, SablierContract]);
 
   useEffect(() => {
     (async () => {

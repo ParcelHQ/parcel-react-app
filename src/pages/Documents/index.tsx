@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Breadcrumbs from '../../components/BreadCrumbs';
 import 'react-table/react-table.css';
-import '../../assets/scss/plugins/extensions/react-tables.scss';
-import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { useContract } from '../../hooks';
 import parcel from 'parcel-sdk';
-import { getSignature } from '../../utility';
 import {
   Card,
   Spinner,
@@ -23,10 +18,16 @@ import {
   Input,
 } from 'reactstrap';
 import ReactTable from 'react-table';
-import ParcelWalletContract from '../../abis/ParcelWallet.json';
 import { useDropzone } from 'react-dropzone';
 import styled from '@emotion/styled';
 import { Plus } from 'react-feather';
+
+import ParcelWalletContract from '../../abis/ParcelWallet.json';
+import { getSignature } from '../../utility';
+import { useContract } from '../../hooks';
+import '../../assets/scss/plugins/extensions/react-tables.scss';
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import Breadcrumbs from '../../components/BreadCrumbs';
 
 const Container = styled.div`
   flex: 1;

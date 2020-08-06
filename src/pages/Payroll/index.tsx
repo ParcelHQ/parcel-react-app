@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from '../../components/BreadCrumbs';
 import { Row, Col, CustomInput } from 'reactstrap';
-import addresses, { RINKEBY_ID } from '../../utility/addresses';
-import { useContract } from '../../hooks';
-import ParcelWallet from '../../abis/ParcelWallet.json';
 import parcel from 'parcel-sdk';
-import Table from './Table';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
@@ -21,8 +16,14 @@ import {
 import { Plus, X } from 'react-feather';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getSignature } from '../../utility';
 import styled from '@emotion/styled';
+
+import { getSignature } from '../../utility';
+import Breadcrumbs from '../../components/BreadCrumbs';
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelWallet from '../../abis/ParcelWallet.json';
+import Table from './Table';
 
 const DepartmentOptions = styled(FormGroup)`
   width: 100%;

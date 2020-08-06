@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { CardBody } from 'reactstrap';
-import Logo from '../../assets/img/logo/logoPng.png';
 import * as Icons from 'react-feather';
 import { Link } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useHistory } from 'react-router-dom';
+import { AddressZero } from '@ethersproject/constants';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import styled from '@emotion/styled';
+
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelFactoryContract from '../../abis/ParcelFactory.json';
-import { AddressZero } from '@ethersproject/constants';
-import SweetAlert from 'react-bootstrap-sweetalert';
-
-import styled from '@emotion/styled';
+import Logo from '../../assets/img/logo/logoPng.png';
 
 const Box = styled.div`
   display: flex;

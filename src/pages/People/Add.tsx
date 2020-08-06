@@ -13,17 +13,19 @@ import styled from '@emotion/styled';
 import parcel from 'parcel-sdk';
 import Flatpickr from 'react-flatpickr';
 import { X } from 'react-feather';
+import 'flatpickr/dist/themes/light.css';
+
 import { getSignature } from '../../utility';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelWallet from '../../abis/ParcelWallet.json';
-import 'flatpickr/dist/themes/light.css';
 import '../../assets/scss/plugins/forms/flatpickr/flatpickr.scss';
 
 const FlexWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
+
 const Wrapper = styled.div`
   margin-top: 3rem;
   margin-bottom: 3rem;

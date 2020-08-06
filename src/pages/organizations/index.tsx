@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardBody, Button, Row, Label, Col, FormGroup } from 'reactstrap';
 import Select from 'react-select';
-import { useHistory } from 'react-router-dom';
-import addresses, { RINKEBY_ID } from '../../utility/addresses';
-import { useContract } from '../../hooks';
-import ParcelFactoryContract from '../../abis/ParcelFactory.json';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
+import addresses, { RINKEBY_ID } from '../../utility/addresses';
+import { useContract } from '../../hooks';
+import ParcelFactoryContract from '../../abis/ParcelFactory.json';
+
 export default function Organizations() {
-  let history = useHistory();
   const { account } = useWeb3React<Web3Provider>();
   const parcelFactoryContract = useContract(
     addresses[RINKEBY_ID].parcelFactory,

@@ -27,6 +27,8 @@
     "big-number": "^2.0.0",
     "bootstrap": "^4.5.1",
     "classnames": "~2.2.6",
+    "dotenv": "^8.2.0",
+    "env": "0.0.2",
     "eth-ens-namehash": "^2.0.8",
     "ethers": "^5.0.8",
     "file-saver": "^2.0.2",

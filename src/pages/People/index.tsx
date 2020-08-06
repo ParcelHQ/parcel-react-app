@@ -1,7 +1,8 @@
 import React from 'react';
 import { Row, Col } from 'reactstrap';
-import Breadcrumbs from '../../components/BreadCrumbs';
 import 'react-table/react-table.css';
+
+import Breadcrumbs from '../../components/BreadCrumbs';
 import '../../assets/scss/plugins/extensions/react-tables.scss';
 import PeopleList from './PeopleList';
 

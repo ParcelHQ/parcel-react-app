@@ -3,8 +3,8 @@ import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Progress } from 'reactstrap';
 import styled from '@emotion/styled';
 import { v4 as uuid } from 'uuid';
-import { shortenAddress } from '../../../utility';
 
+import { shortenAddress } from '../../../utility';
 import { ReactComponent as DAILogo } from '../../../assets/currency/dai.svg';
 import { ReactComponent as USDCLogo } from '../../../assets/currency/usdc.svg';
 
