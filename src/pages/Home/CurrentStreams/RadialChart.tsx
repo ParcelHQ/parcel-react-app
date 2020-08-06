@@ -154,7 +154,7 @@ export default function RadialChart({ series, totalStreamValue }: any) {
         <Box>
           <TopBox>
             <Title>Streamed</Title>
-            <Stat>5.9 %</Stat>
+            <Stat>50 %</Stat>
           </TopBox>
           <div style={{ width: '70px' }}>
             <Progress animated color="primary" value={50} />
@@ -163,10 +163,10 @@ export default function RadialChart({ series, totalStreamValue }: any) {
         <Box>
           <TopBox>
             <Title>Withdrawn</Title>
-            <Stat>0 %</Stat>
+            <Stat>50 %</Stat>
           </TopBox>
           <div style={{ width: '70px' }}>
-            <Progress animated color="warning" value={75} />
+            <Progress animated color="warning" value={50} />
           </div>
         </Box>
       </BottomBox>
