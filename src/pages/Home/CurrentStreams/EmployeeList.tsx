@@ -75,10 +75,13 @@ const PageNumber = styled.li<{ active: boolean }>`
 `;
 
 const EmployeeList = ({ employeeStreams }: any) => {
+  console.log('employeeStreams:', employeeStreams);
   const STREAMS_PER_PAGE = 3;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [currentStreams, setCurrentStreams] = useState<any>([]);
+  const [currentStreams, setCurrentStreams] = useState<any>();
+  console.log('currentStreams:', currentStreams);
+  console.log('currentStreams:', !!currentStreams);
   const [pageNumbers, setPageNumbers] = useState<any>();
 
   useEffect(() => {
@@ -89,7 +92,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
         indexOfFirstStream,
         indexOfLastStream
       );
-      setCurrentStreams([...currentStreams]);
+      setCurrentStreams([currentStreams]);
     }
   }, [employeeStreams, currentPage]);
 
@@ -115,7 +118,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
   return (
     <>
       <List>
-        {currentStreams &&
+        {currentStreams === [] ? (
           currentStreams.map((employee: any) => {
             const totalAmountToStream = employee.salary;
             const currency = employee.currencySalary;
@@ -165,7 +168,56 @@ const EmployeeList = ({ employeeStreams }: any) => {
                 <Progress className="mb-2" value={percentage} />
               </ListElement>
             );
-          })}
+          })
+        ) : (
+          <>
+            <ListElement key={uuid()}>
+              <NumericData>
+                <LeftDiv>
+                  <Address>0x0</Address>
+                  <Percentage>100</Percentage>
+                </LeftDiv>
+                <RightDiv>
+                  <AmountAndCurrency>
+                    <Amount>1</Amount>$
+                  </AmountAndCurrency>
+                  <Rate>1.00 / SEC</Rate>
+                </RightDiv>
+              </NumericData>
+              <Progress className="mb-2" value={100} />
+            </ListElement>
+            <ListElement key={uuid()}>
+              <NumericData>
+                <LeftDiv>
+                  <Address>0x0</Address>
+                  <Percentage>100</Percentage>
+                </LeftDiv>
+                <RightDiv>
+                  <AmountAndCurrency>
+                    <Amount>1</Amount>$
+                  </AmountAndCurrency>
+                  <Rate>1.00 / SEC</Rate>
+                </RightDiv>
+              </NumericData>
+              <Progress className="mb-2" value={100} />
+            </ListElement>
+            <ListElement key={uuid()}>
+              <NumericData>
+                <LeftDiv>
+                  <Address>0x0</Address>
+                  <Percentage>100</Percentage>
+                </LeftDiv>
+                <RightDiv>
+                  <AmountAndCurrency>
+                    <Amount>1</Amount> $
+                  </AmountAndCurrency>
+                  <Rate>1.00 / SEC</Rate>
+                </RightDiv>
+              </NumericData>
+              <Progress className="mb-2" value={100} />
+            </ListElement>
+          </>
+        )}
         {/* <div style={{ height: '5rem' }}>
           <Skeleton count={3} />
         </div> */}
