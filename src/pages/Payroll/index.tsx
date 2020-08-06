@@ -111,6 +111,7 @@ export default function Payroll() {
           );
 
           await result.wait();
+          window.location.href = "";
         } else {
           let newDepartments = [];
 
@@ -133,6 +134,7 @@ export default function Payroll() {
           );
 
           await result.wait();
+          window.location.href = "";
         }
         setDepartments([{ title: '' }]);
       } catch (error) {

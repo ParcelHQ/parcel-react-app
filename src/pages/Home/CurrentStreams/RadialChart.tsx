@@ -1,11 +1,12 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-export default function RadialChart({ series }: any) {
+export default function RadialChart({ series, totalStreamValue }: any) {
   let primary = '#7367F0';
   let primaryLight = '#9c8cfc';
   let brown = '#8D6E63';
   let brownLight = '#DBAE8E';
+  console.log("totalStreamValue: ", totalStreamValue)
 
   const options = {
     colors: [primary, brown],
@@ -48,7 +49,7 @@ export default function RadialChart({ series }: any) {
             label: 'Total',
 
             formatter: () => {
-              return 42459;
+              return totalStreamValue;
             },
           },
         },
