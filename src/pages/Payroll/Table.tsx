@@ -161,12 +161,13 @@ export default function Table() {
       //! VALUES_TO_SEND
       let VALUES_TO_SEND: any[] = [];
       selectedRow.forEach((employee: any) => {
+        const AMOUNT = employee.salary;
         switch (employee.salaryCurrency) {
           case 'DAI':
-            VALUES_TO_SEND.push('1000000000000000000');
+            VALUES_TO_SEND.push((AMOUNT * 1e18).toString());
             break;
           case 'USDC':
-            VALUES_TO_SEND.push('1000000');
+            VALUES_TO_SEND.push((AMOUNT * 1e6).toString());
             break;
 
           default:
