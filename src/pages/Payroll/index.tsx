@@ -133,6 +133,7 @@ export default function Payroll() {
           );
 
           await result.wait();
+          window.location.href = '';
         }
         setDepartments([{ title: '' }]);
       } catch (error) {

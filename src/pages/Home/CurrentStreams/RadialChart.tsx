@@ -1,11 +1,16 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-export default function RadialChart({ series }: any) {
-  let primary = '#7367F0';
-  let primaryLight = '#9c8cfc';
-  let brown = '#8D6E63';
-  let brownLight = '#DBAE8E';
+const primary = '#7367F0';
+const primaryLight = '#9c8cfc';
+const brown = '#8D6E63';
+const brownLight = '#DBAE8E';
+
+export default function RadialChart({ series, totalStreamValue }: any) {
+  console.log('series:', series[0]);
+  console.log('totalStreamValue:', totalStreamValue);
+
+  if (isNaN(series[0])) series[0] = 50;
 
   const options = {
     colors: [primary, brown],
@@ -22,9 +27,7 @@ export default function RadialChart({ series }: any) {
         stops: [0, 100],
       },
     },
-    // stroke: {
-    //   lineCap: 'round',
-    // },
+
     plotOptions: {
       radialBar: {
         size: 150,
@@ -48,7 +51,7 @@ export default function RadialChart({ series }: any) {
             label: 'Total',
 
             formatter: () => {
-              return 42459;
+              return totalStreamValue ? totalStreamValue : 50;
             },
           },
         },

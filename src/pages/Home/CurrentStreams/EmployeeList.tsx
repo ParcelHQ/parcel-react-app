@@ -75,13 +75,10 @@ const PageNumber = styled.li<{ active: boolean }>`
 `;
 
 const EmployeeList = ({ employeeStreams }: any) => {
-  console.log('employeeStreams:', employeeStreams);
   const STREAMS_PER_PAGE = 3;
   const [currentPage, setCurrentPage] = useState(1);
 
   const [currentStreams, setCurrentStreams] = useState<any>();
-  console.log('currentStreams:', currentStreams);
-  console.log('currentStreams:', !!currentStreams);
   const [pageNumbers, setPageNumbers] = useState<any>();
 
   useEffect(() => {
