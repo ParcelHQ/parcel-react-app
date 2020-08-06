@@ -12,6 +12,7 @@ import addresses, { RINKEBY_ID } from '../../utility/addresses';
 
 const IDWrapper = styled.div`
   display: block;
+  left: 5rem;
   @media (max-width: 768px) {
     display: none;
   }
@@ -107,16 +108,15 @@ export default function ThemeNavbar({
                       </NavLink>
                     </NavItem>
                   </ul>
+                  <IDWrapper>
+                    {ENSName && (
+                      <Badge className="badge-lg" color="primary">
+                        <span>{`Welcome back,  ${ENSName}!`}</span>
+                      </Badge>
+                    )}
+                  </IDWrapper>
                 </div>
               </div>
-
-              <IDWrapper>
-                {ENSName && (
-                  <Badge className="badge-lg" color="primary">
-                    <span>{`Welcome back,  ${ENSName}!`}</span>
-                  </Badge>
-                )}
-              </IDWrapper>
 
               <NavbarUser
                 handleAppOverlay={handleAppOverlay}
