@@ -92,23 +92,31 @@ export default function ThemeNavbar({
                         />
                       </NavLink>
                     </NavItem>
-                    <NavItem className="mobile-menu mr-auto">
+                    <NavItem className="mr-auto">
                       <NavLink
                         className="nav-menu-main menu-toggle hidden-xs is-active"
                         onClick={sidebarVisibility}
                       >
-                        <IDWrapper>
+                        {/* <IDWrapper>
                           {ENSName && (
                             <Badge className="badge-lg" color="primary">
                               <span>{`Welcome back,  ${ENSName}!`}</span>
                             </Badge>
                           )}
-                        </IDWrapper>
+                        </IDWrapper> */}
                       </NavLink>
                     </NavItem>
                   </ul>
                 </div>
               </div>
+
+              <IDWrapper>
+                {ENSName && (
+                  <Badge className="badge-lg" color="primary">
+                    <span>{`Welcome back,  ${ENSName}!`}</span>
+                  </Badge>
+                )}
+              </IDWrapper>
 
               <NavbarUser
                 handleAppOverlay={handleAppOverlay}

@@ -79,6 +79,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
   const STREAMS_PER_PAGE = 3;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentStreams, setCurrentStreams] = useState<any>();
+  console.log('currentStreams:', currentStreams);
   const [pageNumbers, setPageNumbers] = useState<any>();
 
   const tokens = useTokens();
@@ -120,7 +121,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
   return (
     <>
       <List>
-        {currentStreams &&
+        {currentStreams && currentStreams.length !== 0 ? (
           currentStreams.map((employee: any) => {
             const totalAmountToStream = employee.salary;
             const currency = employee.currencySalary;
@@ -168,8 +169,8 @@ const EmployeeList = ({ employeeStreams }: any) => {
                 <Progress className="mb-2" value={percentage} />
               </ListElement>
             );
-          })}
-        {/* : (
+          })
+        ) : (
           <>
             <ListElement key={uuid()}>
               <NumericData>
@@ -217,7 +218,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
               <Progress className="mb-2" value={100} />
             </ListElement>
           </>
-        )} */}
+        )}
         {/* <div style={{ height: '5rem' }}>
           <Skeleton count={3} />
         </div> */}

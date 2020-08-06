@@ -59,8 +59,6 @@ export default function RadialChart({ series, totalStreamValue }: any) {
     labels: ['Streaming', 'Withdrawn'],
   });
 
-  console.log('options:', options);
-
   useEffect(() => {
     if (totalStreamValue) {
       setOptions({

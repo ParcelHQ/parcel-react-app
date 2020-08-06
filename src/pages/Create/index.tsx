@@ -102,7 +102,11 @@ export default function Create() {
 
   return (
     <>
-      {isNowRegistered && <Redirect to="/home" />}
+      {isNowRegistered && (
+        <>
+          <Redirect to="/home" /> {toast('Test Funds Added')}
+        </>
+      )}
       <Row className="m-0">
         <Col sm="12">
           <Card className="auth-card bg-transparent shadow-none rounded-0 mb-0 w-100">
@@ -155,7 +159,7 @@ export default function Create() {
                         padding: '12px 16px',
                       }}
                     >
-                      Submit
+                      Create
                     </Button>
                   </Form>
                 )}
