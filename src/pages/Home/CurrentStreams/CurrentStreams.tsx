@@ -27,7 +27,6 @@ import ParcelWallet from '../../../abis/ParcelWallet.json';
 import RadialChart from './RadialChart';
 
 export default function ProductOrders() {
-  const { library } = useWeb3React<Web3Provider>();
   const SablierContract = useContract(
     addresses[RINKEBY_ID].sablier,
     Sablier,
@@ -75,12 +74,13 @@ export default function ProductOrders() {
     const RES = MATH_CEIL - newStartTime;
 
     let MULT_RESULT = BigNumber(RES).mult(rate);
+    console.log('MULT_RESULT:', MULT_RESULT.toString()); //divisor
 
     let percentage = Number(MULT_RESULT.toString()) / salary;
 
     let percentageString = percentage.toFixed(2);
     percentage = Number(percentageString) * 100;
-    // if (percentage >= 100) percentage = 100;
+    percentage = parseInt(percentage.toString());
     StreamObject.percentage = percentage.toString();
     return StreamObject;
   }
@@ -102,11 +102,14 @@ export default function ProductOrders() {
   }, [streamIds]);
 
   useEffect(() => {
-    if (SablierContract) {
-      const STREAMING = 50;
-      const WITHDRAWN = 50;
-      setSeries([STREAMING, WITHDRAWN]);
-    }
+    (async () => {
+      if (SablierContract) {
+        //total = totalvaluestream
+        const STREAMING = 50;
+        const WITHDRAWN = 50;
+        setSeries([STREAMING, WITHDRAWN]);
+      }
+    })();
   }, [SablierContract]);
 
   return (

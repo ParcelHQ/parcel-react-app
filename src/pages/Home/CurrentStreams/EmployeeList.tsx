@@ -62,7 +62,10 @@ const EmployeeList = ({ employeeStreams }: any) => {
           const currency = employee.currencySalary;
           const address = employee.address;
           const streamRate = employee.rate;
-          const percentage = employee.percentage;
+          let percentage = employee.percentage;
+          if (percentage >= 100) {
+            percentage = 100;
+          }
 
           return (
             <ListElement key={uuid()}>
