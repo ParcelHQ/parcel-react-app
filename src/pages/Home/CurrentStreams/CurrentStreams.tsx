@@ -55,10 +55,10 @@ export default function ProductOrders() {
   function getStreamingObject(result: any) {
     let StreamObject = {
       address: '',
-      percentage: '',
+      percentage: 0,
       salary: 0,
       currencySalary: '',
-      rate: 0,
+      rate: 0
     };
     StreamObject.address = result.employee;
     StreamObject.currencySalary = result.tokenAddress;
@@ -81,7 +81,8 @@ export default function ProductOrders() {
     let percentageString = percentage.toFixed(2);
     percentage = Number(percentageString) * 100;
     percentage = parseInt(percentage.toString());
-    StreamObject.percentage = percentage.toString();
+    StreamObject.percentage = percentage;
+    if(percentage >= 100) StreamObject.percentage = 100;
     return StreamObject;
   }
 
@@ -89,13 +90,27 @@ export default function ProductOrders() {
     (async () => {
       if (SablierContract && streamIds) {
         let TEMP_ARRAY: any[] = [];
+        let totalPendingStreams = 0;
+        let totalStreamed = 0;
 
         for await (const streamId of streamIds) {
           const result = await SablierContract.getSalary(streamId);
           const StreamObject = getStreamingObject(result);
+          console.log((StreamObject.percentage * StreamObject.salary)/100);
+          totalPendingStreams = totalPendingStreams + (StreamObject.percentage * StreamObject.salary)/100 ;
+          console.log(totalPendingStreams);
+          totalStreamed += StreamObject.salary;
           TEMP_ARRAY.push(StreamObject);
         }
 
+        console.log("totalPendingStreams ", totalPendingStreams);
+        console.log("totalPendingStreams ", Math.ceil(totalPendingStreams));
+        console.log("totalStreamed ", totalStreamed);
+        let streamedPercentage = (totalPendingStreams / totalStreamed) * 100;
+        console.log(typeof streamedPercentage)
+        let finalStreamedPercentage = streamedPercentage.toFixed(2);
+        setSeries([Number(finalStreamedPercentage), 40]);
+        setTotalCumulativeStream(totalStreamed);
         setEmployeeStreams(TEMP_ARRAY);
       }
     })();
@@ -136,7 +151,7 @@ export default function ProductOrders() {
             xs="12"
             className="d-flex justify-content-between flex-column mt-lg-0 mt-2"
           >
-            <RadialChart series={series} />
+            <RadialChart series={series} totalStreamValue={totalCumulativeStream}/>
           </Col>
           <Col
             lg="6"
