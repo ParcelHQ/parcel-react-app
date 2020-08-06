@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import { useContract } from '../../hooks';
 import ParcelFactoryContract from '../../abis/ParcelFactory.json';
-import { ZERO_ADDRESS } from '../../utility/constants';
+import { AddressZero } from '@ethersproject/constants';
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 import styled from '@emotion/styled';
@@ -69,7 +69,8 @@ export default function Employer(): JSX.Element {
     (async () => {
       if (parcelFactoryContract && account) {
         let result = await parcelFactoryContract.registered(account);
-        if (result !== ZERO_ADDRESS) {
+
+        if (result !== AddressZero) {
           setAccountAvailable(true);
           setParcelOrgAddress(result);
         } else setAccountAvailable(false);

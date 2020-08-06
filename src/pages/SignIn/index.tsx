@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { useContract } from '../../hooks';
 import addresses, { RINKEBY_ID } from '../../utility/addresses';
 import ParcelFactoryContract from '../../abis/ParcelFactory.json';
-import { ZERO_ADDRESS } from '../../utility/constants';
+import { AddressZero } from '@ethersproject/constants';
 import Logo from '../../assets/img/logo/logoPng.png';
 
 const Box = styled.div`
@@ -62,8 +62,8 @@ export default function Landing() {
   //   if (parcelFactoryContract && account) {
   //     let requester = await parcelFactoryContract.registered(account);
   //     console.log('requester:', requester);
-  //     if (requester === !ZERO_ADDRESS) {
-  //       console.log('ZERO_ADDRESS:', ZERO_ADDRESS);
+  //     if (requester === !AddressZero) {
+  //       console.log('AddressZero:', AddressZero);
   //       history.push('/dashboard');
   //     }
   //   } else {

@@ -1,15 +1,9 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
-import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
-import { useContract } from './hooks';
-import addresses, { RINKEBY_ID } from './utility/addresses';
-import ParcelFactoryContract from './abis/ParcelFactory.json';
 import { history } from './history';
 import Spinner from './components/Spinner/Loading-spinner';
 import { LayoutContext } from './state/layout/Context';
 import { useEagerConnect, useInactiveListener } from './hooks';
-import { ZERO_ADDRESS } from './utility/constants';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));

@@ -14,7 +14,7 @@ export const DEFAULT_TOKENS = [
   new Token(
     ChainId.RINKEBY,
     '0x4dbcdf9b62e891a7cec5a2568c3f4faf9e8abe2b',
-    18,
+    6,
     'USDC',
     'Usdc Stablecoin'
   ),
