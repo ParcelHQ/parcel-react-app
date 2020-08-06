@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { v4 as uuid } from 'uuid';
 import Skeleton from 'react-loading-skeleton';
 
+import { useTokens } from '../../../utility/tokens';
 import { shortenAddress } from '../../../utility';
 import { ReactComponent as DAILogo } from '../../../assets/currency/dai.svg';
 import { ReactComponent as USDCLogo } from '../../../assets/currency/usdc.svg';
@@ -77,9 +78,12 @@ const PageNumber = styled.li<{ active: boolean }>`
 const EmployeeList = ({ employeeStreams }: any) => {
   const STREAMS_PER_PAGE = 3;
   const [currentPage, setCurrentPage] = useState(1);
-
   const [currentStreams, setCurrentStreams] = useState<any>();
   const [pageNumbers, setPageNumbers] = useState<any>();
+
+  const tokens = useTokens();
+  const DAI_ADDRESS = tokens[0][5].address;
+  const USDC_ADDRESS = tokens[0][6].address;
 
   useEffect(() => {
     if (employeeStreams) {
@@ -89,7 +93,8 @@ const EmployeeList = ({ employeeStreams }: any) => {
         indexOfFirstStream,
         indexOfLastStream
       );
-      setCurrentStreams([currentStreams]);
+
+      setCurrentStreams(currentStreams);
     }
   }, [employeeStreams, currentPage]);
 
@@ -115,7 +120,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
   return (
     <>
       <List>
-        {currentStreams === [] ? (
+        {currentStreams &&
           currentStreams.map((employee: any) => {
             const totalAmountToStream = employee.salary;
             const currency = employee.currencySalary;
@@ -140,16 +145,14 @@ const EmployeeList = ({ employeeStreams }: any) => {
                       <Amount>
                         {totalAmountToStream ? totalAmountToStream : '-'}
                       </Amount>
-                      {currency &&
-                      currency ===
-                        '0xc3dbf84Abb494ce5199D5d4D815b10EC29529ff8' ? (
+                      {currency && currency === DAI_ADDRESS ? (
                         <DAILogo
                           style={{
                             height: '1.5rem',
                             marginBottom: '0.1rem',
                           }}
                         />
-                      ) : currency === 'USDC' ? (
+                      ) : currency && currency === USDC_ADDRESS ? (
                         <USDCLogo
                           style={{ height: '1.5rem', marginBottom: '0.1rem' }}
                         />
@@ -165,8 +168,8 @@ const EmployeeList = ({ employeeStreams }: any) => {
                 <Progress className="mb-2" value={percentage} />
               </ListElement>
             );
-          })
-        ) : (
+          })}
+        {/* : (
           <>
             <ListElement key={uuid()}>
               <NumericData>
@@ -214,7 +217,7 @@ const EmployeeList = ({ employeeStreams }: any) => {
               <Progress className="mb-2" value={100} />
             </ListElement>
           </>
-        )}
+        )} */}
         {/* <div style={{ height: '5rem' }}>
           <Skeleton count={3} />
         </div> */}

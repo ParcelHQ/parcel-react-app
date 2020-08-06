@@ -17,6 +17,7 @@ import BigNumber from 'big-number';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
+import { useTokens } from '../../../utility/tokens';
 import EmployeeList from './EmployeeList';
 import { getSignature } from '../../../utility';
 import { shortenAddress } from '../../../utility';
@@ -41,6 +42,9 @@ export default function ProductOrders() {
   const [totalCumulativeStream, setTotalCumulativeStream] = useState(0);
   const [withdrawnAmount, setWithdrawnAmount] = useState(0);
   const [series, setSeries] = useState([50, 50]); //actual data points used in graph
+  const tokens = useTokens();
+  const DAI_ADDRESS = tokens[0][5].address;
+  const USDC_ADDRESS = tokens[0][6].address;
 
   useEffect(() => {
     (async () => {
@@ -62,10 +66,13 @@ export default function ProductOrders() {
     };
     StreamObject.address = result.employee;
     StreamObject.currencySalary = result.tokenAddress;
+    let divisor: number;
+    if (result.tokenAddress === DAI_ADDRESS) divisor = 1e18;
+    else if (result.tokenAddress === USDC_ADDRESS) divisor = 1e6;
     const rate = BigNumber(Number(result.rate));
-    StreamObject.rate = Number(rate) / 1e18;
+    StreamObject.rate = Number(rate) / divisor!;
     const salary = Number(result.salary);
-    StreamObject.salary = Math.ceil(salary / 1e18);
+    StreamObject.salary = Math.ceil(salary / divisor!);
 
     const MATH_CEIL = BigNumber(Math.ceil(Date.now() / 1000));
 
@@ -96,11 +103,9 @@ export default function ProductOrders() {
         for await (const streamId of streamIds) {
           const result = await SablierContract.getSalary(streamId);
           const StreamObject = getStreamingObject(result);
-          console.log((StreamObject.percentage * StreamObject.salary) / 100);
           totalPendingStreams =
             totalPendingStreams +
             (StreamObject.percentage * StreamObject.salary) / 100;
-          console.log(totalPendingStreams);
           totalStreamed += StreamObject.salary;
           TEMP_ARRAY.push(StreamObject);
         }

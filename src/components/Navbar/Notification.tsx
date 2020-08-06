@@ -12,7 +12,11 @@ import * as Icon from 'react-feather';
 const Notification = () => {
   return (
     <UncontrolledDropdown tag="li" className="dropdown-notification nav-item">
-      <DropdownToggle tag="a" className="nav-link nav-link-label">
+      <DropdownToggle
+        tag="a"
+        className="nav-link nav-link-label"
+        disabled={true}
+      >
         <Icon.Bell size={21} />
         <Badge pill color="primary" className="badge-up">
           1
