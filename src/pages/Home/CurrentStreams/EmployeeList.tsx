@@ -3,6 +3,7 @@ import { ChevronDown, ArrowUp, ArrowDown } from 'react-feather';
 import { Progress } from 'reactstrap';
 import styled from '@emotion/styled';
 import { v4 as uuid } from 'uuid';
+import Skeleton from 'react-loading-skeleton';
 
 import { shortenAddress } from '../../../utility';
 import { ReactComponent as DAILogo } from '../../../assets/currency/dai.svg';
@@ -11,6 +12,7 @@ import { ReactComponent as USDCLogo } from '../../../assets/currency/usdc.svg';
 const List = styled.ul`
   padding: 0;
   list-style-type: none;
+  margin-bottom: 0rem;
 `;
 
 const ListElement = styled.li``;
@@ -53,61 +55,138 @@ const Rate = styled.span`
   color: lightgray;
 `;
 
-const EmployeeList = ({ employeeStreams }: any) => {
-  return (
-    <List>
-      {employeeStreams &&
-        employeeStreams.map((employee: any) => {
-          const totalAmountToStream = employee.salary;
-          const currency = employee.currencySalary;
-          const address = employee.address;
-          const streamRate = employee.rate;
-          let percentage = employee.percentage;
-          if (percentage >= 100) {
-            percentage = 100;
-          }
+const PageNumbers = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: center;
+`;
 
-          return (
-            <ListElement key={uuid()}>
-              <NumericData>
-                <LeftDiv>
-                  <Address>{address ? shortenAddress(address) : '-'}</Address>
-                  <Percentage>
-                    {percentage ? `${percentage} %` : '-'}
-                  </Percentage>
-                </LeftDiv>
-                <RightDiv>
-                  <AmountAndCurrency>
-                    <Amount>
-                      {totalAmountToStream ? totalAmountToStream : '-'}
-                    </Amount>
-                    {currency &&
-                    currency ===
-                      '0xc3dbf84Abb494ce5199D5d4D815b10EC29529ff8' ? (
-                      <DAILogo
-                        style={{
-                          height: '1.5rem',
-                          marginBottom: '0.1rem',
-                        }}
-                      />
-                    ) : currency === 'USDC' ? (
-                      <USDCLogo
-                        style={{ height: '1.5rem', marginBottom: '0.1rem' }}
-                      />
-                    ) : (
-                      '-'
-                    )}
-                  </AmountAndCurrency>
-                  <Rate>
-                    {streamRate ? `${streamRate.toFixed(5)} / SEC` : '-'}
-                  </Rate>
-                </RightDiv>
-              </NumericData>
-              <Progress className="mb-2" value={percentage} />
-            </ListElement>
-          );
-        })}
-    </List>
+const PageNumber = styled.li<{ active: boolean }>`
+  margin-right: 0.3rem;
+  user-select: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+  &:hover {
+    font-weight: bolder;
+  }
+`;
+
+const EmployeeList = ({ employeeStreams }: any) => {
+  const STREAMS_PER_PAGE = 3;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [currentStreams, setCurrentStreams] = useState<any>([]);
+  const [pageNumbers, setPageNumbers] = useState<any>();
+
+  useEffect(() => {
+    if (employeeStreams) {
+      const indexOfLastStream = currentPage * STREAMS_PER_PAGE;
+      const indexOfFirstStream = indexOfLastStream - STREAMS_PER_PAGE;
+      const currentStreams = employeeStreams.slice(
+        indexOfFirstStream,
+        indexOfLastStream
+      );
+      setCurrentStreams([...currentStreams]);
+    }
+  }, [employeeStreams, currentPage]);
+
+  useEffect(() => {
+    if (employeeStreams) {
+      const pageNumbers = [];
+      for (
+        let i = 1;
+        i <= Math.ceil(employeeStreams.length / STREAMS_PER_PAGE);
+        i++
+      ) {
+        pageNumbers.push(i);
+      }
+      setPageNumbers(pageNumbers);
+    }
+  }, [employeeStreams, currentStreams]);
+
+  const handleClick = (event: any) => {
+    event.preventDefault();
+    setCurrentPage(Number(event.target.id));
+  };
+
+  return (
+    <>
+      <List>
+        {currentStreams &&
+          currentStreams.map((employee: any) => {
+            const totalAmountToStream = employee.salary;
+            const currency = employee.currencySalary;
+            const address = employee.address;
+            const streamRate = employee.rate;
+            let percentage = employee.percentage;
+            if (percentage >= 100) {
+              percentage = 100;
+            }
+
+            return (
+              <ListElement key={uuid()}>
+                <NumericData>
+                  <LeftDiv>
+                    <Address>{address ? shortenAddress(address) : '-'}</Address>
+                    <Percentage>
+                      {percentage ? `${percentage} %` : '-'}
+                    </Percentage>
+                  </LeftDiv>
+                  <RightDiv>
+                    <AmountAndCurrency>
+                      <Amount>
+                        {totalAmountToStream ? totalAmountToStream : '-'}
+                      </Amount>
+                      {currency &&
+                      currency ===
+                        '0xc3dbf84Abb494ce5199D5d4D815b10EC29529ff8' ? (
+                        <DAILogo
+                          style={{
+                            height: '1.5rem',
+                            marginBottom: '0.1rem',
+                          }}
+                        />
+                      ) : currency === 'USDC' ? (
+                        <USDCLogo
+                          style={{ height: '1.5rem', marginBottom: '0.1rem' }}
+                        />
+                      ) : (
+                        '-'
+                      )}
+                    </AmountAndCurrency>
+                    <Rate>
+                      {streamRate ? `${streamRate.toFixed(5)} / SEC` : '-'}
+                    </Rate>
+                  </RightDiv>
+                </NumericData>
+                <Progress className="mb-2" value={percentage} />
+              </ListElement>
+            );
+          })}
+        {/* <div style={{ height: '5rem' }}>
+          <Skeleton count={3} />
+        </div> */}
+      </List>
+      <PageNumbers>
+        {pageNumbers &&
+          pageNumbers.map((number: any) => {
+            return (
+              <PageNumber
+                key={number}
+                //@ts-ignore
+                id={number}
+                onClick={(e: any) => handleClick(e)}
+                active={number === currentPage}
+              >
+                {number}
+              </PageNumber>
+            );
+          })}
+      </PageNumbers>
+    </>
   );
 };
 

@@ -74,7 +74,7 @@ export default function ProductOrders() {
     const RES = MATH_CEIL - newStartTime;
 
     let MULT_RESULT = BigNumber(RES).mult(rate);
-    console.log('MULT_RESULT:', MULT_RESULT.toString()); //divisor
+    // console.log('MULT_RESULT:', MULT_RESULT.toString()); //divisor
 
     let percentage = Number(MULT_RESULT.toString()) / salary;
 
