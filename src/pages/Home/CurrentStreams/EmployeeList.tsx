@@ -58,12 +58,10 @@ const EmployeeList = ({ employeeStreams }: any) => {
     <List>
       {employeeStreams &&
         employeeStreams.map((employee: any) => {
-          console.log('employee:', employee);
           const totalAmountToStream = employee.salary;
           const currency = employee.currencySalary;
           const address = employee.address;
           const streamRate = employee.rate;
-          console.log('streamRate:', streamRate);
           const percentage = employee.percentage;
 
           return (

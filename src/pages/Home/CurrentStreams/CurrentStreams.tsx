@@ -47,6 +47,7 @@ export default function ProductOrders() {
     (async () => {
       if (parcelWalletContract) {
         const streamIds = await parcelWalletContract.getStreamIds();
+
         setStreamIds(streamIds);
       }
     })();
@@ -64,17 +65,22 @@ export default function ProductOrders() {
     StreamObject.currencySalary = result.tokenAddress;
     const rate = BigNumber(Number(result.rate));
     StreamObject.rate = Number(rate) / 1e18;
-    const salary = Number(result.salary) / 1e18;
-    StreamObject.salary = Math.ceil(salary);
+    const salary = Number(result.salary);
+    StreamObject.salary = Math.ceil(salary / 1e18);
 
-    let MULT_RESULT = BigNumber(
-      Math.ceil(Date.now() / 1000) - Number(result.startTime)
-    ).mult(rate);
+    const MATH_CEIL = BigNumber(Math.ceil(Date.now() / 1000));
+
+    const newStartTime = Number(result.startTime);
+
+    const RES = MATH_CEIL - newStartTime;
+
+    let MULT_RESULT = BigNumber(RES).mult(rate);
+
     let percentage = Number(MULT_RESULT.toString()) / salary;
-    //@ts-ignore
-    percentage = percentage.toFixed(2);
-    percentage = percentage * 100;
-    if (percentage >= 100) percentage = 100;
+
+    let percentageString = percentage.toFixed(2);
+    percentage = Number(percentageString) * 100;
+    // if (percentage >= 100) percentage = 100;
     StreamObject.percentage = percentage.toString();
     return StreamObject;
   }
@@ -94,13 +100,14 @@ export default function ProductOrders() {
       }
     })();
   }, [streamIds]);
-  // useEffect(() => {
-  //   if (SablierContract) {
-  //     const STREAMING = 50;
-  //     const WITHDRAWN = 50;
-  //     setSeries([STREAMING, WITHDRAWN]);
-  //   }
-  // }, [SablierContract]);
+
+  useEffect(() => {
+    if (SablierContract) {
+      const STREAMING = 50;
+      const WITHDRAWN = 50;
+      setSeries([STREAMING, WITHDRAWN]);
+    }
+  }, [SablierContract]);
 
   return (
     <Card>
@@ -126,7 +133,7 @@ export default function ProductOrders() {
             xs="12"
             className="d-flex justify-content-between flex-column mt-lg-0 mt-2"
           >
-            {/* <RadialChart series={series} /> */}
+            <RadialChart series={series} />
           </Col>
           <Col
             lg="6"
