@@ -217,6 +217,21 @@ const EmployeeList = ({ employeeStreams }: any) => {
               </NumericData>
               <Progress className="mb-2" value={100} />
             </ListElement>
+            <ListElement key={uuid()}>
+              <NumericData>
+                <LeftDiv>
+                  <Address>0x0</Address>
+                  <Percentage>100</Percentage>
+                </LeftDiv>
+                <RightDiv>
+                  <AmountAndCurrency>
+                    <Amount>1</Amount> $
+                  </AmountAndCurrency>
+                  <Rate>1.00 / SEC</Rate>
+                </RightDiv>
+              </NumericData>
+              <Progress className="mb-2" value={100} />
+            </ListElement>
           </>
         )}
         {/* <div style={{ height: '5rem' }}>
