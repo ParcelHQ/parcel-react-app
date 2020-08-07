@@ -1,2 +1,0 @@
-export const COLLAPSE_SIDEBAR = 'COLLAPSE_SIDEBAR';
-export const CHANGE_MODE = 'CHANGE_MODE';
