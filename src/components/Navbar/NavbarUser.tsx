@@ -54,7 +54,7 @@ export default function NavbarUser({ ENSName }: any) {
         <DropdownMenu right>
           <DropdownItem tag="a" href="#">
             <Icon.User size={14} className="mr-50" />
-            <span className="align-middle">Edit Profile</span>
+            <span className="align-middle">Profile</span>
           </DropdownItem>
 
           <DropdownItem divider />

@@ -18,6 +18,7 @@ import {
   ModalBody,
 } from 'reactstrap';
 import parcel from 'parcel-sdk';
+
 import Add from './Add';
 import { getSignature } from '../../utility';
 import { ContextLayout } from '../../layouts/ContextLayout';
@@ -283,6 +284,7 @@ export default function PeopleList() {
                   className="add-new-btn"
                   color="primary"
                   onClick={() => setAdd(true)}
+                  // disabled={}
                 >
                   <Plus size={15} /> Add Employee
                 </Button>

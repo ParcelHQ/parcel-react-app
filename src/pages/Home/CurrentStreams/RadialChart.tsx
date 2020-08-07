@@ -14,7 +14,7 @@ const BottomBox = styled.div`
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  margin: 1.75rem 1rem 0;
+  margin: 1.75rem 1rem 2rem;
 `;
 
 const Box = styled.div`
@@ -43,6 +43,17 @@ const Stat = styled.span`
 
 export default function RadialChart({ series, totalStreamValue }: any) {
   if (isNaN(series[0])) series[0] = 50;
+
+  const [streamedProgress, setStreamedProgress] = useState(50);
+  const [withdrawnProgress, setWithdrawnProgress] = useState(50);
+
+  useEffect(() => {
+    if (series) {
+      setStreamedProgress(series[1]);
+      if (series[2] === !undefined) setWithdrawnProgress(series[2]);
+      else setWithdrawnProgress(50);
+    }
+  }, [series]);
 
   const [options, setOptions] = useState<any>({
     colors: [primary, orange],
@@ -154,19 +165,19 @@ export default function RadialChart({ series, totalStreamValue }: any) {
         <Box>
           <TopBox>
             <Title>Streamed</Title>
-            <Stat>50 %</Stat>
+            <Stat>{`${streamedProgress} %`}</Stat>
           </TopBox>
-          <div style={{ width: '70px' }}>
-            <Progress animated color="primary" value={50} />
+          <div style={{ width: '100px' }}>
+            <Progress animated color="primary" value={streamedProgress} />
           </div>
         </Box>
         <Box>
           <TopBox>
             <Title>Withdrawn</Title>
-            <Stat>50 %</Stat>
+            <Stat>{`${withdrawnProgress} %`}</Stat>
           </TopBox>
-          <div style={{ width: '70px' }}>
-            <Progress animated color="warning" value={50} />
+          <div style={{ width: '100px' }}>
+            <Progress animated color="warning" value={streamedProgress} />
           </div>
         </Box>
       </BottomBox>
